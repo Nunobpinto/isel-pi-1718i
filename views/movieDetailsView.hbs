@@ -1,0 +1,66 @@
+{{> base }}
+{{>navBar}}
+
+{{#if poster}}
+    <img src='http://image.tmdb.org/t/p/w185/{{poster}}'/>
+{{else}}
+    <img src='https://cdn.amctheatres.com/Media/Default/Images/noposter.jpg'/>
+{{/if}}
+
+<p>Details of movie with id = {{id}}</p>
+<p>Original Title : {{originalTitle}}</p>
+<p>Overview : {{overview}}</p>
+<p>Release Date : {{releaseDate}}</p>
+{{#if tagline}}
+    <p>Tagline : {{tagline}}</p>
+{{/if}}
+<p>Vote Average : {{voteAverage}}</p>
+<p>Genres : {{genres}}</p>
+
+<div class="container pt-5">
+    <div class="row">
+        {{#each directors}}
+            <div class="col">
+                <div class="card mb-2 text-center" style="width:15rem; margin-right: auto; margin-left: auto">
+                    {{#if portrait}}
+                        <img class="card-img-top" src='http://image.tmdb.org/t/p/w185/{{portrait}}'/>
+                    {{else}}
+                        <img class="card-img-top"
+                             src='http://www.gama-ksa.com/wp-content/uploads/2014/06/funny-default-facebook-pictures.jpg'>
+                    {{/if }}
+                    <div class="card-body">
+                        <h4 class="card-title">{{name}}</h4>
+                        <ul class="list-group list-group-flush">
+                            <li class="list-group-item">Director</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        {{/each}}
+    </div>
+    <div class="row">
+        {{#each cast}}
+            <div class="col-3">
+                <div class="card mb-2 text-center" style="width:15rem">
+                    <a href="/actors/{{id}}">
+                        {{#if portrait}}
+                            <img class="card-img-top" src='http://image.tmdb.org/t/p/w185/{{portrait}}'>
+                        {{else}}
+                            <img class="card-img-top"
+                                 src='http://www.gama-ksa.com/wp-content/uploads/2014/06/funny-default-facebook-pictures.jpg'>
+                        {{/if}}
+                    </a>
+                    <div class="card-body">
+                        <a href="/actors/{{id}}">
+                            <h4 class="card-title">{{name}}</h4>
+                        </a>
+                    </div>
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item">Character: {{character}}</li>
+                    </ul>
+                </div>
+            </div>
+        {{/each}}
+    </div>
+</div>
+{{> footer }}

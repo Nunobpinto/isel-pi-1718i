@@ -1,0 +1,43 @@
+{{> base }}
+{{>navBar}}
+    {{#if portrait}}
+        <img src='http://image.tmdb.org/t/p/w185/{{portrait}}'/>
+    {{else}}
+        <img src='http://www.gama-ksa.com/wp-content/uploads/2014/06/funny-default-facebook-pictures.jpg'/>
+    {{/if}}
+    <p>Actor name: {{name}}</p>
+    <p>Biography: {{biography}}</p>
+    <p>Born: {{birthday}}</p>
+    {{#if deathday}}
+        <p>Died: {{deathday}}</p>
+    {{/if}}
+
+<div class="container pt-5">
+    <div class="row">
+        {{#each filmography}}
+            <div class="col-3">
+                <div class="card mb-2 text-center" style="width:15rem">
+                    <a href="/movies/{{id}}">
+                        {{#if poster}}
+                            <img class="card-img-top" src='http://image.tmdb.org/t/p/w185/{{poster}}'>
+                        {{else}}
+                            <img class="card-img-top"
+                                 src='http://media.comicbook.com/files/img/default-movie.png'>
+                        {{/if}}
+                    </a>
+                    <div class="card-body">
+                        <a href="/movies/{{id}}">
+                            <h4 class="card-title">{{title}}</h4>
+                        </a>
+                    </div>
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item">Vote Average: {{voteAverage}}</li>
+                        <li class="list-group-item">Release Date: {{releaseDate}}</li>
+                    </ul>
+                </div>
+            </div>
+        {{/each}}
+    </div>
+</div>
+
+{{> footer }}

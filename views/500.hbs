@@ -1,0 +1,20 @@
+{{>base}}
+{{>navBar}}
+<div class="jumbotron jumbotron-fluid" style="background-color:lightblue">
+    <div class="container">
+        <h1 class="display-3"><span class="fa fa-film"></span>500</h1>
+        <p class="lead">{{title}}</p>
+        <p class="lead">{{message}}</p>
+    </div>
+</div>
+<form method="get" action="/search">
+    <div class="row">
+        <div class="col">
+            <div class="input-group">
+                <input name="name" type="text" class="form-control" placeholder="Insert Movie Name...">
+                <button class="btn btn-secondary" type="submit">Search</button>
+            </div>
+        </div>
+    </div>
+</form>
+{{>footer}}

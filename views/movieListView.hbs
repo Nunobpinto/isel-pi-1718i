@@ -1,0 +1,55 @@
+{{> base }}
+{{>navBar}}
+{{#if results}}
+    <div class="container pt-5">
+        <div class="row">
+            {{#each results}}
+                <div class="col-3">
+                    <div class="card mb-2 text-center" style="width:15rem">
+                        <a href="/movies/{{id}}">
+                            {{#if poster}}
+                                <img class="card-img-top" src='http://image.tmdb.org/t/p/w185/{{poster}}'>
+                            {{else}}
+                                <img class="card-img-top" src='http://media.comicbook.com/files/img/default-movie.png'>
+                            {{/if}}
+                        </a>
+                        <div class="card-body">
+                            <a href="/movies/{{id}}">
+                                <h4 class="card-title">{{title}}</h4>
+                            </a>
+                        </div>
+                        <ul class="list-group list-group-flush">
+                            <li class="list-group-item">Vote Average: {{voteAverage}}</li>
+                            <li class="list-group-item">Release Date: {{releaseDate}}</li>
+                        </ul>
+                    </div>
+                </div>
+            {{/each}}
+        </div>
+    </div>
+
+    <div class="container pt-4">
+        <nav aria-label="Page navigation example">
+            <ul class="pagination">
+                <li class="page-item disabled">
+                    <span class="page-link">Previous</span>
+                </li>
+                <li class="page-item"><a class="page-link" href="#">1</a></li>
+                <li class="page-item active">
+      <span class="page-link">
+        2
+        <span class="sr-only">(current)</span>
+      </span>
+                </li>
+                <li class="page-item"><a class="page-link" href="#">3</a></li>
+                <li class="page-item">
+                    <a class="page-link" href="#">Next</a>
+                </li>
+            </ul>
+        </nav>
+    </div>
+
+{{else}}
+    <p>No results found</p>
+{{/if}}
+{{> footer }}
