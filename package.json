@@ -8,14 +8,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/JpmGameiro/pi1718inv.git"
+    "url": "git+https://github.com/isel-leic-pi/LI52D-G11.git"
   },
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/JpmGameiro/pi1718inv/issues"
+    "url": "https://github.com/isel-leic-pi/LI52D-G11/issues"
   },
-  "homepage": "https://github.com/JpmGameiro/pi1718inv#readme",
+  "homepage": "https://github.com/isel-leic-pi/LI52D-G11#readme",
   "dependencies": {
     "handlebars": "^4.0.10",
     "request": "^2.83.0"
