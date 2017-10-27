@@ -3,13 +3,11 @@
 const fs = require('fs')
 const hbs = require('handlebars')
 
-
-
 module.exports = render
 
-const base = fs.readFileSync( './views/base.hbs').toString()
-const footer = fs.readFileSync('./views/footer.hbs').toString()
-const navBar = fs.readFileSync('./views/navBar.hbs').toString()
+const base = fs.readFileSync( './views/partials/base.hbs').toString()
+const footer = fs.readFileSync('./views/partials/footer.hbs').toString()
+const navBar = fs.readFileSync('./views/partials/navBar.hbs').toString()
 hbs.registerPartial('base', base)
 hbs.registerPartial('footer', footer)
 hbs.registerPartial('navBar', navBar)
@@ -24,7 +22,7 @@ const views = {
 }
 
 function render(viewName, data, callback) {
-	callback(null, views[viewName](data))
+		callback(null, views[viewName](data))
 }
 
 function view(viewPath) {
