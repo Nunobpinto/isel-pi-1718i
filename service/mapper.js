@@ -1,29 +1,35 @@
 'use strict'
 
-const Actor = require('../model/Actor')
-const CastMember = require('../model/CastMember')
-const Director = require('../model/Director')
-const Movie = require('../model/Movie')
-const MovieListItem = require('../model/MovieListItem')
+const Actor = require('../domain/Actor')
+const CastMember = require('../domain/CastMember')
+const Director = require('../domain/Director')
+const Movie = require('../domain/Movie')
+const MovieListItem = require('../domain/MovieListItem')
 
+module.exports = {
+	mapToActor,
+	mapToCastMember,
+	mapToDirector,
+	mapToMovie,
+	mapToMovieListItem
+}
 
-function mapToMovieListItem(obj) {
-	return obj.results.map(item => new MovieListItem(item.title, item.id, item.release_date, item.poster_path, item.vote_average))
+function mapToMovieListItem(movieList) {
+	return movieList.map(item => new MovieListItem(item.title, item.id, item.release_date, item.poster_path, item.vote_average))
 }
 
 function mapToMovie(obj) {
 	return new Movie(obj.tagline, obj.id, obj.original_title, obj.overview, obj.release_date, obj.vote_average, obj.poster_path, obj.genres.map(item => item.name).join(' / '))
 }
 
-function mapToDirector(obj) {
-	return obj.crew
+function mapToDirector(crew) {
+	return crew
 		.filter(crewMember => crewMember.job === 'Director')
 		.map(director => new Director(director.name, director.id, director.profile_path))
 }
 
-function mapToCastMember(obj) {
-	return 	obj.cast
-		.map(castMember => new CastMember(castMember.name, castMember.id, castMember.character, castMember.profile_path))
+function mapToCastMember(cast) {
+	return 	cast.map(castMember => new CastMember(castMember.name, castMember.id, castMember.character, castMember.profile_path))
 }
 
 function mapToActor(obj) {
