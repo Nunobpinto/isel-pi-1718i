@@ -17,12 +17,11 @@ const views = {
 	'movies': view('./views/movieDetailsView.hbs'),
 	'actors': view('./views/actorDetailsView.hbs'),
 	'home': view('./views/homeView.hbs'),
-	'404': view('./views/404.hbs'),
-	'500' : view('./views/500.hbs')
+	'error': view('./views/errorView.hbs')
 }
 
 function render(viewName, data, callback) {
-		callback(null, views[viewName](data))
+	callback(null, views[viewName](data))
 }
 
 function view(viewPath) {

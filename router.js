@@ -3,7 +3,6 @@
 const fs = require('fs')
 const controller = require('./controller')
 const render = require('./service/viewService')
-const BadRequest = require('./errors/BadRequest')
 const url = require('url')
 
 module.exports = router
@@ -41,7 +40,7 @@ function getEndPoint(pathname) {
 }
 
 function setResponseNotFound(resp) {
-	render('404', {title: 'Page not found.'}, (err, view) => {
+	render('error', {title: 'ERROR', message: 'Page not found? INCONCEIVABLE.', statusCode: '404'}, (err, view) => {
 		if(err)
 			return err
 		resp.statusCode = 404
@@ -51,10 +50,10 @@ function setResponseNotFound(resp) {
 }
 
 function setErrorResponse(resp, err) {
-	render('500', {title: 'An error occurred!!!', message: err}, (err, view) => {
-		if(err)
-			return err
-		resp.statusCode = 500
+	render('error', {title: 'An error occurred!!!', message: err.message, statusCode: err.statusCode}, (Viewerr, view) => {
+		if(Viewerr)
+			return Viewerr
+		resp.statusCode = err.statusCode
 		resp.setHeader('Content-Type', contentType.html)
 		resp.end(view)
 	})

@@ -1,17 +1,10 @@
 'use strict'
 
-'use strict'
-
 const fs = require('fs')
-const actorCache = require('../cache')
-const movieCache = require('../cache')
-const BadRequest = require('../errors/BadRequest')
-const Actor = require('../model/Actor')
-const CastMember = require('../model/CastMember')
-const Director = require('../model/Director')
-const Movie = require('../model/Movie')
-const MovieListItem = require('../model/MovieListItem')
-const memoize = require('../memoize')
+const actorCache = require('../cache/cache')
+const movieCache = require('../cache/cache')
+const memoize = require('../cache/memoize')
+const mapper = require('../service/mapper')
 
 const apiKey = fs.readFileSync('apikey.txt').toString()
 
@@ -32,16 +25,14 @@ function init(dataSource) {
 	return services
 
 	function getMovieList(name, cb) {
-		if(name === ''){
-			return cb(new BadRequest('Attention: Movie name is required!'))
-		}
 		const movieListPath = `https://api.themoviedb.org/3/search/movie?api_key=${apiKey}&query=${name}`
 		req(movieListPath, (err, res, data) => {
 			console.log('Making a request to ' + movieListPath)
-			if (err) return cb(err)
+			if (err) return cb({message: err.message, statusCode: 500})
 			const obj = JSON.parse(data.toString())
-			let movieListDto = {}
-			movieListDto.results = obj.results.map(item => new MovieListItem(item.title, item.id, item.release_date, item.poster_path, item.vote_average))
+			if (obj.hasOwnProperty('errors'))
+				return cb({message: obj.errors[0], statusCode: res.statusCode})
+			let movieListDto = mapper.mapToMovieListItem(obj.results)
 			cb(null, movieListDto)
 		})
 	}
@@ -53,17 +44,12 @@ function init(dataSource) {
 			console.log('Making a request to ' + movieDetailsPath + ' and ' + movieCreditsPath)
 			if (err) return cb(err)
 			let obj = JSON.parse(data.toString())
-			let movieDetailsDto = new Movie(obj.tagline, obj.id, obj.original_title, obj.overview, obj.release_date, obj.vote_average, obj.poster_path, obj.genres.map(item => item.name).join(' / '))
+			let movieDetailsDto = mapper.mapToMovie(obj)
 			req(movieCreditsPath, (err, res, data) => {
 				if (err) return cb(err)
 				obj = JSON.parse(data.toString())
-				movieDetailsDto.directors =
-																				obj.crew
-																					.filter(crewMember => crewMember.job === 'Director')
-																					.map(director => new Director(director.name, director.id, director.profile_path))
-				movieDetailsDto.cast =
-																				obj.cast
-																					.map(castMember => new CastMember(castMember.name, castMember.id, castMember.character, castMember.profile_path))
+				movieDetailsDto.directors = mapper.mapToDirector(obj.crew)
+				movieDetailsDto.cast = mapper.mapToCastMember(obj.cast)
 				movieCache.put(movieId, movieDetailsDto)
 				cb(null, movieDetailsDto)
 			})
@@ -77,13 +63,11 @@ function init(dataSource) {
 			console.log('Making a request to ' + pathToActorPersonalInfo + ' and ' + pathToMovieParticipations)
 			if (err) return cb(err)
 			let obj = JSON.parse(data.toString())
-			let actorDetailsDto = new Actor(obj.biography, obj.birthday, obj.deathday, obj.id, obj.name, obj.popularity, obj.profile_path)
+			let actorDetailsDto = mapper.mapToActor(obj)
 			req(pathToMovieParticipations, (err, res, data) => {
 				if (err) return cb(err)
 				obj = JSON.parse(data.toString())
-				actorDetailsDto.filmography = obj.cast.map(item =>
-					new MovieListItem(item.title, item.id, item.release_date, item.poster_path, item.vote_average)
-				)
+				actorDetailsDto.filmography = mapper.mapToMovieListItem(obj.cast)
 				actorCache.put(actorId, actorDetailsDto)
 				cb(null, actorDetailsDto)
 			})
