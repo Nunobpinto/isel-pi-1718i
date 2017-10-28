@@ -1,9 +1,9 @@
 {{> base }}
 {{>navBar}}
-{{#if this}}
+{{#if results}}
     <div class="container pt-5">
         <div class="row">
-            {{#each this}}
+            {{#each results}}
                 <div class="col-3">
                     <div id="divCard" class="card mb-2 text-center">
                         <a href="/movies/{{id}}">

@@ -5,17 +5,29 @@ const CastMember = require('../domain/CastMember')
 const Director = require('../domain/Director')
 const Movie = require('../domain/Movie')
 const MovieListItem = require('../domain/MovieListItem')
+const MovieList = require('../domain/MovieList')
 
 module.exports = {
 	mapToActor,
 	mapToCastMember,
 	mapToDirector,
 	mapToMovie,
-	mapToMovieListItem
+	mapToMovieList,
+    mapToFilmography
 }
 
-function mapToMovieListItem(movieList) {
-	return movieList.map(item => new MovieListItem(item.title, item.id, item.release_date, item.poster_path, item.vote_average))
+function mapToMovieList(movieList, query) {
+	return new MovieList(
+		query,
+        movieList.results.map(item => new MovieListItem(item.title, item.id, item.release_date, item.poster_path, item.vote_average)),
+        movieList.page,
+        movieList.total_pages,
+        movieList.total_results
+    )
+}
+
+function mapToFilmography(movieList) {
+    return movieList.map(item => new MovieListItem(item.title, item.id, item.release_date, item.poster_path, item.vote_average))
 }
 
 function mapToMovie(obj) {

@@ -32,7 +32,7 @@ function init(dataSource) {
 			const obj = JSON.parse(data.toString())
 			if (obj.hasOwnProperty('errors'))
 				return cb({message: obj.errors[0], statusCode: res.statusCode})
-			let movieListDto = mapper.mapToMovieListItem(obj.results)
+			let movieListDto = mapper.mapToMovieList(obj, name)
 			cb(null, movieListDto)
 		})
 	}
@@ -57,24 +57,68 @@ function init(dataSource) {
 	}
 
 	function getActorDetails(actorId, cb) {
-		const pathToActorPersonalInfo = `https://api.themoviedb.org/3/person/${actorId}?api_key=${apiKey}`
-		const pathToMovieParticipations = `https://api.themoviedb.org/3/person/${actorId}/movie_credits?api_key=${apiKey}`
-		req(pathToActorPersonalInfo, (err, res, data) => {
-			console.log('Making a request to ' + pathToActorPersonalInfo + ' and ' + pathToMovieParticipations)
-			if (err) return cb(err)
-			let obj = JSON.parse(data.toString())
-			let actorDetailsDto = mapper.mapToActor(obj)
-			req(pathToMovieParticipations, (err, res, data) => {
-				if (err) return cb(err)
-				obj = JSON.parse(data.toString())
-				actorDetailsDto.filmography = mapper.mapToMovieListItem(obj.cast)
-				actorCache.put(actorId, actorDetailsDto)
-				cb(null, actorDetailsDto)
-			})
+        const pathToActorPersonalInfo = `https://api.themoviedb.org/3/person/${actorId}?api_key=${apiKey}`
+        const pathToMovieParticipations = `https://api.themoviedb.org/3/person/${actorId}/movie_credits?api_key=${apiKey}`
+        req(pathToActorPersonalInfo, (err, res, data) => {
+            console.log('Making a request to ' + pathToActorPersonalInfo + ' and ' + pathToMovieParticipations)
+            if (err) return cb(err)
+            let obj = JSON.parse(data.toString())
+            let actorDetailsDto = mapper.mapToActor(obj)
+            req(pathToMovieParticipations, (err, res, data) => {
+                if (err) return cb(err)
+                obj = JSON.parse(data.toString())
+                actorDetailsDto.filmography = mapper.mapToFilmography(obj.cast)
+                actorCache.put(actorId, actorDetailsDto)
+                cb(null, actorDetailsDto)
+            })
 
-		})
+        })
+        /*const pathToActorPersonalInfo = `https://api.themoviedb.org/3/person/${actorId}?api_key=${apiKey}`
+        const pathToMovieParticipations = `https://api.themoviedb.org/3/person/${actorId}/movie_credits?api_key=${apiKey}`
 
+        let fn1 = function () {
+            return (func) => {
+                req(pathToActorPersonalInfo, (err, res, data) => {
+                        console.log('Making a request to ' + pathToActorPersonalInfo + ' and ' + pathToMovieParticipations)
+                        if (err) return cb(err)
+                        let obj = JSON.parse(data.toString())
+                        let actorDetailsDto = new Actor(obj.biography, obj.birthday, obj.deathday, obj.id, obj.name, obj.popularity, obj.profile_path)
+                        func(actorDetailsDto)
+                    }
+                )
+            }
+        }
+
+        let fn2 = function () {
+            return (func) => {
+            	req(pathToMovieParticipations, (err, res, data) => {
+                    if (err) return cb(err)
+                    let obj = JSON.parse(data.toString())
+                    func(obj)
+                })
+            }
+        }
+
+        let transfCb = function (actorDetails, obj) {
+            actorDetails.filmography = obj.cast.map(item =>
+                new MovieListItem(item.title, item.id, item.release_date, item.poster_path, item.vote_average)
+            )
+            actorCache.put(actorId,actorDetails)
+        }
+
+        let fnArrays = [fn1,fn2]
+        parallelRequests(fnArrays,transfCb,cb)*/
 	}
-
-
+/*
+    function parallelRequests(fnArrays,transformerCb, finalCb) {
+        let res = []
+        let index = 0
+        fnArrays.forEach(
+            fn => fn()((data)=>{
+                res['index'] = data
+            },index)
+        )
+        finalCb(null,transformerCb.apply(this,res))
+    }
+*/
 }
