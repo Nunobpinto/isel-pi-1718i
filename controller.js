@@ -15,8 +15,9 @@ function home(request, callback) {
 }
 
 function search(request, callback) {
-	const query = request.query['name']
-	movieService.getMovieList(query, (err, data) => {
+	const name = request.query['name']
+	const page = request.query['page']
+	movieService.getMovieList(name,page, (err, data) => {
 		if(err)
 			return callback(err)
 		render('search', data, callback)
