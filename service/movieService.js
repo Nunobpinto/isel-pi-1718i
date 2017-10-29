@@ -25,7 +25,8 @@ function init(dataSource) {
 	return services
 
 	function getMovieList(name,page,cb) {
-		const movieListPath = `https://api.themoviedb.org/3/search/movie?api_key=${apiKey}&query=${name}&page=${page}`
+
+		const movieListPath = `https://api.themoviedb.org/3/search/movie?api_key=${apiKey}&query=${encodeURIComponent(name)}&page=${page}`
 		req(movieListPath, (err, res, data) => {
 			console.log('Making a request to ' + movieListPath)
 			if (err) return cb({message: err.message, statusCode: 500})
