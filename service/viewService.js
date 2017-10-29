@@ -28,3 +28,46 @@ function view(viewPath) {
 	const viewSrc = fs.readFileSync(viewPath).toString()
 	return hbs.compile(viewSrc)
 }
+
+hbs.registerHelper('paginate', function(query,currentPage, totalPages, size, options) {
+	let startPage, endPage, context
+	let nameSearched = query
+
+	startPage = currentPage - Math.floor(size / 2)
+	endPage = currentPage + Math.floor(size / 2)
+
+	if (startPage <= 0) {
+		endPage -= (startPage - 1)
+		startPage = 1
+	}
+
+	if (endPage > totalPages) {
+		endPage = totalPages
+		if (endPage - size + 1 > 0) {
+			startPage = endPage - size + 1
+		} else {
+			startPage = 1
+		}
+	}
+
+	context = {
+		name : nameSearched,
+		isFirstPage: false,
+		pages: [],
+		isLastPage: false,
+		lastPage : totalPages
+	}
+	if (startPage === 1) {
+		context.isFirstPage = true
+	}
+	for (let i = startPage; i <= endPage; i++) {
+		context.pages.push({
+			page: i,
+			isCurrent: i === currentPage,
+		})
+	}
+	if (endPage === totalPages) {
+		context.isLastPage = true
+	}
+	return new hbs.SafeString(options.fn(context))
+})

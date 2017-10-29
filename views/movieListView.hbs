@@ -26,29 +26,25 @@
                 </div>
             {{/each}}
         </div>
-    </div>
+        {{#paginate query currentPage totalPages 3 }}
+            <div class="pagination">
+                {{#unless isFirstPage}}
+                    <a href="/search?name={{name}}&page=1">&lt;</a>
+                {{/unless}}
+                {{#each pages}}
+                    {{#if isCurrent}}
+                        [<a href="/search?name={{../name}}&page={{page}}">{{page}}</a>]
+                    {{else}}
+                        <a href="/search?name={{../name}}&page={{page}}">{{page}}</a>
+                    {{/if}}
+                {{/each}}
 
-    <div class="container pt-4">
-        <nav aria-label="Page navigation example">
-            <ul class="pagination">
-                <li class="page-item disabled">
-                    <span class="page-link">Previous</span>
-                </li>
-                <li class="page-item"><a class="page-link" href="#">1</a></li>
-                <li class="page-item active">
-      <span class="page-link">
-        2
-        <span class="sr-only">(current)</span>
-      </span>
-                </li>
-                <li class="page-item"><a class="page-link" href="#">3</a></li>
-                <li class="page-item">
-                    <a class="page-link" href="#">Next</a>
-                </li>
-            </ul>
-        </nav>
+                {{#unless isLastPage}}
+                    <a href="/search?name={{name}}&page={{lastPage}}">&gt;</a>
+                {{/unless}}
+            </div>
+        {{/paginate}}
     </div>
-
 {{else}}
     <p>No results found</p>
 {{/if}}
