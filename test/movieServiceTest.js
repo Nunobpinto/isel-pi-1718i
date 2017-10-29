@@ -4,7 +4,7 @@ const fs = require('fs')
 const apiKey = fs.readFileSync('apikey.txt').toString()
 
 const endPoints = {
-	'https://api.themoviedb.org/3/search/movie?api_key=98deea9e9512d3124b9fe528f476c51d&query=war+games':
+	'https://api.themoviedb.org/3/search/movie?api_key=98deea9e9512d3124b9fe528f476c51d&query=war%20games&page=1':
 								fs.readFileSync('./test/wargamesSearch.json').toString(),
 	'https://api.themoviedb.org/3/movie/860?api_key=98deea9e9512d3124b9fe528f476c51d':
 								fs.readFileSync('./test/wargamesDetails.json').toString(),
@@ -31,7 +31,7 @@ module.exports = {
 }
 
 function testGetMovieSearch(test) {
-	movie.getMovieList('war+games', (err, list) => {
+	movie.getMovieList('war games', 1,(err, list) => {
 		if(err)
 			test.ifError(err)
 		else {
