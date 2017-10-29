@@ -2,7 +2,7 @@
 {{>navBar}}
 {{#if results}}
     <div class="container pt-5">
-        <div class="row">
+        <div id="mBottomList" class="row">
             {{#each results}}
                 <div class="col-3">
                     <div id="divCard" class="card mb-2 text-center">
@@ -26,22 +26,39 @@
                 </div>
             {{/each}}
         </div>
+
         {{#paginate query currentPage totalPages 3 }}
-            <div class="pagination">
-                {{#unless isFirstPage}}
-                    <a href="/search?name={{name}}&page=1">&lt;</a>
-                {{/unless}}
+            <div id="marginPagination" class="pagination">
+                {{#if isFirstPage}}
+                    <li class="page-item disabled">
+                        <a class="page-link" href="/search?name={{name}}&page=1">First</a>
+                    </li>
+                {{else}}
+                    <li class="page-item">
+                        <a class="page-link" href="/search?name={{name}}&page=1">First</a>
+                    </li>
+                {{/if}}
                 {{#each pages}}
                     {{#if isCurrent}}
-                        [<a href="/search?name={{../name}}&page={{page}}">{{page}}</a>]
+                        <li class="page-item active">
+                            <a class="page-link" href="/search?name={{../name}}&page={{page}}">{{page}}</a>
+                        </li>
                     {{else}}
-                        <a href="/search?name={{../name}}&page={{page}}">{{page}}</a>
+                        <li class="page-item">
+                            <a class="page-link" href="/search?name={{../name}}&page={{page}}">{{page}}</a>
+                        </li>
                     {{/if}}
                 {{/each}}
 
-                {{#unless isLastPage}}
-                    <a href="/search?name={{name}}&page={{lastPage}}">&gt;</a>
-                {{/unless}}
+                {{#if isLastPage}}
+                    <li class="page-item disabled">
+                        <a class="page-link" href="/search?name={{name}}&page={{lastPage}}">Last</a>
+                    </li>
+                {{else}}
+                    <li class="page-item">
+                        <a class="page-link" href="/search?name={{name}}&page={{lastPage}}">Last</a>
+                    </li>
+                {{/if}}
             </div>
         {{/paginate}}
     </div>
