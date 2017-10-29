@@ -39,6 +39,7 @@ function init(dataSource) {
 	}
 
 	function getMovieDetails(movieId, cb) {
+		/*
 		const movieDetailsPath = `https://api.themoviedb.org/3/movie/${movieId}?api_key=${apiKey}`
 		const movieCreditsPath = `https://api.themoviedb.org/3/movie/${movieId}/credits?api_key=${apiKey}`
 		req(movieDetailsPath, (err, res, data) => {
@@ -54,11 +55,42 @@ function init(dataSource) {
 				movieCache.put(movieId, movieDetailsDto)
 				cb(null, movieDetailsDto)
 			})
-		})
-	}
+		})*/
+        const movieDetailsPath = `https://api.themoviedb.org/3/movie/${movieId}?api_key=${apiKey}`
+        const movieCreditsPath = `https://api.themoviedb.org/3/movie/${movieId}/credits?api_key=${apiKey}`
+        let fn1 = function (func) {
+            req(movieDetailsPath, (err, res, data) => {
+                    console.log('Making a request to ' + movieDetailsPath + ' and ' + movieCreditsPath)
+                    if (err) return cb(err)
+                    let obj = JSON.parse(data.toString())
+                    let movieDetailsDto = mapper.mapToMovie(obj)
+					func(movieDetailsDto)
+                }
+            )
+        }
+        let fn2 = function (func) {
+            req(movieCreditsPath, (err, res, data) => {
+                if (err) return cb(err)
+                let obj = JSON.parse(data.toString())
+                func(obj)
+            })
+        }
+
+
+        let transfCb = function (movieDetails, obj,cb) {
+            movieDetails.directors = mapper.mapToDirector(obj.crew)
+            movieDetails.cast = mapper.mapToCastMember(obj.cast)
+            movieCache.put(movieId, movieDetails)
+            cb(null, movieDetails)
+        }
+
+        let fnArrays = [fn1,fn2]
+        parallelRequests(fnArrays,transfCb,cb)
+    }
+
 
 	function getActorDetails(actorId, cb) {
-		const pathToActorPersonalInfo = `https://api.themoviedb.org/3/person/${actorId}?api_key=${apiKey}`
+		/*const pathToActorPersonalInfo = `https://api.themoviedb.org/3/person/${actorId}?api_key=${apiKey}`
 		const pathToMovieParticipations = `https://api.themoviedb.org/3/person/${actorId}/movie_credits?api_key=${apiKey}`
 		req(pathToActorPersonalInfo, (err, res, data) => {
 			console.log('Making a request to ' + pathToActorPersonalInfo + ' and ' + pathToMovieParticipations)
@@ -74,52 +106,53 @@ function init(dataSource) {
 			})
 
 		})
-		/*const pathToActorPersonalInfo = `https://api.themoviedb.org/3/person/${actorId}?api_key=${apiKey}`
+*/
+		const pathToActorPersonalInfo = `https://api.themoviedb.org/3/person/${actorId}?api_key=${apiKey}`
         const pathToMovieParticipations = `https://api.themoviedb.org/3/person/${actorId}/movie_credits?api_key=${apiKey}`
 
-        let fn1 = function () {
-            return (func) => {
+        let fn1 = function (func) {
                 req(pathToActorPersonalInfo, (err, res, data) => {
                         console.log('Making a request to ' + pathToActorPersonalInfo + ' and ' + pathToMovieParticipations)
                         if (err) return cb(err)
                         let obj = JSON.parse(data.toString())
-                        let actorDetailsDto = new Actor(obj.biography, obj.birthday, obj.deathday, obj.id, obj.name, obj.popularity, obj.profile_path)
+                        let actorDetailsDto = mapper.mapToActor(obj)
                         func(actorDetailsDto)
                     }
                 )
-            }
-        }
-
-        let fn2 = function () {
-            return (func) => {
+		}
+        let fn2 = function (func) {
             	req(pathToMovieParticipations, (err, res, data) => {
                     if (err) return cb(err)
                     let obj = JSON.parse(data.toString())
                     func(obj)
                 })
             }
-        }
 
-        let transfCb = function (actorDetails, obj) {
-            actorDetails.filmography = obj.cast.map(item =>
-                new MovieListItem(item.title, item.id, item.release_date, item.poster_path, item.vote_average)
-            )
-            actorCache.put(actorId,actorDetails)
+
+        let transfCb = function (actorDetails, obj,cb) {
+            actorDetails.filmography = mapper.mapToFilmography(obj.cast)
+            actorCache.put(actorId, actorDetails)
+			cb(null,actorDetails)
         }
 
         let fnArrays = [fn1,fn2]
-        parallelRequests(fnArrays,transfCb,cb)*/
+        parallelRequests(fnArrays,transfCb,cb)
 	}
-/*
+
     function parallelRequests(fnArrays,transformerCb, finalCb) {
         let res = []
-        let index = 0
         fnArrays.forEach(
-            fn => fn()((data)=>{
-                res['index'] = data
-            },index)
+            fn => {
+                fn((data) => {
+                        res.push(data)
+                        if (res.length === fnArrays.length) {
+                            res.push(finalCb)
+                            return transformerCb.apply(this, res)
+                        }
+                    }
+                )
+            }
         )
-        finalCb(null,transformerCb.apply(this,res))
     }
-*/
+
 }
