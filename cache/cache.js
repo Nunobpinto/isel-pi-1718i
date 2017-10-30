@@ -19,3 +19,7 @@ Cache.prototype.has = function(key) {
     return !(this.cache.size === 0 || !this.cache.has(key));
 }
 
+Cache.prototype.count = function () {
+    return this.cache.size
+}
+
