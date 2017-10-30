@@ -1,23 +1,21 @@
 'use strict'
 
-module.exports = {
-	get,
-	put,
-	has,
+module.exports = Cache
+
+
+function Cache() {
+  this.cache =new Map()
 }
 
-let cache = new Map()
-
-function get(key) {
-	return cache.get(key)
+Cache.prototype.get = function (key) {
+    return this.cache.get(key)
 }
 
-function put(key, value) {
-	cache.set(key, value)
+Cache.prototype.put = function(key, value) {
+    this.cache.set(key, value)
 }
 
-function has(key) {
-	if ( cache.size === 0 || !cache.has(key) )
-		return false
-	return true
+Cache.prototype.has = function(key) {
+    return !(this.cache.size === 0 || !this.cache.has(key));
 }
+
