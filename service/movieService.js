@@ -26,15 +26,14 @@ function init(dataSource) {
 
     function getMovieList(name, page, cb) {
         const movieListPath = `https://api.themoviedb.org/3/search/movie?api_key=${apiKey}&query=${encodeURIComponent(name)}&page=${page}`
-        req(movieListPath, (err, res, data) => {
-            console.log('Making a request to ' + movieListPath)
-            if (err) return cb({message: err.message, statusCode: 500})
-            const obj = JSON.parse(data.toString())
-            if (obj.hasOwnProperty('errors'))
-                return cb({message: obj.errors[0], statusCode: res.statusCode})
-            let movieListDto = mapper.mapToMovieList(obj, name)
-            cb(null, movieListDto)
-        })
+        let requests = [generateReqAsJson(movieListPath)]
+
+        let transfCb = function (jsonMovieList, cb) {
+            let movieList = mapper.mapToMovieList(jsonMovieList)
+            cb(null, movieList)
+        }
+
+        executeParallelRequests(requests, transfCb, cb)
     }
 
     function getMovieDetails(movieId, cb) {
@@ -49,8 +48,8 @@ function init(dataSource) {
             cb(null, movie)
         }
 
-        let requests = [generateParallelRequest(movieDetailsPath), generateParallelRequest(movieCreditsPath)]
-        executeRequests(requests, transfCb, cb)
+        let requests = [generateReqAsJson(movieDetailsPath), generateReqAsJson(movieCreditsPath)]
+        executeParallelRequests(requests, transfCb, cb)
     }
 
 
@@ -65,35 +64,35 @@ function init(dataSource) {
             cb(null, actor)
         }
 
-        let requests = [generateParallelRequest(pathToActorPersonalInfo), generateParallelRequest(pathToMovieParticipations)]
-        executeRequests(requests, transfCb, cb)
+        let requests = [generateReqAsJson(pathToActorPersonalInfo), generateReqAsJson(pathToMovieParticipations)]
+        executeParallelRequests(requests, transfCb, cb)
     }
 
-    function executeRequests(requests, processResponses, finalCb) {
-        let responses = []
+    function executeParallelRequests(requests, processResponses, finalCb) {
         let i = 0
+        let responses = []
         requests.forEach(
-            request => {
-                request(
-                    i++,
-                    (respPos, jsonObj) => {
-                        responses[respPos] = jsonObj
-                        if ( responses.length === requests.length && responses.hasNoUndefined() ) {
-                            responses.push(finalCb)
-                            return processResponses.apply(this, responses)
-                        }
-                    }
-                )
-            }
+            request => { request(generateResponseHandler(i++, responses, requests, processResponses, finalCb)) }
         )
     }
 
-    function generateParallelRequest(path) {
-        return function (respIndex, deliverResponse) {
+    function generateResponseHandler(respPos, responses, requests, processResponses, finalCb) {
+        return (err, jsonObj) => {
+            if(err) return finalCb(err)
+            responses[respPos] = jsonObj
+            if ( responses.length === requests.length && responses.hasNoUndefined() ) {
+                responses.push(finalCb)
+                return processResponses.apply(this, responses)
+            }
+        }
+    }
+
+    function generateReqAsJson(path) {
+        return function (deliverResponse) {
             req(path, (err, res, data) => {
                 console.log('Making a request to ' + path)
-                if(err) return deliverResponse(err)
-                deliverResponse(respIndex, JSON.parse(data.toString()))
+                if(err) return deliverResponse({message: err.message, statusCode: 500})
+                deliverResponse(null, JSON.parse(data.toString()))
             })
         }
     }
