@@ -1,6 +1,5 @@
 module.exports = Actor
 
-
 function Actor(biography, birthday, deathday, id, name, popularity, portrait) {
 	this.name = name
 	this.id = id

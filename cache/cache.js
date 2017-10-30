@@ -4,7 +4,7 @@ module.exports = Cache
 
 
 function Cache() {
-  this.cache =new Map()
+  this.cache = new Map()
 }
 
 Cache.prototype.get = function (key) {

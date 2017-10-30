@@ -76,14 +76,12 @@ function isAsset(url) {
 function processAsset(resp, uri) {
     const assetsFolder = __dirname + '/public'
 
-    if(uri.includes('favicon.ico'))
-        return setResponseFile(resp, assetsFolder + '/favicon.ico', contentType.ico)
+    if(uri.includes('/favicon.ico'))
+        return setResponseFile(resp, assetsFolder + uri, contentType.ico)
 
 	if(uri.includes('/css/'))
 		return setResponseFile(resp, assetsFolder + uri, contentType.css)
 
-    const parts = uri.split('/')
-    const file = parts[parts.length - 1]
     return setResponseFile(resp, assetsFolder + uri, contentType.jpg)
 }
 

@@ -96,17 +96,17 @@ function init(dataSource) {
     }
 
     function generateReqAsJson(path) {
-        return function (deliverResponse) {
-            reqAsJson(path, deliverResponse)
+        return function (responseCallback) {
+            reqAsJson(path, responseCallback)
         }
     }
 
-    function reqAsJson(path, deliverResponse) {
+    function reqAsJson(path, responseCallback) {
         req(path, (err, res, data) => {
             console.log('Making a request to ' + path)
-            if (err) return deliverResponse({message: err.message, statusCode: 500})
+            if (err) return responseCallback({message: err.message, statusCode: 500})
             const obj = JSON.parse(data.toString())
-            deliverResponse(null, obj)
+            responseCallback(null, obj)
         })
     }
 }
