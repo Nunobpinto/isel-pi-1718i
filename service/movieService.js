@@ -23,8 +23,12 @@ function init(dataSource) {
     return services
 
     function getMovieList(name, page, cb) {
+        if(name === '') return cb()
         const movieListPath = `https://api.themoviedb.org/3/search/movie?api_key=${apiKey}&query=${encodeURIComponent(name)}&page=${page}`
         let transfCb = function (jsonMovieList, cb) {
+            if(jsonMovieList.hasOwnProperty('errors')){
+                return cb({message: 'No page', statusCode: 404})
+            }
             let movieList = mapper.mapToMovieList(jsonMovieList,name)
             cb(null, movieList)
         }
@@ -39,6 +43,9 @@ function init(dataSource) {
         const movieCreditsPath = `https://api.themoviedb.org/3/movie/${movieId}/credits?api_key=${apiKey}`
 
         let transfCb = function (movieDetails, movieCredits, cb) {
+            if(movieDetails.hasOwnProperty('status_code') && movieCredits.hasOwnProperty('status_message')){
+                return cb({message: 'Resource Not Found', statusCode: 404})
+            }
             let movie = mapper.mapToMovie(movieDetails)
             movie.directors = mapper.mapToDirector(movieCredits.crew)
             movie.cast = mapper.mapToCastMember(movieCredits.cast)
@@ -55,6 +62,9 @@ function init(dataSource) {
         const pathToMovieParticipations = `https://api.themoviedb.org/3/person/${actorId}/movie_credits?api_key=${apiKey}`
 
         let transfCb = function (actorDetails, actorFilmography, cb) {
+            if(actorDetails.hasOwnProperty('status_code') && actorDetails.hasOwnProperty('status_message')){
+                return cb({message: 'Resource Not Found', statusCode: 404})
+            }
             let actor = mapper.mapToActor(actorDetails)
             actor.filmography = mapper.mapToFilmography(actorFilmography.cast)
             cb(null, actor)
