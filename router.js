@@ -9,7 +9,6 @@ module.exports = router
 
 const contentType = {
     html: "text/html",
-    json: "application/json",
     css: "text/css",
     ico: "image/vnd.microsoft.icon",
     jpg: "image/jpg"
