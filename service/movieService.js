@@ -1,8 +1,6 @@
 'use strict'
 
 const fs = require('fs')
-const actorCache = require('../cache/cache')
-const movieCache = require('../cache/cache')
 const memoize = require('../cache/memoize')
 const mapper = require('../service/mapper')
 
@@ -19,8 +17,8 @@ function init(dataSource) {
 
     const services = {
         getMovieList,
-        'getMovieDetails': memoize(getMovieDetails, movieCache),
-        'getActorDetails': memoize(getActorDetails, actorCache)
+        'getMovieDetails': memoize(getMovieDetails),
+        'getActorDetails': memoize(getActorDetails)
     }
     return services
 
@@ -44,7 +42,6 @@ function init(dataSource) {
             let movie = mapper.mapToMovie(movieDetails)
             movie.directors = mapper.mapToDirector(movieCredits.crew)
             movie.cast = mapper.mapToCastMember(movieCredits.cast)
-            movieCache.put(movieId, movie)
             cb(null, movie)
         }
 
@@ -60,7 +57,6 @@ function init(dataSource) {
         let transfCb = function (actorDetails, actorFilmography, cb) {
             let actor = mapper.mapToActor(actorDetails)
             actor.filmography = mapper.mapToFilmography(actorFilmography.cast)
-            actorCache.put(actorId, actor)
             cb(null, actor)
         }
 
