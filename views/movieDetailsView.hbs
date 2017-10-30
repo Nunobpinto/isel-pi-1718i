@@ -7,7 +7,7 @@
             {{#if poster}}
                 <img id="imgWidth" src='http://image.tmdb.org/t/p/w185/{{poster}}'/>
             {{else}}
-                <img id="imgWidth" src='.././public/img/defaultPoster.jpg'/>
+                <img id="imgWidth" src='/img/defaultPoster.jpg'/>
             {{/if}}
         </div>
         <div class="col">
@@ -16,7 +16,7 @@
                     <p id="pfont-size" class="lead"><strong>{{originalTitle}}</strong> ({{releaseDate}})</p>
                 </div>
                 <div id="divColmax-width" class="col">
-                    <img id="starWidth" src='https://i.pinimg.com/originals/7e/28/89/7e288947c2c179f39398a72fdad19e0c.jpg'>
+                    <img id="starWidth" src='/img/ratingStar.jpg'/>
                     <p>{{voteAverage}}<sub>/10</sub></p>
                 </div>
             </div>
@@ -40,7 +40,7 @@
                         <img class="card-img-top" src='http://image.tmdb.org/t/p/w185/{{portrait}}'/>
                     {{else}}
                         <img class="card-img-top"
-                             src='.././public/img/defaultAvatar.jpg'>
+                             src='/img/defaultAvatar.jpg'>
                     {{/if }}
                     <div class="card-body">
                         <h4 class="card-title">{{name}}</h4>
@@ -64,7 +64,7 @@
                             <img class="card-img-top" src='http://image.tmdb.org/t/p/w185/{{portrait}}'>
                         {{else}}
                             <img class="card-img-top"
-                                 src='.././public/img/defaultAvatar.jpg'>
+                                 src='/img/defaultAvatar.jpg'>
                         {{/if}}
                     </a>
                     <div class="card-body">

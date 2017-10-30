@@ -79,9 +79,12 @@ function processAsset(resp, uri) {
     if(uri.includes('favicon.ico'))
         return setResponseFile(resp, assetsFolder + '/favicon.ico', contentType.ico)
 
+	if(uri.includes('/css/'))
+		return setResponseFile(resp, assetsFolder + uri, contentType.css)
+
     const parts = uri.split('/')
     const file = parts[parts.length - 1]
-    return setResponseFile(resp, assetsFolder + '/img/' + file, contentType.jpg)
+    return setResponseFile(resp, assetsFolder + uri, contentType.jpg)
 }
 
 function setResponseFile(response, filepath, MIMEType) {
