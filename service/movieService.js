@@ -24,14 +24,14 @@ function init(dataSource) {
 
     function getMovieList(name, page, cb) {
         const movieListPath = `https://api.themoviedb.org/3/search/movie?api_key=${apiKey}&query=${encodeURIComponent(name)}&page=${page}`
-        let requests = [generateReqAsJson(movieListPath)]
-
         let transfCb = function (jsonMovieList, cb) {
-            let movieList = mapper.mapToMovieList(jsonMovieList)
+            let movieList = mapper.mapToMovieList(jsonMovieList,name)
             cb(null, movieList)
         }
-
-        executeParallelRequests(requests, transfCb, cb)
+        reqAsJson(movieListPath,(err,data)=>{
+            if(err) return cb(err)
+            transfCb(data,cb)
+        })
     }
 
     function getMovieDetails(movieId, cb) {
@@ -68,15 +68,17 @@ function init(dataSource) {
         let i = 0
         let responses = []
         requests.forEach(
-            request => { request(generateResponseHandler(i++, responses, requests, processResponses, finalCb)) }
+            request => {
+                request(generateResponseHandler(i++, responses, requests, processResponses, finalCb))
+            }
         )
     }
 
     function generateResponseHandler(respPos, responses, requests, processResponses, finalCb) {
         return (err, jsonObj) => {
-            if(err) return finalCb(err)
+            if (err) return finalCb(err)
             responses[respPos] = jsonObj
-            if ( responses.length === requests.length && responses.hasNoUndefined() ) {
+            if (responses.length === requests.length && responses.hasNoUndefined()) {
                 responses.push(finalCb)
                 return processResponses.apply(this, responses)
             }
@@ -85,19 +87,23 @@ function init(dataSource) {
 
     function generateReqAsJson(path) {
         return function (deliverResponse) {
-            req(path, (err, res, data) => {
-                console.log('Making a request to ' + path)
-                if(err) return deliverResponse({message: err.message, statusCode: 500})
-                deliverResponse(null, JSON.parse(data.toString()))
-            })
+            reqAsJson(path, deliverResponse)
         }
     }
 
+    function reqAsJson(path, deliverResponse) {
+        req(path, (err, res, data) => {
+            console.log('Making a request to ' + path)
+            if (err) return deliverResponse({message: err.message, statusCode: 500})
+            const obj = JSON.parse(data.toString())
+            deliverResponse(null, obj)
+        })
+    }
 }
 
 Array.prototype.hasNoUndefined = function () {
-    for(let i = 0; i < this.length; ++i) {
-        if ( this[i] === undefined )
+    for (let i = 0; i < this.length; ++i) {
+        if (this[i] === undefined)
             return false
     }
     return true
