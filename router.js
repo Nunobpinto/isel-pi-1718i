@@ -60,8 +60,9 @@ function setErrorResponse(resp, err) {
 
 function isAsset(url) {
     const assets = [
-        /\/public\/img\/(defaultAvatar|defaultPoster).jpg/,
-        /\/public\/favicon.ico/
+    	/\/css\/.*\.css$/,
+        /\/img\/.*\.jpg$/,
+        /\/favicon.ico/
     ]
 
     let decision = false
