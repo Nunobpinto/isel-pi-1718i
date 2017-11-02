@@ -23,19 +23,15 @@ function init(dataSource) {
     return services
 
     function getMovieList(name, page, cb) {
-        if(name === '')
+        if (name === '')
             return cb({message: 'Query must be provided', statusCode: 404})
         const movieListPath = `https://api.themoviedb.org/3/search/movie?api_key=${apiKey}&query=${encodeURIComponent(name)}&page=${page}`
-        let transfCb = function (jsonMovieList, cb) {
-            if(jsonMovieList.hasOwnProperty('errors')){
-                return cb({message: 'No page', statusCode: 404})
-            }
-            let movieList = mapper.mapToMovieList(jsonMovieList,name)
+        req(movieListPath, (err, res, data) => {
+            console.log('Making a request to ' + movieListPath)
+            if (err) return cb({message: err.message, statusCode: 500})
+            const obj = JSON.parse(data.toString())
+            let movieList = mapper.mapToMovieList(obj, name)
             cb(null, movieList)
-        }
-        reqAsJson(movieListPath,(err,data)=>{
-            if(err) return cb(err)
-            transfCb(data,cb)
         })
     }
 
@@ -43,18 +39,34 @@ function init(dataSource) {
         const movieDetailsPath = `https://api.themoviedb.org/3/movie/${movieId}?api_key=${apiKey}`
         const movieCreditsPath = `https://api.themoviedb.org/3/movie/${movieId}/credits?api_key=${apiKey}`
 
-        let transfCb = function (movieDetails, movieCredits, cb) {
-            if(movieDetails.hasOwnProperty('status_code') && movieCredits.hasOwnProperty('status_message')){
-                return cb({message: 'Page Not Found', statusCode: 404})
-            }
-            let movie = mapper.mapToMovie(movieDetails)
-            movie.directors = mapper.mapToDirector(movieCredits.crew)
-            movie.cast = mapper.mapToCastMember(movieCredits.cast)
+        let processResponses = function (err, results) {
+            if (err)
+                return cb(err)
+            let movie = mapper.mapToMovie(results[0])
+            movie.directors = mapper.mapToDirector(results[1].crew)
+            movie.cast = mapper.mapToCastMember(results[1].cast)
             cb(null, movie)
         }
 
-        let requests = [generateReqAsJson(movieDetailsPath), generateReqAsJson(movieCreditsPath)]
-        executeParallelRequests(requests, transfCb, cb)
+        let requests = [
+            function (callback) {
+                req(movieDetailsPath, (err, res, data) => {
+                    console.log('Making a request to ' + movieDetailsPath)
+                    if (err) return callback({message: err.message, statusCode: 500})
+                    const obj = JSON.parse(data.toString())
+                    callback(null, obj)
+                })
+            },
+            function (callback) {
+                req(movieCreditsPath, (err, res, data) => {
+                    console.log('Making a request to ' + movieCreditsPath)
+                    if (err) return callback({message: err.message, statusCode: 500})
+                    const obj = JSON.parse(data.toString())
+                    callback(null, obj)
+                })
+            }
+        ]
+        parallel(requests, processResponses)
     }
 
 
@@ -62,52 +74,46 @@ function init(dataSource) {
         const pathToActorPersonalInfo = `https://api.themoviedb.org/3/person/${actorId}?api_key=${apiKey}`
         const pathToMovieParticipations = `https://api.themoviedb.org/3/person/${actorId}/movie_credits?api_key=${apiKey}`
 
-        let transfCb = function (actorDetails, actorFilmography, cb) {
-            if(actorDetails.hasOwnProperty('errors') || actorFilmography.hasOwnProperty('errors')){
-                return cb({message: 'Resource Not Found', statusCode: 404})
-            }
-            let actor = mapper.mapToActor(actorDetails)
-            actor.filmography = mapper.mapToFilmography(actorFilmography.cast)
+        let processResponses = function (err, results) {
+            if (err)
+                return cb(err)
+            let actor = mapper.mapToActor(results[0])
+            actor.filmography = mapper.mapToFilmography(results[1].cast)
             cb(null, actor)
         }
 
-        let requests = [generateReqAsJson(pathToActorPersonalInfo), generateReqAsJson(pathToMovieParticipations)]
-        executeParallelRequests(requests, transfCb, cb)
+        let tasks = [
+            function (callback) {
+                req(pathToActorPersonalInfo, (err, res, data) => {
+                    console.log('Making a request to ' + pathToActorPersonalInfo)
+                    if (err) return callback({message: err.message, statusCode: 500})
+                    const obj = JSON.parse(data.toString())
+                    callback(null, obj)
+                })
+            },
+            function (callback) {
+                req(pathToMovieParticipations, (err, res, data) => {
+                    console.log('Making a request to ' + pathToMovieParticipations)
+                    if (err) return callback({message: err.message, statusCode: 500})
+                    const obj = JSON.parse(data.toString())
+                    callback(null, obj)
+                })
+            }
+        ]
+        parallel(tasks, processResponses)
     }
 
-    function executeParallelRequests(requests, processResponses, finalCb) {
-        let i = 0
+    function parallel(tasks, processResponses) {
         let responses = []
-        requests.forEach(
-            request => {
-                request(generateResponseHandler(i++, responses, requests, processResponses, finalCb))
-            }
-        )
-    }
-
-    function generateResponseHandler(respPos, responses, requests, processResponses, finalCb) {
-        return (err, jsonObj) => {
-            if (err) return finalCb(err)
-            responses[respPos] = jsonObj
-            if (responses.length === requests.length && responses.hasNoUndefined()) {
-                responses.push(finalCb)
-                return processResponses.apply(this, responses)
-            }
-        }
-    }
-
-    function generateReqAsJson(path) {
-        return function (responseCallback) {
-            reqAsJson(path, responseCallback)
-        }
-    }
-
-    function reqAsJson(path, responseCallback) {
-        req(path, (err, res, data) => {
-            console.log('Making a request to ' + path)
-            if (err) return responseCallback({message: err.message, statusCode: 500})
-            const obj = JSON.parse(data.toString())
-            responseCallback(null, obj)
+        tasks.forEach((request, i) => {
+            request((err, data) => {
+                if (err)
+                    return processResponses(err)
+                responses[i] = data
+                if (responses.length === tasks.length && responses.hasNoUndefined()) {
+                    processResponses(null, responses)
+                }
+            })
         })
     }
 }
