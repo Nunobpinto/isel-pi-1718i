@@ -49,7 +49,7 @@ function setResponseNotFound(resp) {
 }
 
 function setErrorResponse(resp, err) {
-	render('error', {title: 'An error occurred!!!', message: err.message, statusCode: err.statusCode}, (Viewerr, view) => {
+	render('error', {message: err.message, statusCode: err.statusCode}, (Viewerr, view) => {
 		if(Viewerr)
 			return Viewerr
 		resp.statusCode = err.statusCode

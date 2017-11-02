@@ -1,11 +1,11 @@
 'use strict'
 
-const Actor = require('../domain/Actor')
-const CastMember = require('../domain/CastMember')
-const Director = require('../domain/Director')
-const Movie = require('../domain/Movie')
-const MovieListItem = require('../domain/MovieListItem')
-const MovieList = require('../domain/MovieList')
+const Actor = require('../model/Actor')
+const CastMember = require('../model/CastMember')
+const Director = require('../model/Director')
+const Movie = require('../model/Movie')
+const MovieListItem = require('../model/MovieListItem')
+const MovieList = require('../model/MovieList')
 
 module.exports = {
 	mapToActor,

@@ -23,14 +23,11 @@ function init(dataSource) {
     return services
 
     function getMovieList(name, page, cb) {
-        if (name === '')
-            return cb({message: 'Query must be provided', statusCode: 404})
         const movieListPath = `https://api.themoviedb.org/3/search/movie?api_key=${apiKey}&query=${encodeURIComponent(name)}&page=${page}`
-        req(movieListPath, (err, res, data) => {
-            console.log('Making a request to ' + movieListPath)
-            if (err) return cb({message: err.message, statusCode: 500})
-            const obj = JSON.parse(data.toString())
-            let movieList = mapper.mapToMovieList(obj, name)
+
+        reqAsJson(movieListPath, (err,data)=>{
+            if(err) return cb(err)
+            let movieList = mapper.mapToMovieList(data, name)
             cb(null, movieList)
         })
     }
@@ -40,34 +37,24 @@ function init(dataSource) {
         const movieCreditsPath = `https://api.themoviedb.org/3/movie/${movieId}/credits?api_key=${apiKey}`
 
         let processResponses = function (err, results) {
-            if (err)
-                return cb(err)
+            if (err) return cb(err)
             let movie = mapper.mapToMovie(results[0])
             movie.directors = mapper.mapToDirector(results[1].crew)
             movie.cast = mapper.mapToCastMember(results[1].cast)
             cb(null, movie)
         }
 
-        let requests = [
+        let tasks = [
             function (callback) {
-                req(movieDetailsPath, (err, res, data) => {
-                    console.log('Making a request to ' + movieDetailsPath)
-                    if (err) return callback({message: err.message, statusCode: 500})
-                    const obj = JSON.parse(data.toString())
-                    callback(null, obj)
-                })
+                reqAsJson(movieDetailsPath, callback)
             },
             function (callback) {
-                req(movieCreditsPath, (err, res, data) => {
-                    console.log('Making a request to ' + movieCreditsPath)
-                    if (err) return callback({message: err.message, statusCode: 500})
-                    const obj = JSON.parse(data.toString())
-                    callback(null, obj)
-                })
+                reqAsJson(movieCreditsPath, callback)
             }
         ]
-        parallel(requests, processResponses)
+        parallel(tasks, processResponses)
     }
+
 
 
     function getActorDetails(actorId, cb) {
@@ -75,8 +62,7 @@ function init(dataSource) {
         const pathToMovieParticipations = `https://api.themoviedb.org/3/person/${actorId}/movie_credits?api_key=${apiKey}`
 
         let processResponses = function (err, results) {
-            if (err)
-                return cb(err)
+            if (err) return cb(err)
             let actor = mapper.mapToActor(results[0])
             actor.filmography = mapper.mapToFilmography(results[1].cast)
             cb(null, actor)
@@ -84,44 +70,42 @@ function init(dataSource) {
 
         let tasks = [
             function (callback) {
-                req(pathToActorPersonalInfo, (err, res, data) => {
-                    console.log('Making a request to ' + pathToActorPersonalInfo)
-                    if (err) return callback({message: err.message, statusCode: 500})
-                    const obj = JSON.parse(data.toString())
-                    callback(null, obj)
-                })
+                reqAsJson(pathToActorPersonalInfo, callback)
             },
             function (callback) {
-                req(pathToMovieParticipations, (err, res, data) => {
-                    console.log('Making a request to ' + pathToMovieParticipations)
-                    if (err) return callback({message: err.message, statusCode: 500})
-                    const obj = JSON.parse(data.toString())
-                    callback(null, obj)
-                })
+                reqAsJson(pathToMovieParticipations, callback)
             }
         ]
         parallel(tasks, processResponses)
     }
 
-    function parallel(tasks, processResponses) {
+    function parallel(tasks, callback) {
         let responses = []
+        let errOccured = false
+        let tasksFulfilled = 0
         tasks.forEach((request, i) => {
             request((err, data) => {
-                if (err)
-                    return processResponses(err)
+                if (errOccured) return
+                if (err) {
+                    errOccured = true
+                    return callback(err)
+                }
                 responses[i] = data
-                if (responses.length === tasks.length && responses.hasNoUndefined()) {
-                    processResponses(null, responses)
+                ++tasksFulfilled
+                if ( responses.length === tasks.length && tasksFulfilled === tasks.length ) {
+                    callback(null, responses)
                 }
             })
         })
     }
-}
 
-Array.prototype.hasNoUndefined = function () {
-    for (let i = 0; i < this.length; ++i) {
-        if (this[i] === undefined)
-            return false
+    function reqAsJson(path, callback) {
+        req(path, (err, res, data) => {
+            console.log('Making a request to ' + path)
+            if ( err || res.statusCode !== 200 )
+                return callback( { message: 'Something broke!', statusCode: (res ? res.statusCode : 500) } )
+            const obj = JSON.parse(data.toString())
+            callback(null, obj)
+        })
     }
-    return true
 }
