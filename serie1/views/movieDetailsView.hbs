@@ -1,0 +1,83 @@
+{{> base }}
+{{>navBar}}
+
+<div class="container pt-3">
+    <div class="row">
+        <div id="divColmax-width" class="col">
+            {{#if poster}}
+                <img id="imgWidth" src='http://image.tmdb.org/t/p/w185/{{poster}}'/>
+            {{else}}
+                <img id="imgWidth" src='/img/defaultPoster.jpg'/>
+            {{/if}}
+        </div>
+        <div class="col">
+            <div class="row">
+                <div id="movieTitlepadding" class="col">
+                    <p id="pfont-size" class="lead"><strong>{{originalTitle}}</strong> ({{releaseDate}})</p>
+                </div>
+                <div id="divColmax-width" class="col">
+                    <img id="starWidth" src='/img/ratingStar.jpg'/>
+                    <p>{{voteAverage}}<sub>/10</sub></p>
+                </div>
+            </div>
+            <div class="row">
+                <p class="lead">{{genres}}</p>
+            </div>
+            <div class="row">
+                <p><em>{{overview}}</em></p>
+            </div>
+        </div>
+    </div>
+    <hr>
+</div>
+
+<div class="container mt-5 pt-5">
+    <div class="row">
+        {{#each directors}}
+            <div class="col">
+                <div id="divCard" class="card mb-2 text-center">
+                    {{#if portrait}}
+                        <img class="card-img-top" src='http://image.tmdb.org/t/p/w185/{{portrait}}'/>
+                    {{else}}
+                        <img class="card-img-top"
+                             src='/img/defaultAvatar.jpg'>
+                    {{/if }}
+                    <div class="card-body">
+                        <h4 class="card-title">{{name}}</h4>
+                        <ul class="list-group list-group-flush">
+                            <li class="list-group-item">Director</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        {{/each}}
+    </div>
+    <div class="row">
+        <p id="pCast" class="lead"><strong>Cast:</strong></p>
+    </div>
+    <div class="row">
+        {{#each cast}}
+            <div class="col-3">
+                <div id="divCard" class="card mb-2 text-center">
+                    <a href="/actors/{{id}}">
+                        {{#if portrait}}
+                            <img class="card-img-top" src='http://image.tmdb.org/t/p/w185/{{portrait}}'>
+                        {{else}}
+                            <img class="card-img-top"
+                                 src='/img/defaultAvatar.jpg'>
+                        {{/if}}
+                    </a>
+                    <div class="card-body">
+                        <a href="/actors/{{id}}">
+                            <h4 class="card-title">{{name}}</h4>
+                        </a>
+                    </div>
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item">Character: {{character}}</li>
+                    </ul>
+                </div>
+            </div>
+        {{/each}}
+    </div>
+</div>
+{{> footer }}

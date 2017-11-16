@@ -1,0 +1,72 @@
+#themeTitle{
+    color:orange;
+    padding-top: 2rem;
+}
+
+#themeColor{
+    color:orange;
+}
+
+#divnavBar{
+    max-width:none;
+    padding-left:0;
+    padding-right:0;
+}
+
+#divJumboTron{
+    background-color:black;
+    padding-top: 0;
+}
+
+#divCard{
+    width:15rem;
+    margin-right: auto;
+    margin-left: auto
+}
+
+#divColmax-width{
+    max-width: fit-content
+}
+
+#pfont-size{
+    font-size:xx-large;
+    padding-top: 0;
+}
+
+#imgWidth {
+    width: 350px
+}
+
+#starWidth{
+    width: 30px
+}
+
+#movieTitlepadding{
+    padding-left: 0;
+}
+
+#pFilmography{
+    margin-left: 1.75rem;
+    margin-top: 5rem;
+    margin-bottom: 5px;
+    font-size:xx-large;
+}
+
+#pCast{
+    margin-top: 5rem;
+    margin-bottom: 20px;
+    margin-left: 1.75rem;
+    font-size:xx-large;
+}
+
+#marginPagination{
+    margin-left: 28rem;
+}
+
+#mBottomList{
+    margin-bottom: 2rem;
+}
+
+#txtAlignCenter{
+    text-align: center
+}

@@ -1,0 +1,23 @@
+{{> base }}
+        <div id="divJumboTron" class="jumbotron jumbotron-fluid">
+            <div class="container">
+                <h1 id="themeTitle" class="display-3"><span class="fa fa-film"></span>COIMA</h1>
+                <p id="themeColor" class="lead">This is where you can search for your favorite movies and see the details of various actors. </p>
+            </div>
+        </div>
+
+        <div class="container">
+            <form method="get" action="/search">
+                <div class="row">
+                    <div class="col">
+                            <div class="input-group">
+                                <input name="name" type="text" class="form-control" placeholder="Insert Movie Name..." required>
+                                <input name="page" type="hidden" value = "1">
+                                        <button class="btn btn-outline-warning" type="submit">Search</button>
+                            </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+{{> footer }}
