@@ -11,6 +11,9 @@ const index = require('./routes/index')
 const movies = require('./routes/movies')
 const actors = require('./routes/actors')
 const users = require('./routes/users')
+const auth = require('./routes/auth')
+const logout = require('./routes/logout')
+
 const configurehbs = require('./service/viewService')
 
 const app = express()
@@ -25,8 +28,13 @@ app.use(bodyParser.urlencoded({ extended: false }))
 app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')))
 app.use(express.static(path.join(__dirname, 'public')))
 app.use(cookieParser())
+app.use(session({secret: 'keyboard cat', resave: false, saveUninitialized: true }))
+app.use(passport.initialize())
+app.use(passport.session()) // Obtem da sessão user id -> deserialize(id) -> user -> req.user
 
 app.use('/', index)
+app.use('/auth',auth)
+app.use('/logout',logout)
 app.use('/movie', movies)
 app.use('/actor', actors)
 app.use('/users', users)
