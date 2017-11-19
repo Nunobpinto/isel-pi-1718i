@@ -4,7 +4,7 @@ const fs = require('fs')
 const memoize = require('../cache/memoize')
 const mapper = require('../service/mapper')
 
-const apiKey = fs.readFileSync('../apikey.txt').toString()
+const apiKey = fs.readFileSync('apikey.txt').toString()
 
 module.exports = init
 

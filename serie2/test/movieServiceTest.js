@@ -1,7 +1,6 @@
 'use strict'
 
 const fs = require('fs')
-const apiKey = fs.readFileSync('apikey.txt').toString()
 
 const endPoints = {
 	'https://api.themoviedb.org/3/search/movie?api_key=98deea9e9512d3124b9fe528f476c51d&query=war%20games&page=1':
@@ -21,7 +20,9 @@ const movie = require('../service/movieService')(reqToFile)
 function reqToFile(path, cb) {
 	const data = endPoints[path]
 	if(!data) return cb(new Error('No mock file for path ' + path))
-	cb(null,null,data)
+	cb(null,{
+		statusCode : 200
+	},data)
 }
 
 module.exports = {
