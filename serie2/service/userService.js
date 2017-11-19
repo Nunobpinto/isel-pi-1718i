@@ -5,7 +5,7 @@ const fs = require('fs')
 /**
  * Array of User objects
  */
-const dbUsers = require('../data/usersDb.json')
+const dbUsers = require('../data/userDb.json')
 
 module.exports = {
 	'find': find,

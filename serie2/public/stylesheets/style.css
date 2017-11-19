@@ -70,3 +70,11 @@
 #txtAlignCenter{
     text-align: center
 }
+
+#divhomeNavbar{
+    margin-left: auto
+}
+
+#marginTopLogin{
+    margin-top: 2rem
+}
