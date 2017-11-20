@@ -1,0 +1,21 @@
+<h1 id="txtAlignCenter" class="lead">My Lists</h1>
+<table class="table card">
+    {{#each lists}}
+        <tr>
+            <th>
+                {{name}}
+                {{#if user}}
+                    <a class="btn btn-outline-warning" href="#" role="button"><span
+                            class="fa fa-film"></span></a></a>
+                {{else}}
+                    <a class="btn btn-warning btn-circle" href="/auth/login" role="button"><span class="fa fa-film"></span></a>
+                {{/if}}
+            </th>
+            <td>
+                <a href="/movies/{{id}}">
+                    {{originalTitle}}
+                </a>
+            </td>
+        </tr>
+    {{/each}}
+</table>
