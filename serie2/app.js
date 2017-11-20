@@ -12,16 +12,15 @@ const movies = require('./routes/movies')
 const actors = require('./routes/actors')
 const users = require('./routes/users')
 const auth = require('./routes/auth')
-const logout = require('./routes/logout')
 
-const configurehbs = require('./service/viewService')
+const configureHbs = require('./service/viewService')
 
 const app = express()
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'))
 app.set('view engine', 'hbs')
-configurehbs(hbs)
+configureHbs(hbs)
 
 // uncomment after placing your favicon in /public
 app.use(bodyParser.urlencoded({ extended: false }))
@@ -30,13 +29,18 @@ app.use(express.static(path.join(__dirname, 'public')))
 app.use(cookieParser())
 app.use(session({secret: 'keyboard cat', resave: false, saveUninitialized: true }))
 app.use(passport.initialize())
-app.use(passport.session()) // Obtem da sessão user id -> deserialize(id) -> user -> req.user
+app.use(passport.session())
+
+app.use((req, res, next) => {
+    if(req.user)
+        res.locals.user = req.user
+    next()
+})
 
 app.use('/', index)
 app.use('/auth',auth)
-app.use('/logout',logout)
-app.use('/movie', movies)
-app.use('/actor', actors)
+app.use('/movies', movies)
+app.use('/actors', actors)
 app.use('/users', users)
 
 // catch 404 and forward to error handler

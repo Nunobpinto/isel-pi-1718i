@@ -5,11 +5,11 @@ const router = app.Router()
 const userService = require('../service/userService')
 const passport = require('passport')
 
-router.get('/login',function (req, res, next) {
-	res.render('login')
+router.get('/signin',function (req, res) {
+	res.render('signin')
 })
 
-router.post('/login', function (req, res, next) {
+router.post('/signin', function (req, res, next) {
 	userService.authenticate(req.body.username, req.body.password, (err, user, info) => {
 		if(err) return next(err)
 		if(info) return next(new Error(info))
@@ -20,26 +20,24 @@ router.post('/login', function (req, res, next) {
 	})
 })
 
-router.get('/signup', function (req, res, next) {
-	res.render('signup')
+router.get('/register', function (req, res) {
+	res.render('register')
 })
 
-router.post('/signup', function (req, res, next) {
-	userService.register(req.body.username, req.body.password, (err, user, info) => {
+router.post('/register', function (req, res, next) {
+	userService.register(req.body.username, req.body.password, req.body.email, (err, user, info) => {
 		if(err) return next(err)
 		if(info) return next(new Error(info))
 		req.logIn(user, (err) => {
 			if(err) return next(err)
-			res.redirect('/leagues')
+			res.redirect('/home')
 		})
 	})
-	res.redirect('/home')
 })
 
-router.use((req, res, next) => {
-	if(req.user) res.locals.favourites = req.user.lists
-	else res.locals.favourites = []
-	next()
+router.get('/signout',function (req, res) {
+	req.logout()
+	res.redirect('/home')
 })
 
 passport.serializeUser(function(user, cb) {

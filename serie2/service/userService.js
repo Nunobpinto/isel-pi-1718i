@@ -1,36 +1,37 @@
 'use strict'
 
-
 const fs = require('fs')
-/**
- * Array of User objects
- */
+
 const dbUsers = require('../data/userDb.json')
+const User = require('../model/User')
 
 module.exports = {
-	'find': find,
-	'authenticate': authenticate,
-	'save': save
+	authenticate,
+	register,
+	find
 }
 
 function find(username, cb) {
-	const user = dbUsers.find(item => item.username == username)
+	const user = dbUsers.find(item => item.username === username)
 	cb(null, user)
 }
 
-/**
- * @param String username
- * @param String passwd
- * @param Function cb callback (err, user, info) => void. If user exists
- * but credentials fail then calls cb with undefined user and an info message.
- */
+function register(username, passwd, email, cb) {
+	if( dbUsers.some(user => user.username === username) )
+		return cb(null, null, `Username "${username}" was already taken!`)
+	const user = new User(username, passwd, email)
+	dbUsers.push(user)
+	save()
+	cb(null, user)
+}
+
 function authenticate(username, passwd, cb) {
-	const user = dbUsers.find(item => item.username == username)
-	if(!user) return cb(null, null, `User ${username} does not exists`)
-	if(passwd != user.password) return cb(null, null, 'Invalid password')
+	const user = dbUsers.find(item => item.username === username)
+	if(!user) return cb(null, null, `User ${username} does not exist`)
+	if(passwd !== user.password) return cb(null, null, 'Invalid password')
 	cb(null, user)
 }
 
 function save() {
-	fs.writeFile('./data/usersDb.json', JSON.stringify(dbUsers))
+	fs.writeFile('./data/userDb.json', JSON.stringify(dbUsers))
 }
