@@ -3,7 +3,20 @@
     "username": "zemanel",
     "password": "123",
     "fullname": "Manel Maria",
-    "lists": []
+    "lists": [
+      {
+        "id": 1,
+        "name": "Watchlist",
+        "description": "Movies I want to watch",
+        "items": []
+      },
+      {
+        "id": 2,
+        "name": "Seen",
+        "description": "Movies I've seen",
+        "items": []
+      }
+    ]
   },
   {
     "username": "maria",
