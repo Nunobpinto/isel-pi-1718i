@@ -2,9 +2,9 @@
 
 module.exports = User
 
-function User(username, password, email) {
+function User(username, password, fullName) {
 	this.username = username
 	this.password = password
-	this.email = email
+	this.fullName = fullName
 	this.lists = []
 }
