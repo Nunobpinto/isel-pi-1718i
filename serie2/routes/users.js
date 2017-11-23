@@ -5,16 +5,15 @@ const userService = require('../service/userService')()
 
 /* GET users listing. */
 router.get('/:userName', function(req, res, next) {
-	//TODO: display user profile
-	res.send('respond with a resource')
+	res.render('userInfo')
 })
 
-router.get('/:userName/lists', function(req, res, next) {
-	//TODO: display all lists
-})
+// router.get('/:userName/lists', function(req, res, next) {
+//     res.render('userLists')
+// })
 
 router.get('/:userName/lists/new', function(req, res, next) {
-	//TODO: display new list form
+	res.render('createNewList')
 })
 
 router.post('/:userName/lists/new', function(req, res, next) {
@@ -27,7 +26,7 @@ router.post('/:userName/lists/new', function(req, res, next) {
 })
 
 router.get('/:userName/lists/:listId', function(req, res, next) {
-	//TODO: display a list
+	res.render('userSpecificList')
 })
 
 router.post('/:userName/lists/:listId', function(req, res, next) {
