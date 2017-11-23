@@ -76,12 +76,33 @@
     text-align: center
 }
 
-#authSectionNavbar{
+#marginLeft{
     margin-left: auto
 }
 
-#marginTopLogin{
+#buttonAddList{
+    margin-left: auto;
+    display : table;
+}
+
+#marginTop{
     margin-top: 2rem
+}
+
+#userjbtron{
+    padding-top: 0;
+}
+
+#cardUserListswidth{
+    width: 10rem;
+}
+
+#paddingBottom{
+    padding-bottom: 30px
+}
+
+.card-title:hover {
+  text-decoration: none;
 }
 
 .btn-circle {
@@ -93,3 +114,4 @@
     line-height: 1.428571429;
     border-radius: 15px;
 }
+
