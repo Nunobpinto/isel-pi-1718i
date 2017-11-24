@@ -25,7 +25,7 @@ router.get('/register', function (req, res) {
 })
 
 router.post('/register', function (req, res, next) {
-	userService.register(req.body.username, req.body.password, req.body.email, (err, user, info) => {
+	userService.register(req.body.username, req.body.password, req.body.fullName, req.body.email, (err, user, info) => {
 		if(err) return next(err)
 		if(info) return next(new Error(info))
 		req.logIn(user, (err) => {

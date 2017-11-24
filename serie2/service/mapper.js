@@ -6,6 +6,8 @@ const Director = require('../model/Director')
 const Movie = require('../model/Movie')
 const MovieListItem = require('../model/MovieListItem')
 const MovieList = require('../model/MovieList')
+const User = require('../model/User')
+
 
 module.exports = {
 	mapToActor,
@@ -13,7 +15,8 @@ module.exports = {
 	mapToDirector,
 	mapToMovie,
 	mapToMovieList,
-	mapToFilmography
+	mapToFilmography,
+	mapToUser
 }
 
 function mapToMovieList(movieList, query) {
@@ -23,6 +26,17 @@ function mapToMovieList(movieList, query) {
 		movieList.page,
 		movieList.total_pages,
 		movieList.total_results
+	)
+}
+
+function mapToUser(username, password, fullName, email, body) {
+	return new User(
+		username,
+		password,
+		fullName,
+		email,
+		body.rev,
+		body.id
 	)
 }
 
