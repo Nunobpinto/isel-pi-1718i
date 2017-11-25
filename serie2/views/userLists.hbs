@@ -1,0 +1,27 @@
+{{>navbar}}
+
+<div id="userjbtron" class="jumbotron jumbotron-fluid bg-dark">
+    <div class="container">
+        <h1 id="themeTitle" class="display-3"><span class="fa fa-user-circle"></span>{{user.username}}'s Lists</h1>
+    </div>
+</div>
+
+<div class="container pt-5">
+    <div class="row">
+        {{#each user.lists}}
+            <div class="col-3">
+                <div class="card bg-dark">
+                    <div id="txtAlignCenter" class="card-body">
+                        <h3><a class="card-title" href="/users/{{../user.username}}/lists/{{id}}"><span id="themeColor">{{name}}</span></a></h3>
+                        <h5 class="card-subtitle mb-2 text-muted" href="/users/{{../user.username}}/lists/{{id}}">{{items.length}} items</h5>
+                    </div>
+                </div>
+            </div>
+        {{/each}}
+    </div>
+    <div class="row">
+        <div id="crtLsts">
+            <a class="btn btn-outline-dark" href="/users/{{user.username}}/lists/new">Create List</a>
+        </div>
+    </div>
+</div>
