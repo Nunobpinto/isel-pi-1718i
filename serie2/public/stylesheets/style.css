@@ -76,6 +76,11 @@
     text-align: center
 }
 
+#btnCreateList{
+    text-align: center;
+    margin-top: 20px
+}
+
 #marginLeft{
     margin-left: auto
 }
@@ -101,6 +106,17 @@
     padding-bottom: 30px
 }
 
+#fontSize{
+    font-size: 50px
+}
+
+#crtLsts{
+    margin-top: 2rem;
+    margin-left: auto;
+    margin-right: auto;
+    display: block;
+}
+
 .card-title:hover {
   text-decoration: none;
 }
@@ -114,4 +130,3 @@
     line-height: 1.428571429;
     border-radius: 15px;
 }
-
