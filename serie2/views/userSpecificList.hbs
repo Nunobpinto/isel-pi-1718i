@@ -1,1 +1,33 @@
-Noma da lista, a list by "user", filmes, botão para criar nova lista
+{{>navbar}}
+
+<div id="divJumboTron" class="jumbotron jumbotron-fluid bg-dark">
+    <div class="container">
+        <h1 id="themeTitle" class="display-3">{{name}}<span id="fontSize"> ({{items.length}} items)</span></h1>
+        <p id="themeColor" class="lead">{{description}}</p>
+    </div>
+</div>
+{{#each items}}
+    <div class="col-3">
+        <div id="divCard" class="card mb-2 text-center">
+            <a href="/movies/{{id}}">
+                {{#if poster}}
+                    <img class="card-img-top" src='http://image.tmdb.org/t/p/w185/{{poster}}'>
+                {{else}}
+                    <img class="card-img-top" src='/images/defaultPoster.jpg'>
+                {{/if}}
+            </a>
+            <div class="card-body">
+                <a href="/movies/{{id}}">
+                    <h4 class="card-title">{{title}}</h4>
+                </a>
+            </div>
+            <ul class="list-group list-group-flush">
+                <li class="list-group-item">Vote Average: {{voteAverage}}</li>
+                <li class="list-group-item">Release Date: {{releaseDate}}</li>
+            </ul>
+        </div>
+    </div>
+{{/each}}
+
+
+

@@ -1,17 +1,17 @@
 <div id="marginTop" class="container">
     <h1 id="txtAlignCenter" class="display-2"><span class="fa fa-film"></span>COIMA</h1>
     <h1 id="txtAlignCenter" class="lead">Create New List</h1>
-    <form method="post" action="/users/{{user.username}}/lists/new">
+    <form method="post" action="/users/{{user.username}}/lists/new" id="listform">
         <div class="form-group">
             <label class="lead">List Name:</label>
             <input type="text" name="name" class="form-control"/>
         </div>
-        <div class="form-group">
-            <label class="lead">Description:</label>
-            <input type="text" name="description" class="form-control"/>
-        </div>
-        <div id="txtAlignCenter" class="form-group">
-            <button class="btn btn-outline-warning" type="submit">Create List</button>
-        </div>
+        <label class="lead">Description:</label>
     </form>
+    <div>
+        <textarea class="form-control" rows="4" cols="65" name="description" form="listform" placeholder="Enter description here..."></textarea>
+    </div>
+    <div id="btnCreateList" class="form-group">
+        <button class="btn btn-outline-warning" type="submit" form="listform">Create List</button>
+    </div>
 </div>
