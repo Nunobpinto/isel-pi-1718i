@@ -94,7 +94,7 @@ function init(dataSource) {
 		const options = {
 			method: 'PUT',
 			uri: coimaDbURI + '/' + user.username,
-			body: user
+			json: user
 		}
 		req(options, (err, res, body) => {
 			if( err ) return cb(err)
