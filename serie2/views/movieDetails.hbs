@@ -1,7 +1,31 @@
 {{>navbar}}
 <div class="row pt-4 pl-4">
     <div class="panel col-md-2">
-        {{>lists}}
+        {{#if user}}
+            <table class="table" id="txtAlignCenter">
+                <thead>
+                <tr>
+                    <th scope="col">My Lists</th>
+                    <th scope="col">Add to List</th>
+                </tr>
+                </thead>
+                <tbody>
+                {{#each user.lists}}
+                    <tr>
+                        <td><a href="/users/{{../user.username}}/lists/{{id}}">{{name}}</a></td>
+                        <td>
+                            <form method="POST" action="/users/{{../user.username}}/lists/{{id}}">
+                                <input type="submit" value="+">
+                                <input type="hidden" name="movieID" value="{{../id}}">
+                                <input type="hidden" name="poster" value="{{../poster}}">
+                                <input type="hidden" name="rating" value="{{../voteAverage}}">
+                            </form>
+                        </td>
+                {{/each}}
+                </tr>
+                </tbody>
+            </table>
+        {{/if}}
     </div>
     <div class="col-xs-9">
         <div class="container">
