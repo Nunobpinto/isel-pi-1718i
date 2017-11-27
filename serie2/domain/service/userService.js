@@ -53,9 +53,9 @@ function init(dataSource) {
 		}
 		req(options, (err, res, body) => {
 			if( err ) return cb(err)
-			if( res.statusCode !== 200 ) return cb(null, null, `User ${username} does not exists`)
+			if( res.statusCode !== 200 ) return cb(null, null, 'Invalid Credentials')
 			const user = JSON.parse(body)
-			if( password !== user.password ) return cb(null, null, 'Invalid password')
+			if( password !== user.password ) return cb(null, null, 'Invalid Credentials')
 			cb(null, user)
 		})
 	}
