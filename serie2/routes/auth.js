@@ -10,7 +10,7 @@ router.get('/signin',function (req, res) {
 })
 
 router.post('/signin', function (req, res, next) {
-	userService.authenticate(req.body.username, req.body.password, (err, user, info) => {
+	userService.getUser(req.body.username, req.body.password, (err, user, info) => {
 		if(err) return next(err)
 		if(info) return next(new Error(info))
 		req.logIn(user, (err) => {
@@ -25,7 +25,7 @@ router.get('/register', function (req, res) {
 })
 
 router.post('/register', function (req, res, next) {
-	userService.register(req.body.username, req.body.password, req.body.fullName, req.body.email, (err, user, info) => {
+	userService.putUser(req.body.username, req.body.password, req.body.fullName, req.body.email, (err, user, info) => {
 		if(err) return next(err)
 		if(info) return next(new Error(info))
 		req.logIn(user, (err) => {
@@ -45,7 +45,7 @@ passport.serializeUser(function(user, cb) {
 })
 
 passport.deserializeUser(function(username, cb) {
-	userService.find(username, cb)
+	userService.findUser(username, cb)
 })
 
 module.exports = router

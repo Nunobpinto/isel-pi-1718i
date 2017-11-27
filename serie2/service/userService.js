@@ -1,7 +1,5 @@
 'use strict'
 
-//const fs = require('fs')
-//const dbUsers = require('../data/userDb.json')
 const coimaDbURI = 'http://127.0.0.1:5984/coimadb'
 const mapper = require('../service/mapper')
 
@@ -13,17 +11,17 @@ function init(dataSource) {
 		req = require('request')
 
 	return {
-		authenticate: getUser,
-		register: putUser,
-		addList: putListInUser,
-		addMovieToList: updateListOfUser,
-		find/*,
+		findUser,
+		getUser,
+		putUser,
+		putListInUser,
+		updateListOfUser,
 		deleteUser,
-		deleteListFromUser,
-		deleteMovieFromUserList*/
+		//deleteListFromUser,
+		//deleteMovieFromUserList
 	}
 
-	function find(username, cb) {
+	function findUser(username, cb) {
 		const options = {
 			method: 'GET',
 			uri: coimaDbURI + '/' + username,
@@ -32,8 +30,6 @@ function init(dataSource) {
 			if( err ) return cb(err)
 			cb(null, JSON.parse(body))
 		})
-		//const user = dbUsersURI.find(item => item.username === username)
-		//cb(null, user)
 	}
 
 	function putUser(username, password, fullName, email, cb) {
@@ -71,7 +67,7 @@ function init(dataSource) {
 			uri: coimaDbURI + '/' + user.username,
 			json: user
 		}
-		req(options, (err, res, body) => {
+		req(options, (err) => {
 			if( err ) return cb(err)
 			cb()
 		})
@@ -100,43 +96,49 @@ function init(dataSource) {
 			if( err ) return cb(err)
 			cb()
 		})
-		/*
-		const userIndex = coimaDbURI.findIndex(item => item.username === username)
-		const listIndex = coimaDbURI[userIndex].lists.findIndex(item => item.id === listID)
-		coimaDbURI[userIndex].lists[listIndex].items.push(movie)
-		save()*/
 	}
 
-	/*
-	function saveSyncFunction() {
-		fs.writeFileSync('./data/userDb.json', JSON.stringify(coimaDbURI))
+	function deleteUser(user, cb) {
+		const options = {
+			method: 'DELETE',
+			uri: coimaDbURI + '/' + user.username,
+			json: user
+		}
+		req(options, (err, res, body) => {
+			if( err ) return cb(err)
+			cb()
+		})
+	}
+/*
+	function deleteListFromUser(user, listID) {
+		const listIndex = user.lists.findIndex(item => item.id === listID)
+		user.lists.slice(listIndex, 1)
+		const options = {
+			method: 'PUT',
+			uri: coimaDbURI + '/' + user.username,
+			json: user
+		}
+		req(options, (err, res, body) => {
+			if( err ) return cb(err)
+			cb()
+		})
 	}
 
-	function saveFunction() {
-		fs.writeFile('./data/userDb.json', JSON.stringify(coimaDbURI))
+	function deleteMovieFromUserList(user, listID, movieID) {
+		const listIndex = user.lists.findIndex(item => item.id === listID)
+		const movieIndex = user.lists[listIndex].items.findIndex(item => item.movieID === movieID)
+		user.lists[listIndex].items.slice(movieIndex, 1)
+		const options = {
+			method: 'PUT',
+			uri: coimaDbURI + '/' + user.username,
+			json: user
+		}
+		req(options, (err, res, body) => {
+			if( err ) return cb(err)
+			cb()
+		})
 	}
-
-	function deleteUser(username) {
-		const index = coimaDbURI.findIndex(item => item.username === username)
-		coimaDbURI.splice(index, 1)
-		save()
-	}
-
-	function deleteListFromUser(username, listID) {
-		const userIndex = coimaDbURI.findIndex(item => item.username === username)
-		const listIndex = coimaDbURI[userIndex].lists.findIndex(item => item.id === listID)
-		coimaDbURI[userIndex].lists.slice(listIndex, 1)
-		save()
-	}
-
-	function deleteMovieFromUserList(username, listID, movieID) {
-		const userIndex = coimaDbURI.findIndex(item => item.username === username)
-		const listIndex = coimaDbURI[userIndex].lists.findIndex(item => item.id === listID)
-		const movieIndex = coimaDbURI[userIndex].lists[listIndex].items.findIndex(item => item.movieID === movieID)
-		coimaDbURI[userIndex].lists[listIndex].items.slice(movieIndex, 1)
-		save()
-	}
-	*/
+*/
 }
 
 module.exports = init
