@@ -4,15 +4,15 @@ const fs = require('fs')
 
 const endPoints = {
 	'https://api.themoviedb.org/3/search/movie?api_key=98deea9e9512d3124b9fe528f476c51d&query=war%20games&page=1':
-								fs.readFileSync('./test/wargamesSearch.json').toString(),
+								fs.readFileSync('./test/files/wargamesSearch.json').toString(),
 	'https://api.themoviedb.org/3/movie/860?api_key=98deea9e9512d3124b9fe528f476c51d':
-								fs.readFileSync('./test/wargamesDetails.json').toString(),
+								fs.readFileSync('./test/files/wargamesDetails.json').toString(),
 	'https://api.themoviedb.org/3/movie/860/credits?api_key=98deea9e9512d3124b9fe528f476c51d':
-								fs.readFileSync('./test/wargamesCharacters.json').toString(),
+								fs.readFileSync('./test/files/wargamesCharacters.json').toString(),
 	'https://api.themoviedb.org/3/person/4756/movie_credits?api_key=98deea9e9512d3124b9fe528f476c51d':
-								fs.readFileSync('./test/personFilmography.json').toString(),
+								fs.readFileSync('./test/files/personFilmography.json').toString(),
 	'https://api.themoviedb.org/3/person/4756?api_key=98deea9e9512d3124b9fe528f476c51d':
-								fs.readFileSync('./test/personDetails.json').toString()
+								fs.readFileSync('./test/files/personDetails.json').toString()
 }
 
 const movie = require('../service/movieService')(reqToFile)
