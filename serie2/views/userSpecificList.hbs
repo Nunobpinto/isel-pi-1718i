@@ -6,22 +6,26 @@
         <p id="themeColor" class="lead">{{description}}</p>
     </div>
 </div>
-{{#each items}}
-    <div class="col-3">
-        <div id="divCard" class="card mb-2 text-center">
-            <a href="/movies/{{movieID}}">
-                {{#if poster}}
-                    <img class="card-img-top" src='http://image.tmdb.org/t/p/w185/{{poster}}'>
-                {{else}}
-                    <img class="card-img-top" src='/images/defaultPoster.jpg'>
-                {{/if}}
-            </a>
-            <ul class="list-group list-group-flush">
-                <li class="list-group-item">Vote Average: {{voteAverage}}</li>
-            </ul>
-        </div>
+<div class="container">
+    <div class="row">
+        {{#each items}}
+            <div class="col-lg-3">
+                <div id="divCard" class="card mb-2 text-center">
+                    <a href="/movies/{{movieID}}">
+                        {{#if poster}}
+                            <img class="card-img-top" src='http://image.tmdb.org/t/p/w185/{{poster}}'>
+                        {{else}}
+                            <img class="card-img-top" src='/images/defaultPoster.jpg'>
+                        {{/if}}
+                    </a>
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item">Vote Average: {{voteAverage}}</li>
+                    </ul>
+                </div>
+            </div>
+        {{/each}}
     </div>
-{{/each}}
+</div>
 <div class="row">
     <div id="crtLsts">
         <a class="btn btn-outline-dark" href="/users/{{user.username}}/lists/new">Create List</a>
