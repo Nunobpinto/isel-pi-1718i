@@ -118,6 +118,10 @@
     display: block;
 }
 
+#checkmark{
+    width: 20px;
+}
+
 .card-title:hover {
   text-decoration: none;
 }
@@ -130,4 +134,15 @@
     font-size: 12px;
     line-height: 1.428571429;
     border-radius: 15px;
+}
+
+.addToList {
+    border-radius: 50px;
+    outline: none;
+    border: none;
+    background-color: white;
+    font-size: 20px;
+}
+.addToList:hover{
+    color: orange;
 }

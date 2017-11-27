@@ -14,12 +14,18 @@
                     <tr>
                         <td><a href="/users/{{../user.username}}/lists/{{id}}">{{name}}</a></td>
                         <td>
-                            <form method="POST" action="/users/{{../user.username}}/lists/{{id}}">
-                                <input type="submit" value="+">
-                                <input type="hidden" name="movieID" value="{{../id}}">
-                                <input type="hidden" name="poster" value="{{../poster}}">
-                                <input type="hidden" name="rating" value="{{../voteAverage}}">
-                            </form>
+                            {{#checkIfExists this.items ../id}}
+                                {{#if exists}}
+                                   <img id = "checkmark" src="/images/checkmark.png">
+                                {{else}}
+                                    <form method="POST" action="/users/{{../../user.username}}/lists/{{../id}}">
+                                        <input class="addToList" type="submit" value="+">
+                                        <input type="hidden" name="movieID" value="{{../../id}}">
+                                        <input type="hidden" name="poster" value="{{../../poster}}">
+                                        <input type="hidden" name="rating" value="{{../../voteAverage}}">
+                                    </form>
+                                {{/if}}
+                            {{/checkIfExists}}
                         </td>
                 {{/each}}
                 </tr>

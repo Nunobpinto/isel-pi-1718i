@@ -50,4 +50,10 @@ function configureHbs(hbs) {
 		}
 		return new hbs.SafeString(options.fn(context))
 	})
+
+	hbs.registerHelper('checkIfExists',function (items, movieID, options) {
+		const context = {  }
+		context.exists = items.some(item=>parseInt(item.movieID)===movieID)
+		return new hbs.SafeString(options.fn(context))
+	})
 }
