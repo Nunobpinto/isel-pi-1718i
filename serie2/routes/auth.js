@@ -6,13 +6,19 @@ const userService = require('../domain/service/userService')()
 const passport = require('passport')
 
 router.get('/signin',function (req, res) {
-	res.render('signin')
+	const ctx = {}
+	const msg = req.flash('loginError')
+	if(msg) ctx.loginError = {message: msg}
+	res.render('signin', ctx)
 })
 
 router.post('/signin', function (req, res, next) {
 	userService.getUser(req.body.username, req.body.password, (err, user, info) => {
 		if(err) return next(err)
-		if(info) return next(new Error(info))
+		if(info) {
+			req.flash('loginError', info)
+			return res.redirect('/auth/signin')
+		}
 		req.logIn(user, (err) => {
 			if(err) return next(err)
 			res.redirect('/home')
