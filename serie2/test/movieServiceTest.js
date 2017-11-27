@@ -15,7 +15,7 @@ const endPoints = {
 								fs.readFileSync('./test/files/personDetails.json').toString()
 }
 
-const movie = require('../service/movieService')(reqToFile)
+const movie = require('../domain/service/movieService')(reqToFile)
 
 function reqToFile(path, cb) {
 	const data = endPoints[path]

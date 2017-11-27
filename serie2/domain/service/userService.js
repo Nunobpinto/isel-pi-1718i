@@ -1,7 +1,7 @@
 'use strict'
 
 const coimaDbURI = 'http://127.0.0.1:5984/coimadb'
-const mapper = require('../service/mapper')
+const mapper = require('../mapper')
 
 function init(dataSource) {
 	let req

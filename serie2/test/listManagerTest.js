@@ -1,8 +1,8 @@
 'use strict'
 
 const dbUsers = []
-const userService = require('../service/userService')(reqToFile)
-const List = require('../model/UserList')
+const userService = require('../domain/service/userService')(reqToFile)
+const List = require('../domain/model/UserList')
 
 module.exports = {
 	testCreateUser,

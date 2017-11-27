@@ -2,7 +2,7 @@
 
 const app = require('express')
 const router = app.Router()
-const userService = require('../service/userService')()
+const userService = require('../domain/service/userService')()
 const passport = require('passport')
 
 router.get('/signin',function (req, res) {

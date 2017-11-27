@@ -1,8 +1,8 @@
 'use strict'
 
 const fs = require('fs')
-const memoize = require('../cache/memoize')
-const mapper = require('../service/mapper')
+const memoize = require('../../cache/memoize')
+const mapper = require('../mapper')
 
 const apiKey = fs.readFileSync('apikey.txt').toString()
 

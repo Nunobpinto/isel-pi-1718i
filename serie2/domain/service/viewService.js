@@ -6,7 +6,7 @@ const path = require('path')
 
 function configureHbs(hbs) {
 
-	hbs.registerPartials(path.join(__dirname, '../views/partials'))
+	hbs.registerPartials(path.join(__dirname, '../../views/partials'))
 
 	hbs.registerHelper('paginate', function(query,currentPage, totalPages, size, options) {
 		let startPage, endPage, context

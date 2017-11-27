@@ -1,12 +1,12 @@
 'use strict'
 
-const Actor = require('../model/Actor')
-const CastMember = require('../model/CastMember')
-const Director = require('../model/Director')
-const Movie = require('../model/Movie')
-const MovieListItem = require('../model/MovieListItem')
-const MovieList = require('../model/MovieList')
-const User = require('../model/User')
+const Actor = require('./model/Actor')
+const CastMember = require('./model/CastMember')
+const Director = require('./model/Director')
+const Movie = require('./model/Movie')
+const MovieListItem = require('./model/MovieListItem')
+const MovieList = require('./model/MovieList')
+const User = require('./model/User')
 
 
 module.exports = {

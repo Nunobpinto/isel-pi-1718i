@@ -1,7 +1,7 @@
 'use strict'
 
 const app = require('express')
-const movieService = require('../service/movieService')()
+const movieService = require('../domain/service/movieService')()
 const router = app.Router()
 
 router.get('/search',function (req, res, next) {

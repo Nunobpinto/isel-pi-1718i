@@ -13,7 +13,7 @@ const actors = require('./routes/actors')
 const users = require('./routes/users')
 const auth = require('./routes/auth')
 
-const configureHbs = require('./service/viewService')
+const configureHbs = require('./domain/service/viewService')
 
 const app = express()
 

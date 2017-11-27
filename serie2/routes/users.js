@@ -3,9 +3,9 @@
 const express = require('express')
 const router = express.Router()
 
-const List = require('../model/UserList')
-const userService = require('../service/userService')()
-const authValidation = require('../routes/validation')
+const List = require('../domain/model/UserList')
+const userService = require('../domain/service/userService')()
+const authValidation = require('./middlewares/validation')
 
 /* GET users listing. */
 router.get(
