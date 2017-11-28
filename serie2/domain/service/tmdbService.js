@@ -3,10 +3,11 @@
 const fs = require('fs')
 const memoize = require('../../cache/memoize')
 const mapper = require('../mapper')
+const global = require('../../global')
+const debug = require('debug')('serie2:tmdbService')
 
 const apiKey = fs.readFileSync('apikey.txt').toString()
-
-module.exports = init
+const url = global.tmdb_url
 
 function init(dataSource) {
 	let req
@@ -15,15 +16,14 @@ function init(dataSource) {
 	else
 		req = require('request')
 
-	const services = {
+	return {
 		getMovieList,
 		'getMovieDetails': memoize(getMovieDetails),
 		'getActorDetails': memoize(getActorDetails)
 	}
-	return services
 
 	function getMovieList(name, page, cb) {
-		const movieListPath = `https://api.themoviedb.org/3/search/movie?api_key=${apiKey}&query=${encodeURIComponent(name)}&page=${page}`
+		const movieListPath = url + `/search/movie?api_key=${apiKey}&query=${encodeURIComponent(name)}&page=${page}`
 
 		reqAsJson(movieListPath, (err,data)=>{
 			if(err) return cb(err)
@@ -33,8 +33,8 @@ function init(dataSource) {
 	}
 
 	function getMovieDetails(movieId, cb) {
-		const movieDetailsPath = `https://api.themoviedb.org/3/movie/${movieId}?api_key=${apiKey}`
-		const movieCreditsPath = `https://api.themoviedb.org/3/movie/${movieId}/credits?api_key=${apiKey}`
+		const movieDetailsPath = url + `/movie/${movieId}?api_key=${apiKey}`
+		const movieCreditsPath = url + `/movie/${movieId}/credits?api_key=${apiKey}`
 
 		let processResponses = function (err, results) {
 			if (err) return cb(err)
@@ -56,8 +56,8 @@ function init(dataSource) {
 	}
 
 	function getActorDetails(actorId, cb) {
-		const pathToActorPersonalInfo = `https://api.themoviedb.org/3/person/${actorId}?api_key=${apiKey}`
-		const pathToMovieParticipations = `https://api.themoviedb.org/3/person/${actorId}/movie_credits?api_key=${apiKey}`
+		const pathToActorPersonalInfo = url + `/person/${actorId}?api_key=${apiKey}`
+		const pathToMovieParticipations = url + `/person/${actorId}/movie_credits?api_key=${apiKey}`
 
 		let processResponses = function (err, results) {
 			if (err) return cb(err)
@@ -90,7 +90,7 @@ function init(dataSource) {
 				}
 				responses[i] = data
 				++tasksFulfilled
-				if ( responses.length === tasks.length && tasksFulfilled === tasks.length ) {
+				if ( tasksFulfilled === tasks.length ) {
 					callback(null, responses)
 				}
 			})
@@ -99,7 +99,7 @@ function init(dataSource) {
 
 	function reqAsJson(path, callback) {
 		req(path, (err, res, data) => {
-			console.log('Making a request to ' + path)
+			debug('Making a request to ' + path)
 			if ( err || res.statusCode !== 200 )
 				return callback( { message: 'Something broke!', statusCode: (res ? res.statusCode : 500) } )
 			const obj = JSON.parse(data.toString())
@@ -107,3 +107,5 @@ function init(dataSource) {
 		})
 	}
 }
+
+module.exports = init
