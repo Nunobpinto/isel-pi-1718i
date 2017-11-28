@@ -80,7 +80,7 @@ function init(dataSource) {
 			req(options, (err) => {
 				if( err ) return cb(err)
 				//delete entry on user
-				const idxToRemove = user.lists.findIndex( list => list._id = listId )
+				const idxToRemove = user.lists.findIndex(list => list._id = listId)
 				user.lists.splice(idxToRemove, 1)
 				options.method = 'PUT'
 				options.uri = listsUrl + '/' + user.username
@@ -93,10 +93,10 @@ function init(dataSource) {
 		})
 	}
 
-	function addMovieToList(listId, movie, cb) {
+	function addMovieToList(listId, movieId, moviePoster, movieRating, cb) {
 		req(listsUrl + '/' + listId, (err, data) => {
 			if( err ) cb(err)
-			data.items.push(movie)
+			data.items.push({ movieId, moviePoster, movieRating })
 			const options = {
 				method: 'PUT',
 				uri: listsUrl + '/' + listId,

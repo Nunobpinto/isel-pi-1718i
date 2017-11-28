@@ -1,80 +1,49 @@
 'use strict'
 
 const express = require('express')
+const listService = require('../domain/service/userListService')()
+const authValidation = require('./middlewares/validation')
 const router = express.Router()
 
-const List = require('../domain/model/UserList')
-const userService = require('../domain/service/userService')()
-const authValidation = require('./middlewares/validation')
+router.use(authValidation)
 
 /* GET users listing. */
-router.get(
-	'/:username',
-	authValidation,
-	function (req, res) {
-		res.render('userInfo')
-	}
-)
+router.get('/:username', function (req, res) {
+	res.render('userInfo')
+})
 
-router.get(
-	'/:userName/lists',
-	authValidation,
-	function (req, res) {
-		res.render('userLists')
-	}
-)
+router.get('/:userName/lists', function (req, res) {
+	res.render('userLists')
+})
 
-router.get(
-	'/:username/lists/new',
-	authValidation,
-	function (req, res) {
-		res.render('createNewList')
-	}
-)
+router.get('/:username/lists/new', function (req, res) {
+	res.render('createNewList')
+})
 
-router.post(
-	'/:username/lists/new',
-	authValidation,
-	function (req, res, next) {
-		const newList = new List(req.body.name, req.body.description)
-		userService.putListInUser(req.user, newList, (err) => {
+router.post('/:username/lists/new', function (req, res, next) {
+	listService.createList(req.body.name, req.body.description, req.user, (err, data) => {
+		if (err) return next(err)
+		res.redirect(`/users/${req.params.username}/lists/${data.id}`)
+	})
+})
+
+router.get('/:username/lists/:listId', function (req, res, next) {
+	listService.getListById(req.params.listId, (err, data) => {
+		if( err ) return next(err)
+		res.render('userSpecificList', data)
+	})
+})
+
+router.post('/:username/lists/:listId', function (req, res, next) {
+	listService.addMovieToList(
+		req.params.listId,
+		req.body.movieID,
+		req.body.poster,
+		req.body.rating,
+		(err) => {
 			if (err) return next(err)
-			res.redirect(`/users/${req.params.username}/lists/${newList.id}`)
+			res.redirect(`/movies/${req.body.movieID}`)
 		})
-	}
-)
-
-router.get(
-	'/:username/lists/:listId',
-	authValidation,
-	function (req, res) {
-		let list
-		req.user.lists.find((item) => {
-			if (item.id === req.params.listId) {
-				list = item
-				return true
-			}
-			return false
-		})
-		res.render('userSpecificList', list)
-	}
-)
-
-router.post(
-	'/:username/lists/:listId',
-	authValidation,
-	function (req, res, next) {
-		userService.updateListOfUser(
-			req.user,
-			req.params.listId,
-			req.body.movieID,
-			req.body.poster,
-			req.body.rating,
-			(err) => {
-				if (err) return next(err)
-				res.redirect(`/movies/${req.body.movieID}`)
-			})
-	}
-)
+})
 
 module.exports = router
