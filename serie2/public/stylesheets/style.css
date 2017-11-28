@@ -112,6 +112,10 @@
     padding-bottom: 30px
 }
 
+#listItem{
+    margin-bottom: 2rem;
+}
+
 #fontSize{
     font-size: 50px
 }

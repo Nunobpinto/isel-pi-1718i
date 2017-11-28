@@ -52,25 +52,19 @@ function init(dataSource) {
 	function createList(listName, listDesc, user, cb) {
 		let options = {
 			method: 'POST',
-			uri: listsUrl + '?include_docs=true',
+			uri: listsUrl,
 			json: { listName, listDesc, items: [] }
 		}
 		req(options, (err, res, data) => {
 			if( err ) return cb(err)
 			user.lists.push(data.id)
+			const list = mapper.mapToUserList({ listName, listDesc, items: [], _rev: data.rev })
 			options.uri = usersUrl + user.username
-			options.json =  user
+			options.json = user
 			options.method = 'PUT'
-			req(options, (err,res) => {
+			req(options, (err, res, data) => {
 				if( err ) return cb(err)
-				cb(null, mapper.mapToUserList(
-					{
-						listName : listName,
-						listDesc : listDesc,
-						_rev : data.rev
-					}
-					)
-				)
+				cb(null, list)
 			})
 		})
 	}
@@ -104,11 +98,12 @@ function init(dataSource) {
 	function addMovieToList(listId, movieId, moviePoster, movieRating, cb) {
 		req(listsUrl + '/' + listId, (err, res, data) => {
 			if( err ) cb(err)
-			data.items.push({ movieId, moviePoster, movieRating })
+			const list = JSON.parse(data)
+			list.items.push({ movieId, moviePoster, movieRating })
 			const options = {
 				method: 'PUT',
 				uri: listsUrl + '/' + listId,
-				json: { data }
+				json: list
 			}
 			req(options, (err) => {
 				if( err ) return cb(err)

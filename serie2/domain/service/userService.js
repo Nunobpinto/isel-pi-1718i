@@ -47,7 +47,7 @@ function init(dataSource) {
 		}
 		req(options, (err, res, body) => {
 			if( err ) return cb(err)
-			if( res.statusCode !== 201 ) return cb(null, null, `Username "${username}" was already taken!`)
+			if( res.statusCode === 409 ) return cb(null, null, `Username "${username}" was already taken!`)
 			cb(null, mapper.mapToUser({ username, password, fullName, email, lists: [], _rev: body.rev }))
 		})
 	}

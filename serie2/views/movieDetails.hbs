@@ -10,19 +10,19 @@
                 </tr>
                 </thead>
                 <tbody>
-                {{#each user.lists}}
+                {{#each lists}}
                     <tr>
                         <td><a href="/users/{{../user.username}}/lists/{{id}}">{{name}}</a></td>
                         <td>
-                            {{#checkIfExists this.items ../id}}
+                            {{#checkIfExists items ../movie.id}}
                                 {{#if exists}}
                                    <img id = "checkmark" src="/images/checkmark.png">
                                 {{else}}
                                     <form method="POST" action="/users/{{../../user.username}}/lists/{{../id}}">
                                         <input class="addToList" type="submit" value="+">
-                                        <input type="hidden" name="movieID" value="{{../../id}}">
-                                        <input type="hidden" name="poster" value="{{../../poster}}">
-                                        <input type="hidden" name="rating" value="{{../../voteAverage}}">
+                                        <input type="hidden" name="movieID" value="{{../../movie.id}}">
+                                        <input type="hidden" name="poster" value="{{../../movie.poster}}">
+                                        <input type="hidden" name="rating" value="{{../../movie.voteAverage}}">
                                     </form>
                                 {{/if}}
                             {{/checkIfExists}}
@@ -37,8 +37,8 @@
         <div class="container">
             <div class="row">
                 <div id="divColmax-width" class="col">
-                    {{#if poster}}
-                        <img id="imgWidth" src='http://image.tmdb.org/t/p/w185/{{poster}}'/>
+                    {{#if movie.poster}}
+                        <img id="imgWidth" src='http://image.tmdb.org/t/p/w185/{{movie.poster}}'/>
                     {{else}}
                         <img id="imgWidth" src='/images/defaultPoster.jpg'/>
                     {{/if}}
@@ -46,18 +46,18 @@
                 <div class="col">
                     <div class="row">
                         <div id="movieTitlepadding" class="col">
-                            <p id="pfont-size" class="lead"><strong>{{originalTitle}}</strong> ({{releaseDate}})</p>
+                            <p id="pfont-size" class="lead"><strong>{{movie.originalTitle}}</strong> ({{movie.releaseDate}})</p>
                         </div>
                         <div id="divColmax-width" class="col">
                             <img id="starWidth" src='/images/ratingStar.jpg'/>
-                            <p>{{voteAverage}}<sub>/10</sub></p>
+                            <p>{{movie.voteAverage}}<sub>/10</sub></p>
                         </div>
                     </div>
                     <div class="row">
-                        <p class="lead">{{genres}}</p>
+                        <p class="lead">{{movie.genres}}</p>
                     </div>
                     <div class="row">
-                        <p><em>{{overview}}</em></p>
+                        <p><em>{{movie.overview}}</em></p>
                     </div>
                 </div>
             </div>
@@ -68,7 +68,7 @@
 
 <div class="container mt-5 pt-5">
     <div class="row">
-        {{#each directors}}
+        {{#each movie.directors}}
             <div class="col">
                 <div id="divCard" class="card mb-2 text-center">
                     {{#if portrait}}
@@ -91,7 +91,7 @@
         <p id="pCast" class="lead"><strong>Cast:</strong></p>
     </div>
     <div class="row">
-        {{#each cast}}
+        {{#each movie.cast}}
             <div class="col-3">
                 <div id="divCard" class="card mb-2 text-center">
                     <a href="/actors/{{id}}">
