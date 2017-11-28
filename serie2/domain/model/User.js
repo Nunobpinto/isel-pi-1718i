@@ -6,7 +6,7 @@ function User(username, password, fullName, email, lists, rev) {
 	this.fullName = fullName
 	this.email = email
 	this.lists = lists
-	this.rev = rev
+	this._rev = rev
 }
 
 module.exports = User

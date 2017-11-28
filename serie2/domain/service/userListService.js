@@ -39,7 +39,7 @@ function init(dataSource) {
 			uri: listsUrl + '_all_docs?include_docs=true',
 			json: { keys: listIds }
 		}
-		req(options, (err, data) => {
+		req(options, (err, res, data) => {
 			if( err ) return cb(err)
 			let lists = []
 			data.rows.forEach((item) => {
@@ -50,26 +50,34 @@ function init(dataSource) {
 	}
 
 	function createList(listName, listDesc, user, cb) {
-		const options = {
+		let options = {
 			method: 'POST',
-			uri: listsUrl,
+			uri: listsUrl + '?include_docs=true',
 			json: { listName, listDesc, items: [] }
 		}
-		req(options, (err, data) => {
+		req(options, (err, res, data) => {
 			if( err ) return cb(err)
-			user.lists.push(data._id)
+			user.lists.push(data.id)
 			options.uri = usersUrl + user.username
-			options.json = { user }
-			req(options, (err, data) => {
+			options.json =  user
+			options.method = 'PUT'
+			req(options, (err,res) => {
 				if( err ) return cb(err)
-				cb(null, mapper.mapToUserList(data.listName, data.listDesc, data._rev))
+				cb(null, mapper.mapToUserList(
+					{
+						listName : listName,
+						listDesc : listDesc,
+						_rev : data.rev
+					}
+					)
+				)
 			})
 		})
 	}
 
 	function deleteList(listId, user, cb) {
 		//Get list rev
-		req(listsUrl + '/' + listId, (err, data) => {
+		req(listsUrl + '/' + listId, (err, res, data) => {
 			if( err ) return cb(err)
 			//delete list
 			const options = {
@@ -80,7 +88,7 @@ function init(dataSource) {
 			req(options, (err) => {
 				if( err ) return cb(err)
 				//delete entry on user
-				const idxToRemove = user.lists.findIndex(list => list._id = listId)
+				const idxToRemove = user.lists.findIndex(list => list === listId)
 				user.lists.splice(idxToRemove, 1)
 				options.method = 'PUT'
 				options.uri = listsUrl + '/' + user.username
@@ -94,7 +102,7 @@ function init(dataSource) {
 	}
 
 	function addMovieToList(listId, movieId, moviePoster, movieRating, cb) {
-		req(listsUrl + '/' + listId, (err, data) => {
+		req(listsUrl + '/' + listId, (err, res, data) => {
 			if( err ) cb(err)
 			data.items.push({ movieId, moviePoster, movieRating })
 			const options = {
@@ -110,7 +118,7 @@ function init(dataSource) {
 	}
 
 	function removeMovieFromList(listId, movieId, cb) {
-		req(listsUrl + '/' + listId, (err, data) => {
+		req(listsUrl + '/' + listId, (err, res, data) => {
 			if( err ) cb(err)
 			const idxToRemove = data.items.findIndex(item => item.id === movieId)
 			data.splice(idxToRemove, 1)
@@ -118,7 +126,7 @@ function init(dataSource) {
 				method: 'PUT',
 				uri: listsUrl + '/' + listId,
 				json: {
-					_rev: data._rev,
+					_rev: data.rev,
 					items: data.items
 				}
 			}

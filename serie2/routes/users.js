@@ -9,11 +9,11 @@ router.use(authValidation)
 
 /* GET users listing. */
 router.get('/:username', function (req, res) {
-	res.render('userInfo')
+	res.render('userInfo', lists)
 })
 
 router.get('/:userName/lists', function (req, res) {
-	res.render('userLists')
+	res.render('userLists', lists)
 })
 
 router.get('/:username/lists/new', function (req, res) {
