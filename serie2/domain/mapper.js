@@ -31,7 +31,7 @@ function mapToUser(json) {
 }
 
 function mapToUserList(json) {
-	return new UserList(json.listName, json.listDesc, json.items, json._rev)
+	return new UserList(json.listName, json.listDesc, json.items, json._rev, json._id)
 }
 
 function mapToFilmography(movieList) {
