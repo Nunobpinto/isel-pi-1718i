@@ -1,12 +1,10 @@
 'use strict'
 
-const shortID = require('shortid')
-
-module.exports = UserList
-
-function UserList(name, description) {
-	this.id = shortID.generate()
+function UserList(name, description, items, rev) {
 	this.name = name
 	this.description = description
-	this.items = []
+	this.items = items
+	this.rev = rev
 }
+
+module.exports = UserList

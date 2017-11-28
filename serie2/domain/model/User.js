@@ -1,13 +1,12 @@
 'use strict'
 
-module.exports = User
-
-function User(username, password, fullName, email, _rev, _id) {
+function User(username, password, fullName, email, lists, rev) {
 	this.username = username
 	this.password = password
 	this.fullName = fullName
 	this.email = email
-	this._rev = _rev
-	this._id = _id
-	this.lists = []
+	this.lists = lists
+	this.rev = rev
 }
+
+module.exports = User
