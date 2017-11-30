@@ -7,7 +7,6 @@ const router = express.Router()
 
 router.use(authValidation)
 
-/* GET users listing. */
 router.get('/:username', function(req, res, next) {
 	listService.getListsByUser(req.user.lists, (err, data) => {
 		if( err ) return next(err)
@@ -27,7 +26,7 @@ router.get('/:username/lists/new', function(req, res) {
 })
 
 router.post('/:username/lists/new', function(req, res, next) {
-	listService.createList(req.body.name, req.body.description, req.user, (err, data) => {
+	listService.createList(req.body.name, req.body.description, req.user, (err) => {
 		if( err ) return next(err)
 		res.redirect(`/users/${req.params.username}/lists`)
 	})

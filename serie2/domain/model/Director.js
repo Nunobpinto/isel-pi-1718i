@@ -1,4 +1,4 @@
-module.exports = Director
+'use strict'
 
 function Director(name, id, portrait) {
 	this.name = name
@@ -8,3 +8,5 @@ function Director(name, id, portrait) {
 		return `Name:${name} , Id:${id} , Portrait: ${portrait}`
 	}
 }
+
+module.exports = Director

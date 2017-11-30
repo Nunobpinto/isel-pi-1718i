@@ -1,4 +1,4 @@
-module.exports = MovieListItem
+'use strict'
 
 function MovieListItem(title, id, releaseDate, poster, voteAverage) {
 	this.title = title
@@ -10,3 +10,5 @@ function MovieListItem(title, id, releaseDate, poster, voteAverage) {
 		return `Title:${title} , Id:${id} , ReleaseDate: ${releaseDate} , Poster: ${poster}`
 	}
 }
+
+module.exports = MovieListItem

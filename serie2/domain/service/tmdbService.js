@@ -37,7 +37,7 @@ function init(dataSource) {
 		const movieDetailsPath = url + `/movie/${movieId}?api_key=${apiKey}`
 		const movieCreditsPath = url + `/movie/${movieId}/credits?api_key=${apiKey}`
 
-		let processResponses = function (err, results) {
+		const processResponses = function (err, results) {
 			if (err) return cb(err)
 			let movie = mapper.mapToMovie(results[0])
 			movie.directors = mapper.mapToDirector(results[1].crew)
@@ -45,7 +45,7 @@ function init(dataSource) {
 			cb(null, movie)
 		}
 
-		let tasks = [
+		const tasks = [
 			function (callback) {
 				reqAsJson(movieDetailsPath, callback)
 			},
@@ -60,14 +60,14 @@ function init(dataSource) {
 		const pathToActorPersonalInfo = url + `/person/${actorId}?api_key=${apiKey}`
 		const pathToMovieParticipations = url + `/person/${actorId}/movie_credits?api_key=${apiKey}`
 
-		let processResponses = function (err, results) {
+		const processResponses = function (err, results) {
 			if (err) return cb(err)
 			let actor = mapper.mapToActor(results[0])
 			actor.filmography = mapper.mapToFilmography(results[1].cast)
 			cb(null, actor)
 		}
 
-		let tasks = [
+		const tasks = [
 			function (callback) {
 				reqAsJson(pathToActorPersonalInfo, callback)
 			},

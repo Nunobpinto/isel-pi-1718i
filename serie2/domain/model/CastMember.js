@@ -1,4 +1,4 @@
-module.exports = CastMember
+'use strict'
 
 function CastMember(name, id, character, portrait) {
 	this.name = name
@@ -9,3 +9,5 @@ function CastMember(name, id, character, portrait) {
 		return `Name:${name} , Id:${id} , Character: ${character}`
 	}
 }
+
+module.exports = CastMember

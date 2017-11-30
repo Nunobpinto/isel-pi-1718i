@@ -1,4 +1,4 @@
-module.exports = Movie
+'use strict'
 
 function Movie(tagline, id, originalTitle, overview, releaseDate, voteAverage, poster, genres) {
 	this.tagline = tagline
@@ -15,3 +15,5 @@ function Movie(tagline, id, originalTitle, overview, releaseDate, voteAverage, p
 		return `Tagline:${tagline} , Id:${id} , OriginalTitle:${originalTitle} , Overview:${overview} , ReleaseDate: ${releaseDate} , VoteAverage: ${voteAverage}, Poster: ${poster}`
 	}
 }
+
+module.exports = Movie

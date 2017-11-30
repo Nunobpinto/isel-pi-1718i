@@ -3,6 +3,7 @@
 const global = require('../../global')
 const mapper = require('../mapper')
 const utils = require('./serviceUtils')
+const debug = require('debug')('serie2:userListService')
 
 const listsUrl = global.couchdb_url + '/lists/'
 const usersUrl = global.couchdb_url + '/users/'
@@ -24,6 +25,7 @@ function init(dataSource) {
 	}
 
 	function getListById(listId, cb) {
+		debug('Fetching list with id = ' + listId)
 		req(utils.optionsBuilder('GET', listsUrl + listId), (err, res, body) => {
 			if( err ) return cb(err)
 			cb(null, mapper.mapToUserList(body))
@@ -31,6 +33,7 @@ function init(dataSource) {
 	}
 
 	function getListsByUser(listIds, cb) {
+		debug('Fetching lists with these ids = ' + listIds)
 		req(utils.optionsBuilder('POST', listsUrl + '_all_docs?include_docs=true', { keys: listIds }),
 			(err, res, data) => {
 				if( err ) return cb(err)
@@ -44,6 +47,7 @@ function init(dataSource) {
 	}
 
 	function createList(listName, listDesc, user, cb) {
+		debug(`Creating new list for user ${user.username} with name ${listName}`)
 		const list = {
 			listName,
 			listDesc,
@@ -63,13 +67,11 @@ function init(dataSource) {
 	}
 
 	function deleteList(listId, user, cb) {
-		//Get list rev
-		req(listsUrl + '/' + listId, (err, res, data) => {
+		debug('Deleting list with id = ' + listId)
+		req(utils.optionsBuilder('GET', listsUrl + '/' + listId), (err, res, data) => {
 			if( err ) return cb(err)
-			//delete list
 			req(utils.optionsBuilder('DELETE', listsUrl + '/' + listId, data), (err) => {
 				if( err ) return cb(err)
-				//delete entry on user
 				const idxToRemove = user.lists.findIndex(list => list === listId)
 				user.lists.splice(idxToRemove, 1)
 				req(utils.optionsBuilder('PUT', listsUrl + '/' + user.username, user), (err) => {
@@ -81,7 +83,8 @@ function init(dataSource) {
 	}
 
 	function addMovieToList(listId, movieId, moviePoster, movieRating, cb) {
-		req(listsUrl + '/' + listId, (err, res, data) => {
+		debug(`Adding movie with id = ${movieId} to list with id = ${listId}`)
+		req(utils.optionsBuilder('GET', listsUrl + '/' + listId), (err, res, data) => {
 			if( err ) cb(err)
 			data.items.push({ movieId, moviePoster, movieRating })
 			req(utils.optionsBuilder('PUT', listsUrl + '/' + listId, data), (err) => {
@@ -92,7 +95,8 @@ function init(dataSource) {
 	}
 
 	function removeMovieFromList(listId, movieId, cb) {
-		req(listsUrl + '/' + listId, (err, res, data) => {
+		debug(`Removing movie with id = ${movieId} from list with id = ${listId}`)
+		req(utils.optionsBuilder('GET', listsUrl + '/' + listId), (err, res, data) => {
 			if( err ) cb(err)
 			const idxToRemove = data.items.findIndex(item => item.id === movieId)
 			data.splice(idxToRemove, 1)

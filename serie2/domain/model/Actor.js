@@ -1,4 +1,4 @@
-module.exports = Actor
+'use strict'
 
 function Actor(biography, birthday, deathday, id, name, popularity, portrait) {
 	this.name = name
@@ -13,3 +13,5 @@ function Actor(biography, birthday, deathday, id, name, popularity, portrait) {
 		return `Name:${name} , Id:${id} , biography: ${biography}, birthday: ${birthday}, deathday: ${deathday}, popularity ${popularity}, portrait ${portrait}`
 	}
 }
+
+module.exports = Actor

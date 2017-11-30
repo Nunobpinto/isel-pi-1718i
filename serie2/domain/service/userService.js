@@ -3,6 +3,7 @@
 const global = require('../../global')
 const mapper = require('../mapper')
 const utils = require('./serviceUtils')
+const debug = require('debug')('serie2:userService')
 
 const url = global.couchdb_url + '/users/'
 
@@ -21,6 +22,7 @@ function init(dataSource) {
 	}
 
 	function getUserById(username, password, cb) {
+		debug('Fetching user with id = ' + username)
 		req(utils.optionsBuilder('GET', url + username), (err, res, body) => {
 			if( err ) return cb(err)
 			if( res.statusCode !== 200 ) return cb(null, null, 'Invalid Credentials')
@@ -30,6 +32,7 @@ function init(dataSource) {
 	}
 
 	function createUser(username, password, fullName, email, cb) {
+		debug('Creating user with username = ' + username)
 		const json = {
 			username,
 			password,
@@ -45,6 +48,7 @@ function init(dataSource) {
 	}
 
 	function deleteUser(user, cb) {
+		debug('Deleting user with id = ' + user.username)
 		req(utils.optionsBuilder('DELETE', url + user.username, user), (err) => {
 			if( err ) return cb(err)
 			cb()

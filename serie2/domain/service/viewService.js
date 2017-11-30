@@ -1,10 +1,8 @@
 'use strict'
 
-module.exports = configureHbs
-
 const path = require('path')
 
-function configureHbs(hbs) {
+module.exports = function configureHbs(hbs) {
 
 	hbs.registerPartials(path.join(__dirname, '../../views/partials'))
 

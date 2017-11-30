@@ -13,7 +13,6 @@ const movies = require('./routes/movies')
 const actors = require('./routes/actors')
 const users = require('./routes/users')
 const auth = require('./routes/auth')
-
 const configureHbs = require('./domain/service/viewService')
 
 const app = express()
@@ -23,7 +22,6 @@ app.set('views', path.join(__dirname, 'views'))
 app.set('view engine', 'hbs')
 configureHbs(hbs)
 
-// uncomment after placing your favicon in /public
 app.use(bodyParser.urlencoded({ extended: false }))
 app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')))
 app.use(express.static(path.join(__dirname, 'public')))
@@ -34,9 +32,9 @@ app.use(passport.initialize())
 app.use(passport.session())
 
 app.use((req, res, next) => {
-    if(req.user)
-        res.locals.user = req.user
-    next()
+	if(req.user)
+		res.locals.user = req.user
+	next()
 })
 
 app.use('/', index)
