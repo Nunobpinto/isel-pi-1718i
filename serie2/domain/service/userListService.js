@@ -57,7 +57,7 @@ function init(dataSource) {
 			if( err ) return cb(err)
 			user.lists.push(data.id)
 			const list = mapper.mapToUserList({ listName, listDesc, items: [], _rev: data.rev })
-			req(utils.optionsBuilder('POST', usersUrl + user.username, user),
+			req(utils.optionsBuilder('PUT', usersUrl + user.username, user),
 				(err) => {
 					if( err ) return cb(err)
 					cb(null, list)
