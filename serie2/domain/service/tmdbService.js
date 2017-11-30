@@ -5,6 +5,7 @@ const memoize = require('../../cache/memoize')
 const mapper = require('../mapper')
 const global = require('../../global')
 const debug = require('debug')('serie2:tmdbService')
+const utils = require('./serviceUtils')
 
 const apiKey = fs.readFileSync('apikey.txt').toString()
 const url = global.tmdb_url
@@ -52,7 +53,7 @@ function init(dataSource) {
 				reqAsJson(movieCreditsPath, callback)
 			}
 		]
-		parallel(tasks, processResponses)
+		utils.parallel(tasks, processResponses)
 	}
 
 	function getActorDetails(actorId, cb) {
@@ -74,27 +75,7 @@ function init(dataSource) {
 				reqAsJson(pathToMovieParticipations, callback)
 			}
 		]
-		parallel(tasks, processResponses)
-	}
-
-	function parallel(tasks, callback) {
-		let responses = []
-		let errOccured = false
-		let tasksFulfilled = 0
-		tasks.forEach((request, i) => {
-			request((err, data) => {
-				if (errOccured) return
-				if (err) {
-					errOccured = true
-					return callback(err)
-				}
-				responses[i] = data
-				++tasksFulfilled
-				if ( tasksFulfilled === tasks.length ) {
-					callback(null, responses)
-				}
-			})
-		})
+		utils.parallel(tasks, processResponses)
 	}
 
 	function reqAsJson(path, callback) {

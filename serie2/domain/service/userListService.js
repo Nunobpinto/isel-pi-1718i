@@ -2,6 +2,7 @@
 
 const global = require('../../global')
 const mapper = require('../mapper')
+const utils = require('./serviceUtils')
 
 const listsUrl = global.couchdb_url + '/lists/'
 const usersUrl = global.couchdb_url + '/users/'
@@ -23,49 +24,41 @@ function init(dataSource) {
 	}
 
 	function getListById(listId, cb) {
-		const options = {
-			method: 'GET',
-			uri: listsUrl + listId,
-		}
-		req(options, (err, res, body) => {
+		req(utils.optionsBuilder('GET', listsUrl + listId), (err, res, body) => {
 			if( err ) return cb(err)
-			cb(null, mapper.mapToUserList(JSON.parse(body)))
+			cb(null, mapper.mapToUserList(body))
 		})
 	}
 
 	function getListsByUser(listIds, cb) {
-		const options = {
-			method: 'POST',
-			uri: listsUrl + '_all_docs?include_docs=true',
-			json: { keys: listIds }
-		}
-		req(options, (err, res, data) => {
-			if( err ) return cb(err)
-			let lists = []
-			data.rows.forEach((item) => {
-				lists.push(mapper.mapToUserList(item.doc))
-			})
-			cb(null, lists)
-		})
+		req(utils.optionsBuilder('POST', listsUrl + '_all_docs?include_docs=true', { keys: listIds }),
+			(err, res, data) => {
+				if( err ) return cb(err)
+				let lists = []
+				data.rows.forEach((item) => {
+					lists.push(mapper.mapToUserList(item.doc))
+				})
+				cb(null, lists)
+			}
+		)
 	}
 
 	function createList(listName, listDesc, user, cb) {
-		let options = {
-			method: 'POST',
-			uri: listsUrl,
-			json: { listName, listDesc, items: [] }
+		const list = {
+			listName,
+			listDesc,
+			items: []
 		}
-		req(options, (err, res, data) => {
+		req(utils.optionsBuilder('POST', listsUrl, list), (err, res, data) => {
 			if( err ) return cb(err)
 			user.lists.push(data.id)
 			const list = mapper.mapToUserList({ listName, listDesc, items: [], _rev: data.rev })
-			options.uri = usersUrl + user.username
-			options.json = user
-			options.method = 'PUT'
-			req(options, (err, res, data) => {
-				if( err ) return cb(err)
-				cb(null, list)
-			})
+			req(utils.optionsBuilder('POST', usersUrl + user.username, user),
+				(err) => {
+					if( err ) return cb(err)
+					cb(null, list)
+				}
+			)
 		})
 	}
 
@@ -74,20 +67,12 @@ function init(dataSource) {
 		req(listsUrl + '/' + listId, (err, res, data) => {
 			if( err ) return cb(err)
 			//delete list
-			const options = {
-				method: 'DELETE',
-				uri: listsUrl + '/' + listId,
-				json: { data }
-			}
-			req(options, (err) => {
+			req(utils.optionsBuilder('DELETE', listsUrl + '/' + listId, data), (err) => {
 				if( err ) return cb(err)
 				//delete entry on user
 				const idxToRemove = user.lists.findIndex(list => list === listId)
 				user.lists.splice(idxToRemove, 1)
-				options.method = 'PUT'
-				options.uri = listsUrl + '/' + user.username
-				options.json = user
-				req(options, (err) => {
+				req(utils.optionsBuilder('PUT', listsUrl + '/' + user.username, user), (err) => {
 					if( err ) return cb(err)
 					cb()
 				})
@@ -98,14 +83,8 @@ function init(dataSource) {
 	function addMovieToList(listId, movieId, moviePoster, movieRating, cb) {
 		req(listsUrl + '/' + listId, (err, res, data) => {
 			if( err ) cb(err)
-			const list = JSON.parse(data)
-			list.items.push({ movieId, moviePoster, movieRating })
-			const options = {
-				method: 'PUT',
-				uri: listsUrl + '/' + listId,
-				json: list
-			}
-			req(options, (err) => {
+			data.items.push({ movieId, moviePoster, movieRating })
+			req(utils.optionsBuilder('PUT', listsUrl + '/' + listId, data), (err) => {
 				if( err ) return cb(err)
 				cb()
 			})
@@ -117,18 +96,12 @@ function init(dataSource) {
 			if( err ) cb(err)
 			const idxToRemove = data.items.findIndex(item => item.id === movieId)
 			data.splice(idxToRemove, 1)
-			const options = {
-				method: 'PUT',
-				uri: listsUrl + '/' + listId,
-				json: {
-					_rev: data.rev,
-					items: data.items
+			req(utils.optionsBuilder('PUT', listsUrl + '/' + listId, { _rev: data.rev, items: data.items }),
+				(err) => {
+					if( err ) return cb(err)
+					cb()
 				}
-			}
-			req(options, (err) => {
-				if( err ) return cb(err)
-				cb()
-			})
+			)
 		})
 	}
 }
