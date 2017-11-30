@@ -27,13 +27,19 @@ router.post('/signin', function (req, res, next) {
 })
 
 router.get('/register', function (req, res) {
-	res.render('register')
+	const ctx = {}
+	const msg = req.flash('registerError')
+	if(msg) ctx.registerError = {message:msg}
+	res.render('register', ctx)
 })
 
 router.post('/register', function (req, res, next) {
 	userService.createUser(req.body.username, req.body.password, req.body.fullName, req.body.email, (err, user, info) => {
 		if(err) return next(err)
-		if(info) return next(new Error(info))
+		if(info){
+			req.flash('registerError', info)
+			return res.redirect('/auth/register')
+		}
 		req.logIn(user, (err) => {
 			if(err) return next(err)
 			res.redirect('/home')
