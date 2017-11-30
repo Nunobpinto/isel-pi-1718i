@@ -1,107 +1,85 @@
 'use strict'
 
-const dbUsers = []
-const userService = require('../domain/service/userService')(reqToFile)
+const fs = require('fs')
+
+const listService = require('../domain/service/userListService')(reqToFile)
+const User = require('../domain/model/User')
 const List = require('../domain/model/UserList')
 
-module.exports = {
-	testCreateUser,
-	testAddList,
-	testAddMovieToList
-}
-
-function findByUsername(username, body) {
-	return (user, idx, array) => {
-		if( user.username === username ) {
-			array[idx] = body
-			return true
-		}
-		return false
+const endpoints = {
+	DELETE: {
+		'http://127.0.0.1:5984/lists/123': fs.readFileSync('')
+	},
+	POST: {
+		'http://127.0.0.1:5984/lists/_all_docs?include_docs=true': fs.readFileSync(''),
+		'http://127.0.0.1:5984/lists/': fs.readFileSync('./test/files/createListResp')
+	},
+	PUT: {
+		'http://127.0.0.1:5984/users/nuno': fs.readFileSync('./test/files/putListInUserResp')
+	},
+	GET: {
+		'http://127.0.0.1:5984/lists/123': fs.readFileSync('./test/files/getListResp')
 	}
 }
 
 function reqToFile(options, cb) {
-	const username = options.uri.split('/')[4]
-	if( options.method === 'GET' ) {
-		const user = dbUsers.find(item => item.username === username)
-		return user ? cb(null, { statusCode: 200 }, user) : cb(null, { statusCode: 404 }, null)
-	}
-	if( options.method === 'PUT' ) {
-		if( !dbUsers.find(findByUsername(username, options.json)) )
-			dbUsers.push(options.json)
-		return cb(null, { statusCode: 200 }, options.json)
-	}
-	if( options.method === 'DELETE' ) {
-		const index = dbUsers.findIndex(user => user.username === username)
-		dbUsers.splice(index, 1)
-		return cb(null, { statusCode: 200 }, options.json)
-	}
-	if( options.method === 'POST' ) {
-		//TODO
-	}
+	const data = endpoints[options.method][options.uri]
+	if( !data ) return cb(new Error(`No mock file for ${options.method} ${options.uri}`))
+	cb(null, data.res, data.body)
 }
 
-function testCreateUser(test) {
-	userService.putUser('bruno', 'test', 'Bruno Filipe', 'bruno@email.com', (err, user) => {
+function testCreateList(test) {
+	const user = new User('bruno', 'test', 'Bruno Filipe', 'bruno@email.com', [], 111)
+	listService.createList('Italian Movies', 'The best out there', user, (err, list) => {
 		if( err )
 			test.ifError(err)
 		else {
-			test.equal(user.username, 'bruno')
-			test.equal(user.password, 'test')
-			test.equal(user.fullName, 'Bruno Filipe')
-			test.equal(user.email, 'bruno@email.com')
+			test.equal(user.lists[0], 123)
+			test.equal(list.id, 123)
+			test.equal(list.name, 'Italian Movies')
+			test.equal(list.description, 'The best out there')
+			test.equal(list.items, [])
+			test.equal(list._rev, 123123)
 		}
-		userService.deleteUser(user, (err) =>{
-			if( err )
-				test.ifError(err)
-		})
 		test.done()
 	})
 }
 
-function testAddList(test) {
-	userService.putUser('bruno', 'test', 'Bruno Filipe', 'bruno@email.com', (err, user) => {
+function testGetListById(test) {
+	listService.getListById(123, (err, list) => {
 		if( err )
 			test.ifError(err)
 		else {
-			const list = new List('testing', 'just for Test')
-			userService.putListInUser(user, list, (err) => {
-				if( err )
-					test.ifError(err)
-			})
-			test.equal(user.lists[0].name, 'testing')
-			test.equal(user.lists[0].description, 'just for Test')
-			test.equal(user.lists[0].id, list.id)
+			test.equal(list.id, 123)
+			test.equal(list.name, 'Italian Movies')
+			test.equal(list.description, '')
+			test.equal(list.items, [])
+			test.equal(list._rev, 123123)
 		}
-		userService.deleteUser(user, (err) =>{
-			if( err )
-				test.ifError(err)
-		})
-		test.done()
 	})
+}
+
+function testGetListsByUser(test) {
+	//TODO
 }
 
 function testAddMovieToList(test) {
-	userService.putUser('bruno', 'test', 'Bruno Filipe', 'bruno@email.com', (err, user) => {
-		if( err )
-			test.ifError(err)
-		else {
-			const list = new List('testing', 'just for Test')
-			userService.putListInUser(user, list, (err) => {
-				if( err )
-					test.ifError(err)
-			})
-			userService.updateListOfUser(user, list.id, 1, 'http://testPosterLink.png', 3.2, (err) => {
-				if( err )
-					test.ifError(err)
-			})
-			test.equal(user.lists[0].items[0].movieID, 1)
-			test.equal(user.lists[0].items[0].poster, 'http://testPosterLink.png')
-		}
-		userService.deleteUser(user, (err) =>{
-			if( err )
-				test.ifError(err)
-		})
-		test.done()
-	})
+	//TODO
+}
+
+function testDeleteList(test) {
+	//TODO
+}
+
+function testRemoveMovieFromList(test) {
+	//TODO
+}
+
+module.exports = {
+	testCreateList,
+	testGetListById,
+	testGetListsByUser,
+	testAddMovieToList,
+	testDeleteList,
+	testRemoveMovieFromList
 }
