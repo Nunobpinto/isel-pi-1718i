@@ -84,10 +84,10 @@ function init(dataSource) {
 
 	function addMovieToList(listId, movieId, moviePoster, movieRating, cb) {
 		debug(`Adding movie with id = ${movieId} to list with id = ${listId}`)
-		req(utils.optionsBuilder('GET', listsUrl + '/' + listId), (err, res, data) => {
+		req(utils.optionsBuilder('GET', listsUrl  + listId), (err, res, data) => {
 			if( err ) cb(err)
 			data.items.push({ movieId, moviePoster, movieRating })
-			req(utils.optionsBuilder('PUT', listsUrl + '/' + listId, data), (err) => {
+			req(utils.optionsBuilder('PUT', listsUrl + listId, data), (err) => {
 				if( err ) return cb(err)
 				cb()
 			})
@@ -96,11 +96,11 @@ function init(dataSource) {
 
 	function removeMovieFromList(listId, movieId, cb) {
 		debug(`Removing movie with id = ${movieId} from list with id = ${listId}`)
-		req(utils.optionsBuilder('GET', listsUrl + '/' + listId), (err, res, data) => {
+		req(utils.optionsBuilder('GET', listsUrl  + listId), (err, res, data) => {
 			if( err ) cb(err)
 			const idxToRemove = data.items.findIndex(item => item.id === movieId)
 			data.splice(idxToRemove, 1)
-			req(utils.optionsBuilder('PUT', listsUrl + '/' + listId, { _rev: data.rev, items: data.items }),
+			req(utils.optionsBuilder('PUT', listsUrl  + listId, { _rev: data.rev, items: data.items }),
 				(err) => {
 					if( err ) return cb(err)
 					cb()
