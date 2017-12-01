@@ -33,6 +33,7 @@
         }
       }
     ],
-    "total_rows": 2
+    "total_rows": 2,
+    "offset": 0
   }
 }

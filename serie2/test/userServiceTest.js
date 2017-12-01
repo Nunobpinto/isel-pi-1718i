@@ -7,13 +7,13 @@ const User = require('../domain/model/User')
 
 const endpoints = {
 	DELETE: {
-		'http://127.0.0.1:5984/users/zemanel': fs.readFileSync('./test/files/deleteUser.json').toString()
+		'http://127.0.0.1:5984/users/zemanel?rev=123123': fs.readFileSync('./test/files/userService/deleteUser.json').toString()
 	},
 	PUT: {
-		'http://127.0.0.1:5984/users/zemanel': fs.readFileSync('./test/files/createUser.json').toString()
+		'http://127.0.0.1:5984/users/zemanel': fs.readFileSync('./test/files/userService/createUser.json').toString()
 	},
 	GET: {
-		'http://127.0.0.1:5984/users/zemanel': fs.readFileSync('./test/files/getUser.json').toString()
+		'http://127.0.0.1:5984/users/zemanel': fs.readFileSync('./test/files/userService/getUser.json').toString()
 	}
 }
 
@@ -58,11 +58,7 @@ function testCreateUser(test) {
 }
 
 function testDeleteUser(test) {
-	const userLists = [
-		'999',
-		'777'
-	]
-	const user = new User('zemanel', '123', 'Ze Manel', 'zemanel@email.com', userLists, '123123')
+	const user = new User('zemanel', '123', 'Ze Manel', 'zemanel@email.com', [], '123123')
 	userService.deleteUser(user, (err) => {
 		if( err )
 			test.ifError(err)

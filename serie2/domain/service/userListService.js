@@ -56,7 +56,7 @@ function init(dataSource) {
 		req(utils.optionsBuilder('POST', listsUrl, list), (err, res, data) => {
 			if( err ) return cb(err)
 			user.lists.push(data.id)
-			const list = mapper.mapToUserList({ listName, listDesc, items: [], _rev: data.rev })
+			const list = mapper.mapToUserList({ listName, listDesc, items: [], _rev: data.rev, _id: data.id })
 			req(utils.optionsBuilder('PUT', usersUrl + user.username, user),
 				(err) => {
 					if( err ) return cb(err)
@@ -67,14 +67,14 @@ function init(dataSource) {
 	}
 
 	function deleteList(listId, user, cb) {
-		debug('Deleting list with id = ' + listId)
-		req(utils.optionsBuilder('GET', listsUrl + '/' + listId), (err, res, data) => {
+		debug('Deleting list with id = "' + listId + '" of user = ' + user.username)
+		req(utils.optionsBuilder('GET', listsUrl + listId), (err, res, data) => {
 			if( err ) return cb(err)
-			req(utils.optionsBuilder('DELETE', listsUrl + '/' + listId, data), (err) => {
+			req(utils.optionsBuilder('DELETE', listsUrl + listId + `?rev=${data._rev}`), (err) => {
 				if( err ) return cb(err)
 				const idxToRemove = user.lists.findIndex(list => list === listId)
 				user.lists.splice(idxToRemove, 1)
-				req(utils.optionsBuilder('PUT', listsUrl + '/' + user.username, user), (err) => {
+				req(utils.optionsBuilder('PUT', usersUrl + user.username, user), (err) => {
 					if( err ) return cb(err)
 					cb()
 				})
@@ -87,7 +87,7 @@ function init(dataSource) {
 		req(utils.optionsBuilder('GET', listsUrl  + listId), (err, res, data) => {
 			if( err ) cb(err)
 			data.items.push({ movieId, moviePoster, movieRating })
-			req(utils.optionsBuilder('PUT', listsUrl + listId, data), (err) => {
+			req(utils.optionsBuilder('PUT', listsUrl + listId, data), (err, res, data) => {
 				if( err ) return cb(err)
 				cb()
 			})
@@ -98,9 +98,9 @@ function init(dataSource) {
 		debug(`Removing movie with id = ${movieId} from list with id = ${listId}`)
 		req(utils.optionsBuilder('GET', listsUrl  + listId), (err, res, data) => {
 			if( err ) cb(err)
-			const idxToRemove = data.items.findIndex(item => item.id === movieId)
-			data.splice(idxToRemove, 1)
-			req(utils.optionsBuilder('PUT', listsUrl  + listId, { _rev: data.rev, items: data.items }),
+			const idxToRemove = data.items.findIndex(item => parseInt(item.movieId) === movieId)
+			data.items.splice(idxToRemove, 1)
+			req(utils.optionsBuilder('PUT', listsUrl  + listId, data),
 				(err) => {
 					if( err ) return cb(err)
 					cb()

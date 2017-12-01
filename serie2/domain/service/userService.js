@@ -43,13 +43,13 @@ function init(dataSource) {
 		req(utils.optionsBuilder('PUT', url + username, json), (err, res, body) => {
 			if( err ) return cb(err)
 			if( res.statusCode === 409 ) return cb(null, null, `Username "${username}" was already taken!`)
-			cb(null, mapper.mapToUser({ username, password, fullName, email, lists: [], _rev: body._rev }))
+			cb(null, mapper.mapToUser({ username, password, fullName, email, lists: [], _rev: body.rev }))
 		})
 	}
 
 	function deleteUser(user, cb) {
 		debug('Deleting user with id = ' + user.username)
-		req(utils.optionsBuilder('DELETE', url + user.username, user), (err) => {
+		req(utils.optionsBuilder('DELETE', url + user.username + `?rev=${user._rev}`), (err) => {
 			if( err ) return cb(err)
 			cb()
 		})
