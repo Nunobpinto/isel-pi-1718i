@@ -1,10 +1,14 @@
 {
-  "compilerOptions": {
-    "module": "commonjs",
-    "target": "es5",
-    "sourceMap": true
+  "res": {
+    "statusCode": 200
   },
-  "exclude": [
-    "node_modules"
-  ]
+  "body": {
+    "_id": "zemanel",
+    "_rev": "123123",
+    "email": "zemanel@gmail.com",
+    "fullName": "Ze Manel",
+    "username": "zemanel",
+    "password": "123",
+    "lists": []
+  }
 }
