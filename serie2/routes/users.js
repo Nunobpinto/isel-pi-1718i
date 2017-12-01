@@ -7,6 +7,15 @@ const router = express.Router()
 
 router.use(authValidation)
 
+router.use('/:username' ,function (req, res, next) {
+	if(req.user.username !== req.params.username){
+		let err = new Error('User Not Found')
+		err.status = 404
+		return next(err)
+	}
+	next()
+})
+
 router.get('/:username', function(req, res, next) {
 	listService.getListsByUser(req.user.lists, (err, data) => {
 		if( err ) return next(err)
