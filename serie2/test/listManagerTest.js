@@ -4,7 +4,6 @@ const fs = require('fs')
 
 const listService = require('../domain/service/userListService')(reqToFile)
 const User = require('../domain/model/User')
-const List = require('../domain/model/UserList')
 
 const endpoints = {
 	DELETE: {
