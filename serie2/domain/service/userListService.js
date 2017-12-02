@@ -51,12 +51,13 @@ function init(dataSource) {
 		const list = {
 			listName,
 			listDesc,
+			owner: user.username,
 			items: []
 		}
 		req(utils.optionsBuilder('POST', listsUrl, list), (err, res, data) => {
 			if( err ) return cb(err)
 			user.lists.push(data.id)
-			const list = mapper.mapToUserList({ listName, listDesc, items: [], _rev: data.rev, _id: data.id })
+			const list = mapper.mapToUserList({ listName, listDesc, owner: user.username, items: [], _rev: data.rev, _id: data.id })
 			req(utils.optionsBuilder('PUT', usersUrl + user.username, user),
 				(err) => {
 					if( err ) return cb(err)
@@ -87,7 +88,7 @@ function init(dataSource) {
 		req(utils.optionsBuilder('GET', listsUrl  + listId), (err, res, data) => {
 			if( err ) cb(err)
 			data.items.push({ movieId, moviePoster, movieRating })
-			req(utils.optionsBuilder('PUT', listsUrl + listId, data), (err, res, data) => {
+			req(utils.optionsBuilder('PUT', listsUrl + listId, data), (err) => {
 				if( err ) return cb(err)
 				cb()
 			})

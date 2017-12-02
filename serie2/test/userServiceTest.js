@@ -25,7 +25,7 @@ function reqToFile(options, cb) {
 }
 
 function testGetUserById(test) {
-	userService.getUserById('zemanel', '123', (err, user) => {
+	userService.getUser('zemanel', '123', (err, user) => {
 		if( err )
 			test.ifError(err)
 		else {

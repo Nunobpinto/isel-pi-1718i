@@ -20,7 +20,9 @@
         "doc": {
           "items": [
             {
-              "movieId": "299536"
+              "movieId": "348",
+              "moviePoster": "/uJ842iV9vYfV0JbzGW54eqhftVM.jpg",
+              "movieRating": "7.9"
             }
           ],
           "listName": "To See",

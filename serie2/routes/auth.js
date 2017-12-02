@@ -13,7 +13,7 @@ router.get('/signin',function (req, res) {
 })
 
 router.post('/signin', function (req, res, next) {
-	userService.getUserById(req.body.username, req.body.password, (err, user, info) => {
+	userService.getUser(req.body.username, req.body.password, (err, user, info) => {
 		if(err) return next(err)
 		if(info) {
 			req.flash('loginError', info)
@@ -57,7 +57,7 @@ passport.serializeUser(function(user, cb) {
 })
 
 passport.deserializeUser(function(username, cb) {
-	userService.find(username, cb)
+	userService.findById(username, cb)
 })
 
 module.exports = router
