@@ -2,10 +2,18 @@
 
 const path = require('path')
 
+/**
+ * Configures partials and various helpers for handlbars object, used as a view template
+ * @param hbs - handlebars object
+ */
 module.exports = function configureHbs(hbs) {
 
 	hbs.registerPartials(path.join(__dirname, '../../views/partials'))
 
+
+	/**
+	 * Helper for pagination functionality, limit the content of each page
+	 */
 	hbs.registerHelper('paginate', function(query,currentPage, totalPages, size, options) {
 		let startPage, endPage, context
 		let nameSearched = query
@@ -49,6 +57,9 @@ module.exports = function configureHbs(hbs) {
 		return new hbs.SafeString(options.fn(context))
 	})
 
+	/**
+	 * Used to check if certain movie already exists in the given set of movies that belong to a user list
+	 */
 	hbs.registerHelper('checkIfExists',function (items, movieID, options) {
 		const context = {  }
 		context.exists = items.some(item=>parseInt(item.movieId)===movieID)

@@ -10,6 +10,11 @@ const utils = require('./serviceUtils')
 const apiKey = fs.readFileSync('apikey.txt').toString()
 const url = global.tmdb_url
 
+/**
+ * Obtain data from provided dataSource and construct a model object(Movie, Actor, Director, etc...)
+ * @param dataSource - repository (local or a Web API)
+ * @returns {{getMovieList: getMovieList, getMovieDetails, getActorDetails}}
+ */
 function init(dataSource) {
 	let req
 	if (dataSource)
@@ -23,6 +28,12 @@ function init(dataSource) {
 		'getActorDetails': memoize(getActorDetails)
 	}
 
+	/**
+	 * Search movies using the name provided as a keyword, and organizes the list retrieved by the response in paginated lists
+	 * @param name - keyword chosen by user
+	 * @param page - corresponding page to obtain more movies
+	 * @param cb (err,movieList)
+	 */
 	function getMovieList(name, page, cb) {
 		const movieListPath = url + `/search/movie?api_key=${apiKey}&query=${encodeURIComponent(name)}&page=${page}`
 
@@ -33,6 +44,11 @@ function init(dataSource) {
 		})
 	}
 
+	/**
+	 * Get details of a certain Movie and its cast and directors
+	 * @param movieId - identifier of chosen Movie to obtain its various details
+	 * @param cb (err,movie)
+	 */
 	function getMovieDetails(movieId, cb) {
 		const movieDetailsPath = url + `/movie/${movieId}?api_key=${apiKey}`
 		const movieCreditsPath = url + `/movie/${movieId}/credits?api_key=${apiKey}`
@@ -56,6 +72,11 @@ function init(dataSource) {
 		utils.parallel(tasks, processResponses)
 	}
 
+	/**
+	 * Get details of an actor with the id provided, also obtains a list of all movies he participated (filmography)
+	 * @param actorId - identifier of chosen Actor to obtain its various details and its Filmography
+	 * @param cb (err,actor)
+	 */
 	function getActorDetails(actorId, cb) {
 		const pathToActorPersonalInfo = url + `/person/${actorId}?api_key=${apiKey}`
 		const pathToMovieParticipations = url + `/person/${actorId}/movie_credits?api_key=${apiKey}`
@@ -78,6 +99,11 @@ function init(dataSource) {
 		utils.parallel(tasks, processResponses)
 	}
 
+	/**
+	 * Creates an http get request to provided path and retrieve its response as a JSON object
+	 * @param path - uri destination of HTTP GET Request
+	 * @param callback (err,obj)
+	 */
 	function reqAsJson(path, callback) {
 		req(path, (err, res, data) => {
 			debug('Making a request to ' + path)

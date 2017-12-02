@@ -1,5 +1,14 @@
 'use strict'
 
+/**
+ * Utility functions used in various services
+ */
+
+
+/**
+ * Generic options object to provide to an http request, containing its method, uri and request body
+ * @returns json object containing info for an HTTP Request
+ */
 function optionsBuilder() {
 	const argNames = ['method', 'uri', 'body']
 	let res = { json: true }
@@ -8,6 +17,12 @@ function optionsBuilder() {
 	return res
 }
 
+
+/**
+ * Processes asynchronous functions in parallel
+ * @param tasks - an array of functions to be executed
+ * @param callback (err,[functionResponse])
+ */
 function parallel(tasks, callback) {
 	let responses = []
 	let errOccured = false
