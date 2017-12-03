@@ -31,12 +31,12 @@ function init(dataSource) {
 
 	/**
 	 * Get list with the id received in param
-     * @param {string} listId
-     * @param {function} cb(err, UserList)
-     */
+	 * @param {string} listId
+	 * @param {function} cb(err, UserList)
+	 */
 	function getListById(listId, cb) {
 		debug('Fetching list with id = ' + listId)
-		req(utils.optionsBuilder('GET', listsUrl + listId), (err, res, body) => {
+		req(utils.optionsBuilder(listsUrl + listId), (err, res, body) => {
 			if( err ) return cb(err)
 			cb(null, mapper.mapToUserList(body))
 		})
@@ -44,12 +44,12 @@ function init(dataSource) {
 
 	/**
 	 * Get user lists according to the list ids received
-     * @param {Array<string>} listIds
-     * @param {function} cb(err, Array<UserList>)
-     */
+	 * @param {Array<string>} listIds
+	 * @param {function} cb(err, Array<UserList>)
+	 */
 	function getListsByUser(listIds, cb) {
 		debug('Fetching lists with these ids = ' + listIds)
-		req(utils.optionsBuilder('POST', listsUrl + '_all_docs?include_docs=true', { keys: listIds }),
+		req(utils.optionsBuilder(listsUrl + '_all_docs?include_docs=true', 'POST', { keys: listIds }),
 			(err, res, data) => {
 				if( err ) return cb(err)
 				let lists = []
@@ -63,11 +63,11 @@ function init(dataSource) {
 
 	/**
 	 * Creates a list with the given parameters and adds its id to the array of ids of the given user
-     * @param {string} listName
-     * @param {string} listDesc
-     * @param {User} user
-     * @param {function} cb(err, UserList)
-     */
+	 * @param {string} listName
+	 * @param {string} listDesc
+	 * @param {User} user
+	 * @param {function} cb(err, UserList)
+	 */
 	function createList(listName, listDesc, user, cb) {
 		debug(`Creating new list for user ${user.username} with name ${listName}`)
 		const list = {
@@ -76,11 +76,18 @@ function init(dataSource) {
 			owner: user.username,
 			items: []
 		}
-		req(utils.optionsBuilder('POST', listsUrl, list), (err, res, data) => {
+		req(utils.optionsBuilder(listsUrl, 'POST', list), (err, res, data) => {
 			if( err ) return cb(err)
 			user.lists.push(data.id)
-			const list = mapper.mapToUserList({ listName, listDesc, owner: user.username, items: [], _rev: data.rev, _id: data.id })
-			req(utils.optionsBuilder('PUT', usersUrl + user.username, user),
+			const list = mapper.mapToUserList({
+				listName,
+				listDesc,
+				owner: user.username,
+				items: [],
+				_rev: data.rev,
+				_id: data.id
+			})
+			req(utils.optionsBuilder(usersUrl + user.username, 'PUT', user),
 				(err) => {
 					if( err ) return cb(err)
 					cb(null, list)
@@ -91,19 +98,19 @@ function init(dataSource) {
 
 	/**
 	 * Deletes list with the given id and removes it from the specified user's list array
-     * @param {string} listId
-     * @param {User} user
-     * @param {function} cb(err) if successful, no parameters are passed to the callback
-     */
+	 * @param {string} listId
+	 * @param {User} user
+	 * @param {function} cb(err) if successful, no parameters are passed to the callback
+	 */
 	function deleteList(listId, user, cb) {
 		debug('Deleting list with id = "' + listId + '" of user = ' + user.username)
-		req(utils.optionsBuilder('GET', listsUrl + listId), (err, res, data) => {
+		req(utils.optionsBuilder(listsUrl + listId), (err, res, data) => {
 			if( err ) return cb(err)
-			req(utils.optionsBuilder('DELETE', listsUrl + listId + `?rev=${data._rev}`), (err) => {
+			req(utils.optionsBuilder(listsUrl + listId + `?rev=${data._rev}`, 'DELETE'), (err) => {
 				if( err ) return cb(err)
 				const idxToRemove = user.lists.findIndex(list => list === listId)
 				user.lists.splice(idxToRemove, 1)
-				req(utils.optionsBuilder('PUT', usersUrl + user.username, user), (err) => {
+				req(utils.optionsBuilder(usersUrl + user.username, 'PUT', user), (err) => {
 					if( err ) return cb(err)
 					cb()
 				})
@@ -113,18 +120,18 @@ function init(dataSource) {
 
 	/**
 	 * Add specific movie to list with id received in param
-     * @param {string} listId
-     * @param {string} movieId
-     * @param {string} moviePoster
-     * @param {string} movieRating
-     * @param {function} cb(err) if successful, no parameters are passed to the callback
-     */
+	 * @param {string} listId
+	 * @param {string} movieId
+	 * @param {string} moviePoster
+	 * @param {string} movieRating
+	 * @param {function} cb(err) if successful, no parameters are passed to the callback
+	 */
 	function addMovieToList(listId, movieId, moviePoster, movieRating, cb) {
 		debug(`Adding movie with id = ${movieId} to list with id = ${listId}`)
-		req(utils.optionsBuilder('GET', listsUrl  + listId), (err, res, data) => {
+		req(utils.optionsBuilder(listsUrl + listId), (err, res, data) => {
 			if( err ) cb(err)
 			data.items.push({ movieId, moviePoster, movieRating })
-			req(utils.optionsBuilder('PUT', listsUrl + listId, data), (err) => {
+			req(utils.optionsBuilder(listsUrl + listId, 'PUT', data), (err) => {
 				if( err ) return cb(err)
 				cb()
 			})
@@ -133,17 +140,17 @@ function init(dataSource) {
 
 	/**
 	 * Remove specified movie from list with id received in param
-     * @param {string} listId
-     * @param {string} movieId
-     * @param {function} cb(err) if successful, no parameters are passed to the callback
-     */
+	 * @param {string} listId
+	 * @param {string} movieId
+	 * @param {function} cb(err) if successful, no parameters are passed to the callback
+	 */
 	function removeMovieFromList(listId, movieId, cb) {
 		debug(`Removing movie with id = ${movieId} from list with id = ${listId}`)
-		req(utils.optionsBuilder('GET', listsUrl  + listId), (err, res, data) => {
+		req(utils.optionsBuilder(listsUrl + listId), (err, res, data) => {
 			if( err ) cb(err)
 			const idxToRemove = data.items.findIndex(item => parseInt(item.movieId) === movieId)
 			data.items.splice(idxToRemove, 1)
-			req(utils.optionsBuilder('PUT', listsUrl  + listId, data),
+			req(utils.optionsBuilder(listsUrl + listId, 'PUT', data),
 				(err) => {
 					if( err ) return cb(err)
 					cb()

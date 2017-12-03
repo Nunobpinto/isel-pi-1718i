@@ -34,7 +34,7 @@ function init(dataSource) {
      */
 	function getUser(username, password, cb) {
 		debug('Fetching user with id = ' + username)
-		req(utils.optionsBuilder('GET', url + username), (err, res, body) => {
+		req(utils.optionsBuilder(url + username), (err, res, body) => {
 			if ( err || res.statusCode === 404 ) return cb( { message: 'Something broke!', statusCode: (res ? res.statusCode : 500) } )
 			if( res.statusCode !== 200 ) return cb(null, null, 'Invalid Credentials')
 			if( password !== body.password ) return cb(null, null, 'Invalid Credentials')
@@ -59,7 +59,7 @@ function init(dataSource) {
 			email,
 			lists: []
 		}
-		req(utils.optionsBuilder('PUT', url + username, json), (err, res, body) => {
+		req(utils.optionsBuilder(url + username, 'PUT', json), (err, res, body) => {
 			if ( err || res.statusCode === 404 ) return cb( { message: 'Something broke!', statusCode: (res ? res.statusCode : 500) } )
 			if( res.statusCode === 409 ) return cb(null, null, `Username "${username}" was already taken!`)
 			cb(null, mapper.mapToUser({ username, password, fullName, email, lists: [], _rev: body.rev }))
@@ -73,7 +73,7 @@ function init(dataSource) {
      */
 	function deleteUser(user, cb) {
 		debug('Deleting user with id = ' + user.username)
-		req(utils.optionsBuilder('DELETE', url + user.username + `?rev=${user._rev}`), (err) => {
+		req(utils.optionsBuilder(url + user.username + `?rev=${user._rev}`, 'DELETE'), (err) => {
 			if( err ) return cb(err)
 			cb()
 		})
@@ -85,7 +85,7 @@ function init(dataSource) {
      * @param {function} cb(err, User)
      */
 	function findById(username, cb) {
-		req(utils.optionsBuilder('GET', url + username), (err, res, body) => {
+		req(utils.optionsBuilder(url + username), (err, res, body) => {
 			if ( err || res.statusCode === 404 ) return cb( { message: 'Something broke!', statusCode: (res ? res.statusCode : 500) } )
 			cb(null, mapper.mapToUser(body))
 		})
