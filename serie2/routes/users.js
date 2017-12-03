@@ -11,7 +11,7 @@ const router = express.Router()
 router.use(authValidation)
 
 /**
- * //TODO
+ * Prevents :username from being anything but the current session's username
  */
 router.use('/:username' ,function (req, res, next) {
 	if(req.user.username !== req.params.username){
