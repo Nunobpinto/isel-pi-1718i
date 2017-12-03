@@ -5,8 +5,14 @@ const listService = require('../domain/service/userListService')()
 const authValidation = require('./middlewares/validation')
 const router = express.Router()
 
+/**
+ * Restricts access to this route to only signed in users
+ */
 router.use(authValidation)
 
+/**
+ * //TODO
+ */
 router.use('/:username' ,function (req, res, next) {
 	if(req.user.username !== req.params.username){
 		let err = new Error('User Not Found')
@@ -16,6 +22,9 @@ router.use('/:username' ,function (req, res, next) {
 	next()
 })
 
+/**
+ * Shows user profile page
+ */
 router.get('/:username', function(req, res, next) {
 	listService.getListsByUser(req.user.lists, (err, data) => {
 		if( err ) return next(err)
@@ -23,6 +32,9 @@ router.get('/:username', function(req, res, next) {
 	})
 })
 
+/**
+ * Shows lists of a user
+ */
 router.get('/:userName/lists', function(req, res, next) {
 	listService.getListsByUser(req.user.lists, (err, data) => {
 		if( err ) return next(err)
@@ -30,10 +42,16 @@ router.get('/:userName/lists', function(req, res, next) {
 	})
 })
 
+/**
+ * Shows form to create a new list
+ */
 router.get('/:username/lists/new', function(req, res) {
 	res.render('createNewList')
 })
 
+/**
+ * Adds newly created list to user, redirects to user lists page
+ */
 router.post('/:username/lists/new', function(req, res, next) {
 	listService.createList(req.body.name, req.body.description, req.user, (err) => {
 		if( err ) return next(err)
@@ -41,6 +59,9 @@ router.post('/:username/lists/new', function(req, res, next) {
 	})
 })
 
+/**
+ * Shows specific list
+ */
 router.get('/:username/lists/:listId', function(req, res, next) {
 	listService.getListById(req.params.listId, (err, data) => {
 		if( err ) return next(err)
@@ -48,6 +69,9 @@ router.get('/:username/lists/:listId', function(req, res, next) {
 	})
 })
 
+/**
+ * Adds a movie to a list
+ */
 router.post('/:username/lists/:listId', function(req, res, next) {
 	listService.addMovieToList(
 		req.params.listId,

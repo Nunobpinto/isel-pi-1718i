@@ -8,8 +8,9 @@ const debug = require('debug')('serie2:userService')
 const url = global.couchdb_url + '/users/'
 
 /**
- * Defines req according to dataSource
- * @param dataSource
+ * Obtain data from provided dataSource and manages user interaction with application
+ * @param {function} dataSource - repository (local or a Web API)
+ * @returns {getUser, createUser, deleteUser, findById}
  */
 function init(dataSource) {
 	let req
@@ -27,9 +28,9 @@ function init(dataSource) {
 
 	/**
 	 * Get user by username and password in order to login
-     * @param username
-     * @param password
-     * @param cb
+     * @param {string} username
+     * @param {string} password
+     * @param {function} cb(err, User)
      */
 	function getUser(username, password, cb) {
 		debug('Fetching user with id = ' + username)
@@ -43,11 +44,11 @@ function init(dataSource) {
 
 	/**
 	 * Create user with given params
-     * @param username
-     * @param password
-     * @param fullName
-     * @param email
-     * @param cb
+     * @param {string} username
+     * @param {string} password
+     * @param {string} fullName
+     * @param {string} email
+     * @param {function} cb(err, User)
      */
 	function createUser(username, password, fullName, email, cb) {
 		debug('Creating user with username = ' + username)
@@ -67,8 +68,8 @@ function init(dataSource) {
 
 	/**
 	 * Delete user received in param
-     * @param user
-     * @param cb
+     * @param {User} user
+     * @param {function} cb(err) if successful, no parameters are passed to the callback
      */
 	function deleteUser(user, cb) {
 		debug('Deleting user with id = ' + user.username)
@@ -79,9 +80,9 @@ function init(dataSource) {
 	}
 
 	/**
-	 * Find the user with de id received in param
-     * @param username
-     * @param cb
+	 * Find the user with the given username
+     * @param {string} username
+     * @param {function} cb(err, User)
      */
 	function findById(username, cb) {
 		req(utils.optionsBuilder('GET', url + username), (err, res, body) => {

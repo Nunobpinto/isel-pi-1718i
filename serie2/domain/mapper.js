@@ -9,6 +9,12 @@ const MovieList = require('./model/MovieList')
 const User = require('./model/User')
 const UserList = require('./model/UserList')
 
+/**
+ * Maps movie search json object to a movie list container
+ * @param {Object} movieList
+ * @param {string} query
+ * @returns {MovieList} MovieList
+ */
 function mapToMovieList(movieList, query) {
 	return new MovieList(
 		query,
@@ -19,6 +25,11 @@ function mapToMovieList(movieList, query) {
 	)
 }
 
+/**
+ * Maps user json object to User entity
+ * @param {Object} json
+ * @returns {User} User
+ */
 function mapToUser(json) {
 	return new User(
 		json.username,
@@ -30,30 +41,60 @@ function mapToUser(json) {
 	)
 }
 
+/**
+ * Maps json list object to UserList entity
+ * @param {Object} json
+ * @returns {UserList} UserList
+ */
 function mapToUserList(json) {
 	return new UserList(json.listName, json.listDesc, json.owner, json.items, json._rev, json._id)
 }
 
-function mapToFilmography(movieList) {
-	return movieList.map(item => new MovieListItem(item.title, item.id, item.release_date, item.poster_path, item.vote_average))
+/**
+ * Maps filmography of an actor to array of MovieList
+ * @param {Object} json
+ * @returns {Array<MovieListItem>} Filmography
+ */
+function mapToFilmography(json) {
+	return json.map(item => new MovieListItem(item.title, item.id, item.release_date, item.poster_path, item.vote_average))
 }
 
-function mapToMovie(obj) {
-	return new Movie(obj.tagline, obj.id, obj.original_title, obj.overview, obj.release_date, obj.vote_average, obj.poster_path, obj.genres.map(item => item.name).join(' / '))
+/**
+ * Maps json movie object to Movie entity
+ * @param {Object} json
+ * @returns {Movie} Movie
+ */
+function mapToMovie(json) {
+	return new Movie(json.tagline, json.id, json.original_title, json.overview, json.release_date, json.vote_average, json.poster_path, json.genres.map(item => item.name).join(' / '))
 }
 
+/**
+ * Maps crew json array to array of Director entity
+ * @param {Object} crew
+ * @returns {Array<Director>} Director Array
+ */
 function mapToDirector(crew) {
 	return crew
 		.filter(crewMember => crewMember.job === 'Director')
 		.map(director => new Director(director.name, director.id, director.profile_path))
 }
 
+/**
+ * Maps cast json array to array of CastMember entity
+ * @param {Object} cast
+ * @returns {Array<CastMember>} CastMember Array
+ */
 function mapToCastMember(cast) {
 	return 	cast.map(castMember => new CastMember(castMember.name, castMember.id, castMember.character, castMember.profile_path))
 }
 
-function mapToActor(obj) {
-	return new Actor(obj.biography, obj.birthday, obj.deathday, obj.id, obj.name, obj.popularity, obj.profile_path)
+/**
+ * Maps json actor to Actor entity
+ * @param {Object} json
+ * @returns {Actor} Actor
+ */
+function mapToActor(json) {
+	return new Actor(json.biography, json.birthday, json.deathday, json.id, json.name, json.popularity, json.profile_path)
 }
 
 module.exports = {

@@ -9,8 +9,9 @@ const listsUrl = global.couchdb_url + '/lists/'
 const usersUrl = global.couchdb_url + '/users/'
 
 /**
- * Defines req according to dataSource
- * @param dataSource
+ * Obtain data from provided dataSource and manages user movie list interaction with application
+ * @param {function} dataSource - repository (local or a Web API)
+ * @returns {getListById, getListsByUser, createList, deleteList, addMovieToList, removeMovieFromList}
  */
 function init(dataSource) {
 	let req
@@ -30,8 +31,8 @@ function init(dataSource) {
 
 	/**
 	 * Get list with the id received in param
-     * @param listId
-     * @param cb
+     * @param {string} listId
+     * @param {function} cb(err, UserList)
      */
 	function getListById(listId, cb) {
 		debug('Fetching list with id = ' + listId)
@@ -42,9 +43,9 @@ function init(dataSource) {
 	}
 
 	/**
-	 * Get user lists according to the list ids receveid
-     * @param listIds
-     * @param cb
+	 * Get user lists according to the list ids received
+     * @param {Array<string>} listIds
+     * @param {function} cb(err, Array<UserList>)
      */
 	function getListsByUser(listIds, cb) {
 		debug('Fetching lists with these ids = ' + listIds)
@@ -61,11 +62,11 @@ function init(dataSource) {
 	}
 
 	/**
-	 * Create user list with given params
-     * @param listName
-     * @param listDesc
-     * @param user
-     * @param cb
+	 * Creates a list with the given parameters and adds its id to the array of ids of the given user
+     * @param {string} listName
+     * @param {string} listDesc
+     * @param {User} user
+     * @param {function} cb(err, UserList)
      */
 	function createList(listName, listDesc, user, cb) {
 		debug(`Creating new list for user ${user.username} with name ${listName}`)
@@ -89,10 +90,10 @@ function init(dataSource) {
 	}
 
 	/**
-	 * Delete user list with id received in param
-     * @param listId
-     * @param user
-     * @param cb
+	 * Deletes list with the given id and removes it from the specified user's list array
+     * @param {string} listId
+     * @param {User} user
+     * @param {function} cb(err) if successful, no parameters are passed to the callback
      */
 	function deleteList(listId, user, cb) {
 		debug('Deleting list with id = "' + listId + '" of user = ' + user.username)
@@ -112,11 +113,11 @@ function init(dataSource) {
 
 	/**
 	 * Add specific movie to list with id received in param
-     * @param listId
-     * @param movieId
-     * @param moviePoster
-     * @param movieRating
-     * @param cb
+     * @param {string} listId
+     * @param {string} movieId
+     * @param {string} moviePoster
+     * @param {string} movieRating
+     * @param {function} cb(err) if successful, no parameters are passed to the callback
      */
 	function addMovieToList(listId, movieId, moviePoster, movieRating, cb) {
 		debug(`Adding movie with id = ${movieId} to list with id = ${listId}`)
@@ -131,10 +132,10 @@ function init(dataSource) {
 	}
 
 	/**
-	 * Remove specific movie from list with id received in param
-     * @param listId
-     * @param movieId
-     * @param cb
+	 * Remove specified movie from list with id received in param
+     * @param {string} listId
+     * @param {string} movieId
+     * @param {function} cb(err) if successful, no parameters are passed to the callback
      */
 	function removeMovieFromList(listId, movieId, cb) {
 		debug(`Removing movie with id = ${movieId} from list with id = ${listId}`)

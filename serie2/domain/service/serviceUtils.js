@@ -7,11 +7,19 @@
 
 /**
  * Generic options object to provide to an http request, containing its method, uri and request body
- * @returns json object containing info for an HTTP Request
+ * The parameters must be provided in the following order: URI, METHOD, BODY.
+ * Only URI is obligatory, the rest can be omitted.
+ *
+ * By default, the object returned is:
+ * { method: 'GET', json: true, uri: @param uri }
+ * @returns {Object} json object containing info for an HTTP Request
  */
 function optionsBuilder() {
-	const argNames = ['method', 'uri', 'body']
-	let res = { json: true }
+	const argNames = ['uri', 'method', 'body']
+	let res = {
+		method: 'GET',
+		json: true
+	}
 	for( let i = 0; i < arguments.length; ++i )
 		res[argNames[i]] = arguments[i]
 	return res
@@ -20,8 +28,8 @@ function optionsBuilder() {
 
 /**
  * Processes asynchronous functions in parallel
- * @param tasks - an array of functions to be executed
- * @param callback (err,[functionResponse])
+ * @param {Array} tasks - an array of functions to be executed
+ * @param {function} callback (err,[functionResponse])
  */
 function parallel(tasks, callback) {
 	let responses = []

@@ -58,7 +58,7 @@ module.exports = function configureHbs(hbs) {
 	})
 
 	/**
-	 * Used to check if certain movie already exists in the given set of movies that belong to a user list
+	 * Helper used to check if certain movie already exists in the given set of movies that belong to a user list
 	 */
 	hbs.registerHelper('checkIfExists',function (items, movieID, options) {
 		const context = {  }

@@ -5,6 +5,9 @@ const movieService = require('../domain/service/tmdbService')()
 const listService = require('../domain/service/userListService')()
 const router = app.Router()
 
+/**
+ * Shows paginated search results
+ */
 router.get('/search', function(req, res, next) {
 	const name = req.query['name']
 	const page = req.query['page']
@@ -14,6 +17,9 @@ router.get('/search', function(req, res, next) {
 	})
 })
 
+/**
+ * Shows movie information, its directors and cast
+ */
 router.get('/:movieId', function(req, res, next) {
 	const movieId = req.params.movieId
 	movieService.getMovieDetails(movieId, (err, movie) => {
