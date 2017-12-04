@@ -71,7 +71,7 @@ function testGetListsByUser(test) {
 			test.equal(lists[0].id, '4a5cd144a1789249096663c6f000196d')
 			test.equal(lists[0].items.length, undefined)
 			test.equal(lists[1].id, '4a5cd144a1789249096663c6f00020a4')
-			test.equal(lists[1].items[0].movieId, '299536')
+			test.equal(lists[1].items[0].movieId, '348')
 		}
 		test.done()
 	})
