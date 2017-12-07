@@ -63,7 +63,7 @@ router.post('/:username/lists/new', function(req, res, next) {
  * Shows specific list
  */
 router.get('/:username/lists/:listId', function(req, res, next) {
-	listService.getListById(req.params.listId, (err, data) => {
+	listService.getListById(req.params.listId, req.user.username, (err, data) => {
 		if( err ) return next(err)
 		res.render('userSpecificList', data)
 	})

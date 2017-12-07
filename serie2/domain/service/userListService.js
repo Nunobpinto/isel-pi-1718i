@@ -32,13 +32,16 @@ function init(dataSource) {
 	/**
 	 * Get list with the id received in param
 	 * @param {string} listId
+	 * @param {string} username
 	 * @param {function} cb(err, UserList)
 	 */
-	function getListById(listId, cb) {
+	function getListById(listId, username, cb) {
 		debug('Fetching list with id = ' + listId)
 		req(utils.optionsBuilder(listsUrl + listId), (err, res, body) => {
 			if( err ) return cb(err)
-			cb(null, mapper.mapToUserList(body))
+			const list = mapper.mapToUserList(body)
+			if( res.statusCode === 404 || list.owner !== username ) return cb({ message: 'List not found!', status: 404 })
+			cb(null, list)
 		})
 	}
 
@@ -52,6 +55,7 @@ function init(dataSource) {
 		req(utils.optionsBuilder(listsUrl + '_all_docs?include_docs=true', 'POST', { keys: listIds }),
 			(err, res, data) => {
 				if( err ) return cb(err)
+				if( res.statusCode > 400 ) return cb({ message: 'Something broke!', status: res.statusCode })
 				let lists = []
 				data.rows.forEach((item) => {
 					lists.push(mapper.mapToUserList(item.doc))
@@ -78,6 +82,7 @@ function init(dataSource) {
 		}
 		req(utils.optionsBuilder(listsUrl, 'POST', list), (err, res, data) => {
 			if( err ) return cb(err)
+			if( res.statusCode > 400 ) return cb({ message: 'Something broke!', status: res.statusCode })
 			user.lists.push(data.id)
 			const list = mapper.mapToUserList({
 				listName,
@@ -88,7 +93,8 @@ function init(dataSource) {
 				_id: data.id
 			})
 			req(utils.optionsBuilder(usersUrl + user.username, 'PUT', user),
-				(err) => {
+				(err, res) => {
+					if( res.statusCode > 400 ) return cb({ message: 'Something broke!', status: res.statusCode })
 					if( err ) return cb(err)
 					cb(null, list)
 				}
@@ -106,12 +112,15 @@ function init(dataSource) {
 		debug('Deleting list with id = "' + listId + '" of user = ' + user.username)
 		req(utils.optionsBuilder(listsUrl + listId), (err, res, data) => {
 			if( err ) return cb(err)
-			req(utils.optionsBuilder(listsUrl + listId + `?rev=${data._rev}`, 'DELETE'), (err) => {
+			if( res.statusCode === 404 ) return cb({ message: 'List not found!', status: res.statusCode })
+			req(utils.optionsBuilder(listsUrl + listId + `?rev=${data._rev}`, 'DELETE'), (err, res) => {
 				if( err ) return cb(err)
+				if( res.statusCode > 400 ) return cb({ message: 'Something broke!', status: res.statusCode })
 				const idxToRemove = user.lists.findIndex(list => list === listId)
 				user.lists.splice(idxToRemove, 1)
-				req(utils.optionsBuilder(usersUrl + user.username, 'PUT', user), (err) => {
+				req(utils.optionsBuilder(usersUrl + user.username, 'PUT', user), (err, res) => {
 					if( err ) return cb(err)
+					if( res.statusCode > 400 ) return cb({ message: 'Something broke!', status: res.statusCode })
 					cb()
 				})
 			})
@@ -130,9 +139,11 @@ function init(dataSource) {
 		debug(`Adding movie with id = ${movieId} to list with id = ${listId}`)
 		req(utils.optionsBuilder(listsUrl + listId), (err, res, data) => {
 			if( err ) cb(err)
+			if( res.statusCode === 404 ) return cb({ message: 'List not found!', status: res.statusCode })
 			data.items.push({ movieId, moviePoster, movieRating })
-			req(utils.optionsBuilder(listsUrl + listId, 'PUT', data), (err) => {
+			req(utils.optionsBuilder(listsUrl + listId, 'PUT', data), (err, res) => {
 				if( err ) return cb(err)
+				if( res.statusCode > 400 ) return cb({ message: 'Something broke!', status: res.statusCode })
 				cb()
 			})
 		})
@@ -148,11 +159,13 @@ function init(dataSource) {
 		debug(`Removing movie with id = ${movieId} from list with id = ${listId}`)
 		req(utils.optionsBuilder(listsUrl + listId), (err, res, data) => {
 			if( err ) cb(err)
+			if( res.statusCode === 404 ) return cb({ message: 'List not found!', status: res.statusCode })
 			const idxToRemove = data.items.findIndex(item => parseInt(item.movieId) === movieId)
 			data.items.splice(idxToRemove, 1)
 			req(utils.optionsBuilder(listsUrl + listId, 'PUT', data),
-				(err) => {
+				(err, res) => {
 					if( err ) return cb(err)
+					if( res.statusCode > 400 ) return cb({ message: 'Something broke!', status: res.statusCode })
 					cb()
 				}
 			)
