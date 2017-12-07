@@ -26,19 +26,19 @@ app.use(bodyParser.urlencoded({ extended: false }))
 app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')))
 app.use(express.static(path.join(__dirname, 'public')))
 app.use(cookieParser())
-app.use(session({secret: 'keyboard cat', resave: false, saveUninitialized: true }))
+app.use(session({ secret: 'keyboard cat', resave: false, saveUninitialized: true }))
 app.use(flash())
 app.use(passport.initialize())
 app.use(passport.session())
 
 app.use((req, res, next) => {
-	if(req.user)
+	if( req.user )
 		res.locals.user = req.user
 	next()
 })
 
 app.use('/', index)
-app.use('/auth',auth)
+app.use('/auth', auth)
 app.use('/movies', movies)
 app.use('/actors', actors)
 app.use('/users', users)
@@ -60,6 +60,8 @@ app.use(function(err, req, res, next) {
 
 	// render the error page
 	res.status(err.status || 500)
+	if( res.statusCode === 500 ) req.logout()
+	res.locals.statusCode = res.statusCode
 	res.render('error')
 })
 
