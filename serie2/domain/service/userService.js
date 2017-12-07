@@ -34,11 +34,11 @@ function init(dataSource) {
      */
 	function getUser(username, password, cb) {
 		debug('Fetching user with id = ' + username)
-		req(utils.optionsBuilder(url + username), (err, res, body) => {
-			if ( err || res.statusCode === 404 ) return cb( { message: 'Something broke!', statusCode: (res ? res.statusCode : 500) } )
-			if( res.statusCode !== 200 ) return cb(null, null, 'Invalid Credentials')
-			if( password !== body.password ) return cb(null, null, 'Invalid Credentials')
-			cb(null, mapper.mapToUser(body))
+		findById(username,(err,user,info)=>{
+			if( err ) return cb(err)
+			if( info ) return cb(null,null,info)
+			if( password !== user.password ) return cb(null, null, 'Invalid Credentials')
+			cb(null,user)
 		})
 	}
 
@@ -60,7 +60,7 @@ function init(dataSource) {
 			lists: []
 		}
 		req(utils.optionsBuilder(url + username, 'PUT', json), (err, res, body) => {
-			if ( err || res.statusCode === 404 ) return cb( { message: 'Something broke!', statusCode: (res ? res.statusCode : 500) } )
+			if ( err ) return cb( err )
 			if( res.statusCode === 409 ) return cb(null, null, `Username "${username}" was already taken!`)
 			cb(null, mapper.mapToUser({ username, password, fullName, email, lists: [], _rev: body.rev }))
 		})
@@ -86,7 +86,8 @@ function init(dataSource) {
      */
 	function findById(username, cb) {
 		req(utils.optionsBuilder(url + username), (err, res, body) => {
-			if ( err || res.statusCode === 404 ) return cb( { message: 'Something broke!', statusCode: (res ? res.statusCode : 500) } )
+			if( err ) return cb(err)
+			if ( res.statusCode !== 200 ) return cb(null, null, 'Invalid Credentials')
 			cb(null, mapper.mapToUser(body))
 		})
 	}

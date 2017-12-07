@@ -107,8 +107,9 @@ function init(dataSource) {
 	function reqAsJson(path, callback) {
 		req(path, (err, res, data) => {
 			debug('Making a request to ' + path)
-			if( err || res.statusCode !== 200 )
-				return callback({ message: 'Something broke!', statusCode: (res ? res.statusCode : 500) })
+			if( err ) return callback(err)
+			if( res.statusCode !== 200 )
+				return callback({ message: 'Something broke!', status: res.statusCode  })
 			const obj = JSON.parse(data.toString())
 			callback(null, obj)
 		})
