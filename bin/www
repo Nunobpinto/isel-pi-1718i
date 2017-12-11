@@ -5,7 +5,7 @@
  */
 
 const app = require('../app')
-const debug = require('debug')('serie2:server')
+const debug = require('debug')('LI52D-G11:server')
 const http = require('http')
 
 /**

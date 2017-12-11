@@ -1,7 +1,7 @@
 'use strict'
 
 const Cache = require('./cache')
-const debug = require('debug')('serie2:memoize')
+const debug = require('debug')('LI52D-G11:memoize')
 
 /**
  * Caches the return value of the function fn in a map

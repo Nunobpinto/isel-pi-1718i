@@ -4,7 +4,7 @@ const fs = require('fs')
 const memoize = require('../../cache/memoize')
 const mapper = require('../mapper')
 const global = require('../../global')
-const debug = require('debug')('serie2:tmdbService')
+const debug = require('debug')('LI52D-G11:tmdbService')
 const utils = require('./serviceUtils')
 
 const apiKey = fs.readFileSync('apikey.txt').toString()

@@ -3,7 +3,7 @@
 const global = require('../../global')
 const mapper = require('../mapper')
 const utils = require('./serviceUtils')
-const debug = require('debug')('serie2:userService')
+const debug = require('debug')('LI52D-G11:userService')
 
 const url = global.couchdb_url + '/users/'
 
