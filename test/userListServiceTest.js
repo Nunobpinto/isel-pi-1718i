@@ -49,7 +49,7 @@ function testCreateList(test) {
 }
 
 function testGetListById(test) {
-	listService.getListById(123, (err, list) => {
+	listService.getListById(123, 'nuno', (err, list) => {
 		if( err )
 			test.ifError(err)
 		else {

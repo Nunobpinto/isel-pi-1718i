@@ -7,6 +7,7 @@
     "_rev": "123123",
     "listName": "Italian Movies",
     "listDesc": "The best out there",
+    "owner": "nuno",
     "items": [
       {
           "movieId": "348",
