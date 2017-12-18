@@ -160,7 +160,7 @@ function init(dataSource) {
 		req(utils.optionsBuilder(listsUrl + listId), (err, res, data) => {
 			if( err ) cb(err)
 			if( res.statusCode === 404 ) return cb({ message: 'List not found!', status: res.statusCode })
-			const idxToRemove = data.items.findIndex(item => parseInt(item.movieId) === movieId)
+			const idxToRemove = data.items.findIndex(item => item.movieId === movieId)
 			data.items.splice(idxToRemove, 1)
 			req(utils.optionsBuilder(listsUrl + listId, 'PUT', data),
 				(err, res) => {

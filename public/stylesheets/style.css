@@ -156,3 +156,15 @@
 .addToList:hover{
     color: orange;
 }
+
+.removeToList {
+    border-radius: 50px;
+    outline: none;
+    border: none;
+    background-color: white;
+    font-size: 20px;
+}
+
+.removeToList:hover{
+    color: orange;
+}

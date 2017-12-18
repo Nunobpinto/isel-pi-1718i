@@ -80,8 +80,17 @@ router.post('/:username/lists/:listId', function(req, res, next) {
 		req.body.rating,
 		(err) => {
 			if( err ) return next(err)
-			res.redirect(`/movies/${req.body.movieID}`)
 		})
+})
+
+router.delete('/:username/lists/:listId',function (req, res, next) {
+	listService.removeMovieFromList(
+		req.params.listId,
+		req.body.movieID,
+		(err) => {
+			if( err ) return next(err)
+		}
+	)
 })
 
 module.exports = router
