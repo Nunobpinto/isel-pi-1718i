@@ -97,7 +97,7 @@ function testDeleteList(test) {
 }
 
 function testRemoveMovieFromList(test) {
-	listService.removeMovieFromList(124, 348, (err) => {
+	listService.removeMovieFromList(124, "348", (err) => {
 		if( err )
 			test.ifError(err)
 		test.done()
