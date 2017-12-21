@@ -83,6 +83,9 @@ router.post('/:username/lists/:listId', function(req, res, next) {
 		})
 })
 
+/**
+ * Deletes a list of movies from specific user
+ */
 router.delete('/:username/lists/:listId',function (req, res, next) {
 	listService.removeMovieFromList(
 		req.params.listId,
@@ -90,6 +93,22 @@ router.delete('/:username/lists/:listId',function (req, res, next) {
 		(err) => {
 			if( err ) return next(err)
 		}
+	)
+})
+
+/**
+ * Updates name or description of a specific list
+ */
+router.put('/:username/lists/:listId', function (req, res, next) {
+	listService.updateList(
+		req.params.listId,
+		req.body.name,
+		req.body.description,
+		req.user,
+		(err) => {
+            if (err) return next(err)
+				res.redirect(`/users/${req.params.username}/lists`)
+        }
 	)
 })
 
