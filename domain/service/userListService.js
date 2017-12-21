@@ -26,6 +26,7 @@ function init(dataSource) {
 		getListsByUser,
 		createList,
 		deleteList,
+		updateList,
 		addMovieToList,
 		removeMovieFromList
 	}
@@ -127,6 +128,28 @@ function init(dataSource) {
 			})
 		})
 	}
+
+    /**
+     * Update specific user list of movies with id received in param
+     * @param {string} listId
+     * @param {string} listName
+     * @param {string} listDesc
+     * @param {string} user
+     * @param {function} cb(err) if successful, no parameters are passed to the callback
+     */
+	function updateList(listId, listName, listDesc, user, cb) {
+        debug('Updating list with id = "' + listId + '" of user = ' + user.username)
+		req(utils.optionsBuilder(listsUrl + listId), (err, res, data)=>{
+			if(err) return cb(err)
+			if(res.statusCode === 404) return cb({message:  'List not found!', status: res.statusCode })
+			data.name = listName
+			data.description = listDesc
+			req(utils.optionsBuilder(listsUrl + data.id, 'PUT', data), (err, res) => {
+				if( err ) return cb(err)
+				if( res.statusCode > 400 ) return cb({ message: 'Something broke!', status: res.statusCode })
+			})
+		})
+    }
 
 	/**
 	 * Add specific movie to list with id received in param

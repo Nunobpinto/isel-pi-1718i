@@ -16,9 +16,11 @@
         {{#each lists}}
             <div class="col-lg-3">
                 <div id="listItem" class="card bg-dark">
-                    <div id="txtAlignCenter" class="card-body">
+                    <div class="userListsOfMovies" id="txtAlignCenter">
                         <h3><a class="card-title" href="/users/{{../user.username}}/lists/{{id}}"><span id="themeColor">{{name}}</span></a></h3>
                         <h5 class="card-subtitle mb-2 text-muted" href="/users/{{../user.username}}/lists/{{id}}">{{items.length}} items</h5>
+                        <input class="listId" type="hidden" name="listID" value="{{id}}">
+                        <input class="renameList" type="submit" value="Rename List">
                     </div>
                 </div>
             </div>
