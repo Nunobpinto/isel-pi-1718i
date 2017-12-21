@@ -76,12 +76,12 @@ router.post('/:username/lists/:listId', function(req, res, next) {
 	listService.addMovieToList(
 		req.params.listId,
 		req.body.movieID,
-		req.body.poster,
-		req.body.rating,
 		(err) => {
 			if( err ) return next(err)
+			res.sendStatus(200)
 		})
 })
+
 
 router.delete('/:username/lists/:listId',function (req, res, next) {
 	listService.removeMovieFromList(
@@ -89,6 +89,7 @@ router.delete('/:username/lists/:listId',function (req, res, next) {
 		req.body.movieID,
 		(err) => {
 			if( err ) return next(err)
+			res.sendStatus(200)
 		}
 	)
 })

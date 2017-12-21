@@ -4,6 +4,7 @@ const global = require('../../global')
 const mapper = require('../mapper')
 const utils = require('./serviceUtils')
 const debug = require('debug')('LI52D-G11:userListService')
+const movieService = require('./tmdbService')()
 
 const listsUrl = global.couchdb_url + '/lists/'
 const usersUrl = global.couchdb_url + '/users/'
@@ -135,16 +136,21 @@ function init(dataSource) {
 	 * @param {string} movieRating
 	 * @param {function} cb(err) if successful, no parameters are passed to the callback
 	 */
-	function addMovieToList(listId, movieId, moviePoster, movieRating, cb) {
+	function addMovieToList(listId, movieId, cb) {
 		debug(`Adding movie with id = ${movieId} to list with id = ${listId}`)
-		req(utils.optionsBuilder(listsUrl + listId), (err, res, data) => {
-			if( err ) cb(err)
-			if( res.statusCode === 404 ) return cb({ message: 'List not found!', status: res.statusCode })
-			data.items.push({ movieId, moviePoster, movieRating })
-			req(utils.optionsBuilder(listsUrl + listId, 'PUT', data), (err, res) => {
-				if( err ) return cb(err)
-				if( res.statusCode > 400 ) return cb({ message: 'Something broke!', status: res.statusCode })
-				cb()
+		movieService.getMovieDetails(movieId,(err,movie)=>{
+			let moviePoster = movie.poster
+			let movieRating = movie.rating
+			if(err) return cb(err)
+			req(utils.optionsBuilder(listsUrl + listId), (err, res, data) => {
+				if( err ) cb(err)
+				if( res.statusCode === 404 ) return cb({ message: 'List not found!', status: res.statusCode })
+				data.items.push({ movieId, moviePoster, movieRating })
+				req(utils.optionsBuilder(listsUrl + listId, 'PUT', data), (err, res) => {
+					if( err ) return cb(err)
+					if( res.statusCode > 400 ) return cb({ message: 'Something broke!', status: res.statusCode })
+					cb()
+				})
 			})
 		})
 	}

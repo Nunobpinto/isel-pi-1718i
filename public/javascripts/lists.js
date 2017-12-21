@@ -1,9 +1,5 @@
 window.onload = function() {
 
-	function btnAddFavOnClick() {
-
-	}
-
 	document
 		.querySelectorAll('.divAddFavMovie')
 		.forEach(div => {
@@ -11,16 +7,24 @@ window.onload = function() {
 			const username = div.querySelector('.username')
 			const listID = div.querySelector('.listID')
 			const movieID = div.querySelector('.movieID')
-			const poster = div.querySelector('.poster')
-			const rating = div.querySelector('.rating')
 			btn.addEventListener('click', () => {
 				const data =
-					`movieID=${movieID.value}&poster=${poster.value}&rating=${rating.value}`
+					`movieID=${movieID.value}`
 				const uri = `/users/${username.value}/lists/${listID.value}`
 				httpRequest('POST', uri, data, (err) => {
 					if (err) return alert(err)
-					alert('Favourite Added!')
-
+					let div = document.getElementById(`addFilm${listID.value}`)
+					div.classList.remove('divAddFilm')
+					div.classList.add('divRemoveFilm')
+					div.id = `removeFilm${listID.value}`
+					let inputToRemove = document.getElementById("add")
+					div.removeChild(inputToRemove)
+					let inputToAdd = document.createElement('input');
+					inputToAdd.setAttribute("value", "-")
+					inputToAdd.className = "removeToList"
+					inputToAdd.id = "remove"
+					inputToAdd.setAttribute("type","submit")
+					div.appendChild(inputToAdd)
 				})
 			})
 		})
@@ -38,8 +42,18 @@ window.onload = function() {
 				const uri = `/users/${usernameRemove.value}/lists/${listIDRemove.value}`
 				httpRequest('DELETE', uri, data, (err) => {
 					if (err) return alert(err)
-					alert('Movie Removed!')
-
+					let div = document.getElementById(`removeFilm${listIDRemove.value}`)
+					div.classList.remove('divRemoveFilm')
+					div.classList.add('divAddFilm')
+					div.id = `addFilm${listIDRemove.value}`
+					let inputToRemove = document.getElementById("remove")
+					div.removeChild(inputToRemove)
+					let inputToAdd = document.createElement('input');
+					inputToAdd.setAttribute("value", "+")
+					inputToAdd.className = "addToList"
+					inputToAdd.id = "add"
+					inputToAdd.setAttribute("type","submit")
+					div.appendChild(inputToAdd)
 				})
 			})
 		})
@@ -51,7 +65,7 @@ window.onload = function() {
 		xhr.open(method, path, true)
 
 		//Send the proper header information along with the request
-		xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+		xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded')
 
 		xhr.onreadystatechange = function() {//Call a function when the state changes.
 			if(xhr.readyState === XMLHttpRequest.DONE) {
@@ -61,6 +75,6 @@ window.onload = function() {
 					cb(new Error(xhr.status + ': ' + xhr.responseText))
 			}
 		}
-		xhr.send(data);
+		xhr.send(data)
 	}
 }

@@ -16,20 +16,18 @@
                         <td>
                             {{#checkIfExists items ../movie.id}}
                                 {{#if exists}}
-                                    <div class = "divRemoveFilm">
-                                        <input class="removeToList" type="submit" value="-">
-                                        <input class="listID" type="hidden" name="listID" value="{{../id}}">
+                                    <div id = "removeFilm{{../id}}" class = "divRemoveFilm">
                                         <input class="username" type="hidden" name="userID" value="{{../../user.username}}">
-                                        <input class="movieID" type="hidden" name="movieID" value="{{../../movie.id}}">
+                                        <input class="listID" type="hidden" name="listID" value="{{../id}}">
+                                        <input id = "movieID" class="movieID" type="hidden" name="movieID" value="{{../../movie.id}}">
+                                        <input id = "remove" class="removeToList" type="submit" value="-">
                                     </div>
                                 {{else}}
-                                    <div class = "divAddFavMovie">
-                                        <input class="addToList" type="submit" value="+">
+                                    <div id = "addFilm{{../id}}" class = "divAddFavMovie">
                                         <input class="username" type="hidden" name="username" value="{{../../user.username}}">
                                         <input class="listID" type="hidden" name="listID" value="{{../id}}">
-                                        <input class="movieID" type="hidden" name="movieID" value="{{../../movie.id}}">
-                                        <input class="poster" type="hidden" name="poster" value="{{../../movie.poster}}">
-                                        <input class="rating" type="hidden" name="rating" value="{{../../movie.voteAverage}}">
+                                        <input id = "movieID" class="movieID" type="hidden" name="movieID" value="{{../../movie.id}}">
+                                        <input id = "add" class="addToList" type="submit" value="+">
                                     </div>
                                 {{/if}}
                             {{/checkIfExists}}
