@@ -163,7 +163,7 @@ function init(dataSource) {
 		debug(`Adding movie with id = ${movieId} to list with id = ${listId}`)
 		movieService.getMovieDetails(movieId,(err,movie)=>{
 			let moviePoster = movie.poster
-			let movieRating = movie.rating
+			let movieRating = movie.voteAverage
 			if(err) return cb(err)
 			req(utils.optionsBuilder(listsUrl + listId), (err, res, data) => {
 				if( err ) cb(err)
