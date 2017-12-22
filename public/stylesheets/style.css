@@ -168,3 +168,33 @@
 .removeToList:hover{
     color: orange;
 }
+
+.removeListBtn{
+    background-color: transparent;
+    background-repeat: no-repeat;
+    border: none;
+    cursor: pointer;
+    color: white;
+    overflow: hidden;
+    outline: none;
+}
+
+.removeListBtn:hover{
+    color: orange;
+}
+
+.editListBtn{
+    background-color: transparent;
+    background-repeat: no-repeat;
+    border: none;
+    cursor: pointer;
+    color: white;
+    overflow: hidden;
+    outline: none;
+}
+
+.editListBtn:hover{
+    color: orange;
+}
+
+

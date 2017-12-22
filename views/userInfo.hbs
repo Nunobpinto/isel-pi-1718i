@@ -12,15 +12,18 @@
         <h2>My Lists:</h2>
         <a id="buttonAddList" class="btn btn-outline-dark" href="/users/{{user.username}}/lists/new">Create List</a>
     </div>
-    <div class="row">
+    <div id="mainDiv" class="row">
         {{#each lists}}
-            <div class="col-lg-3">
+            <div id="list-{{id}}" class="col-lg-3">
                 <div id="listItem" class="card bg-dark">
                     <div class="userListsOfMovies" id="txtAlignCenter">
                         <h3><a class="card-title" href="/users/{{../user.username}}/lists/{{id}}"><span id="themeColor">{{name}}</span></a></h3>
                         <h5 class="card-subtitle mb-2 text-muted" href="/users/{{../user.username}}/lists/{{id}}">{{items.length}} items</h5>
                         <input class="listId" type="hidden" name="listID" value="{{id}}">
-                        <input class="renameList" type="submit" value="Rename List">
+                        <div>
+                            <button class="editListBtn"><span class="fa fa-pencil-square-o"></span></button>
+                            <button class="removeListBtn" onclick=removeList({{id}}, {{../user.username}})><span class="fa fa-trash-o"></span></button>
+                        </div>
                     </div>
                 </div>
             </div>

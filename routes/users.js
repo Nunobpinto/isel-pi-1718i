@@ -84,7 +84,7 @@ router.post('/:username/lists/:listId', function(req, res, next) {
 
 
 /**
- * Deletes a list of movies from specific user
+ * Deletes a movie from specific list
  */
 router.delete('/:username/lists/:listId',function (req, res, next) {
 	listService.removeMovieFromList(
@@ -95,6 +95,14 @@ router.delete('/:username/lists/:listId',function (req, res, next) {
 			res.sendStatus(200)
 		}
 	)
+})
+
+router.delete('/:username/lists', function (req, res, next) {
+	const listId = req.body.listID
+	listService.deleteList(listId, req.user, err => {
+		if(err) return next(err)
+		res.sendStatus(200)
+	})
 })
 
 /**
