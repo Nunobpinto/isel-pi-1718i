@@ -12,8 +12,8 @@
  */
 function UserList(name, description, owner, items, rev, id) {
 	this.id = id
-	this.name = name
-	this.description = description
+	this.listName = name
+	this.listDesc = description
 	this.owner = owner
 	this.items = items
 	this._rev = rev

@@ -113,10 +113,10 @@ router.put('/:username/lists/:listId', function (req, res, next) {
 		req.params.listId,
 		req.body.name,
 		req.body.description,
-		req.user,
+		req.params.username,
 		(err) => {
             if (err) return next(err)
-				res.redirect(`/users/${req.params.username}/lists`)
+			res.sendStatus(200)
         }
 	)
 })

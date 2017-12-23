@@ -7,7 +7,6 @@
         <p id="themeColor" class="lead">{{user.email}}</p>
     </div>
 </div>
-<script type='text/javascript' src='/javascripts/list.js'></script>
 <div class="container pt-5">
     <div id="listsHeader" class="row">
         <h2>My Lists:</h2>
@@ -15,22 +14,7 @@
     </div>
     <div id="mainDiv" class="row">
         {{#each lists}}
-            <div id="list-{{id}}" class="col-lg-3">
-                <div id="listItem" class="card bg-dark">
-                    <div class="userListsOfMovies" id="txtAlignCenter">
-                        <h3><a class="card-title" href="/users/{{../user.username}}/lists/{{id}}"><span
-                                id="themeColor">{{name}}</span></a></h3>
-                        <h5 class="card-subtitle mb-2 text-muted"
-                            href="/users/{{../user.username}}/lists/{{id}}">{{items.length}} items</h5>
-                        <input class="listId" type="hidden" name="listID" value="{{id}}">
-                        <div>
-                            <button class="editListBtn"><span class="fa fa-pencil-square-o"></span></button>
-                            <button onclick="removeList('{{id}}', '{{../user.username}}')" class="removeListBtn">
-                                <span class="fa fa-trash-o"></span></button>
-                        </div>
-                    </div>
-                </div>
-            </div>
+            {{>cardMovieList}}
         {{/each}}
     </div>
 </div>

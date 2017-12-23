@@ -137,16 +137,20 @@ function init(dataSource) {
      * @param {string} user
      * @param {function} cb(err) if successful, no parameters are passed to the callback
      */
-	function updateList(listId, listName, listDesc, user, cb) {
-        debug('Updating list with id = "' + listId + '" of user = ' + user.username)
+	function updateList(listId, listName, listDesc, username, cb) {
+        debug('Updating list with id = "' + listId + '" of user = ' + username)
 		req(utils.optionsBuilder(listsUrl + listId), (err, res, data)=>{
 			if(err) return cb(err)
 			if(res.statusCode === 404) return cb({message:  'List not found!', status: res.statusCode })
-			data.name = listName
-			data.description = listDesc
+			data = mapper.mapToUserList(data)
+			data.listName = listName
+			if(listDesc!==''){
+                data.listDesc = listDesc
+			}
 			req(utils.optionsBuilder(listsUrl + data.id, 'PUT', data), (err, res) => {
 				if( err ) return cb(err)
 				if( res.statusCode > 400 ) return cb({ message: 'Something broke!', status: res.statusCode })
+				cb()
 			})
 		})
     }

@@ -12,7 +12,7 @@
                 <tbody>
                 {{#each lists}}
                     <tr>
-                        <td><a href="/users/{{../user.username}}/lists/{{id}}">{{name}}</a></td>
+                        <td><a href="/users/{{../user.username}}/lists/{{id}}">{{listName}}</a></td>
                         <td>
                             {{#checkIfExists items ../movie.id}}
                                 {{#if exists}}
