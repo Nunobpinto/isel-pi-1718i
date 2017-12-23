@@ -197,4 +197,18 @@
     color: orange;
 }
 
+.removeMovieBtn{
+    background-color: transparent;
+    background-repeat: no-repeat;
+    border: none;
+    cursor: pointer;
+    color: black;
+    overflow: hidden;
+    outline: none;
+}
+
+.removeMovieBtn:hover{
+    color: orange;
+}
+
 

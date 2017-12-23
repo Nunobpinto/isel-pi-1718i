@@ -1,0 +1,31 @@
+'use strict'
+
+
+function removeMovie(movieId, listId, username) {
+	const path = `/users/${username}/lists/${listId}`
+	const data = `movieID=${movieId}`
+	httpRequest('DELETE', path, data, err => {
+		if (err) return alert(err.message)
+		const mainDiv = document.getElementById('mainDiv')
+		const divToRemove = document.getElementById(`movieID-${movieId}`)
+		mainDiv.removeChild(divToRemove)
+	})
+}
+
+function httpRequest(method, path, data, cb) {
+	const xhr = new XMLHttpRequest()
+	xhr.open(method, path, true)
+
+	//Send the proper header information along with the request
+	xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded')
+
+	xhr.onreadystatechange = function () {//Call a function when the state changes.
+		if (xhr.readyState === XMLHttpRequest.DONE) {
+			if (xhr.status === 200)
+				cb()
+			else
+				cb(new Error(xhr.status + ': ' + xhr.responseText))
+		}
+	}
+	xhr.send(data)
+}

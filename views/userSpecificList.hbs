@@ -2,14 +2,14 @@
 
 <div id="divJumboTron" class="jumbotron jumbotron-fluid bg-dark">
     <div class="container">
-        <h1 id="themeTitle" class="display-3">{{name}}<span id="fontSize"> ({{items.length}} items)</span></h1>
+        <h1 id="themeTitle" class="display-3">{{name}}</h1>
         <p id="themeColor" class="lead">{{description}}</p>
     </div>
 </div>
 <div class="container">
-    <div class="row">
+    <div id = "mainDiv" class="row">
         {{#each items}}
-            <div class="col-lg-3">
+            <div id = "movieID-{{movieId}}" class="col-lg-3">
                 <div id="divCard" class="card mb-2 text-center">
                     <a href="/movies/{{movieId}}">
                         {{#if moviePoster}}
@@ -20,6 +20,9 @@
                     </a>
                     <ul class="list-group list-group-flush">
                         <li class="list-group-item">Vote Average: {{movieRating}}</li>
+                        <button onclick="removeMovie('{{movieId}}', '{{../id}}', '{{../user.username}}')" class="removeMovieBtn">
+                            <span class="fa fa-trash-o"></span>
+                        </button>
                     </ul>
                 </div>
             </div>
