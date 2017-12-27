@@ -8,6 +8,7 @@ const MovieListItem = require('./model/MovieListItem')
 const MovieList = require('./model/MovieList')
 const User = require('./model/User')
 const UserList = require('./model/UserList')
+const Comment = require('./model/Comment')
 
 /**
  * Maps movie search json object to a movie list container
@@ -18,7 +19,13 @@ const UserList = require('./model/UserList')
 function mapToMovieList(movieList, query) {
 	return new MovieList(
 		query,
-		movieList.results.map(item => new MovieListItem(item.title, item.id, item.release_date, item.poster_path, item.vote_average)),
+		movieList.results.map(item => new MovieListItem(
+			item.title,
+			item.id,
+			item.release_date,
+			item.poster_path,
+			item.vote_average
+		)),
 		movieList.page,
 		movieList.total_pages,
 		movieList.total_results
@@ -47,7 +54,14 @@ function mapToUser(json) {
  * @returns {UserList} UserList
  */
 function mapToUserList(json) {
-	return new UserList(json.listName, json.listDesc, json.owner, json.items, json._rev, json._id)
+	return new UserList(
+		json.listName,
+		json.listDesc,
+		json.owner,
+		json.items,
+		json._rev,
+		json._id
+	)
 }
 
 /**
@@ -56,7 +70,15 @@ function mapToUserList(json) {
  * @returns {Array<MovieListItem>} Filmography
  */
 function mapToFilmography(json) {
-	return json.map(item => new MovieListItem(item.title, item.id, item.release_date, item.poster_path, item.vote_average))
+	return json.map(
+		item => new MovieListItem(
+			item.title,
+			item.id,
+			item.release_date,
+			item.poster_path,
+			item.vote_average
+		)
+	)
 }
 
 /**
@@ -65,7 +87,16 @@ function mapToFilmography(json) {
  * @returns {Movie} Movie
  */
 function mapToMovie(json) {
-	return new Movie(json.tagline, json.id, json.original_title, json.overview, json.release_date, json.vote_average, json.poster_path, json.genres.map(item => item.name).join(' / '))
+	return new Movie(
+		json.tagline,
+		json.id,
+		json.original_title,
+		json.overview,
+		json.release_date,
+		json.vote_average,
+		json.poster_path,
+		json.genres.map(item => item.name).join(' / ')
+	)
 }
 
 /**
@@ -76,7 +107,11 @@ function mapToMovie(json) {
 function mapToDirector(crew) {
 	return crew
 		.filter(crewMember => crewMember.job === 'Director')
-		.map(director => new Director(director.name, director.id, director.profile_path))
+		.map(director => new Director(
+			director.name,
+			director.id,
+			director.profile_path
+		))
 }
 
 /**
@@ -85,7 +120,15 @@ function mapToDirector(crew) {
  * @returns {Array<CastMember>} CastMember Array
  */
 function mapToCastMember(cast) {
-	return 	cast.map(castMember => new CastMember(castMember.name, castMember.id, castMember.character, castMember.profile_path))
+	return cast
+		.map(castMember =>
+			new CastMember(
+				castMember.name,
+				castMember.id,
+				castMember.character,
+				castMember.profile_path
+			)
+		)
 }
 
 /**
@@ -94,7 +137,24 @@ function mapToCastMember(cast) {
  * @returns {Actor} Actor
  */
 function mapToActor(json) {
-	return new Actor(json.biography, json.birthday, json.deathday, json.id, json.name, json.popularity, json.profile_path)
+	return new Actor(
+		json.biography,
+		json.birthday,
+		json.deathday,
+		json.id,
+		json.name,
+		json.popularity,
+		json.profile_path
+	)
+}
+
+function mapToComment(json) {
+	return new Comment(
+		json.text,
+		json.author,
+		json.replies,
+		json.id	//TODO: criar novo comment é preciso criar id
+	)
 }
 
 module.exports = {
@@ -105,5 +165,6 @@ module.exports = {
 	mapToMovieList,
 	mapToFilmography,
 	mapToUser,
-	mapToUserList
+	mapToUserList,
+	mapToComment
 }

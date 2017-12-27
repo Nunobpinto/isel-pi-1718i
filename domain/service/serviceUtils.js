@@ -4,6 +4,11 @@
  * Utility functions used in various services
  */
 
+const shortId = require('shortid')
+
+function generateId() {
+	return shortId.generate()
+}
 
 /**
  * Generic options object to provide to an http request, containing its method, uri and request body
@@ -24,7 +29,6 @@ function optionsBuilder() {
 		res[argNames[i]] = arguments[i]
 	return res
 }
-
 
 /**
  * Processes asynchronous functions in parallel
@@ -53,5 +57,6 @@ function parallel(tasks, callback) {
 
 module.exports = {
 	optionsBuilder,
-	parallel
+	parallel,
+	generateId
 }
