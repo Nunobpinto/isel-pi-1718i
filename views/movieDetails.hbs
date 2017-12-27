@@ -14,23 +14,19 @@
                     <tr>
                         <td><a href="/users/{{../user.username}}/lists/{{id}}">{{listName}}</a></td>
                         <td>
-                            {{#checkIfExists items ../movie.id}}
-                                {{#if exists}}
-                                    <div id = "removeFilm{{../id}}" class = "divRemoveFilm">
-                                        <input class="username" type="hidden" name="userID" value="{{../../user.username}}">
-                                        <input class="listID" type="hidden" name="listID" value="{{../id}}">
-                                        <input id = "movieID" class="movieID" type="hidden" name="movieID" value="{{../../movie.id}}">
-                                        <input id = "remove" class="removeToList" type="submit" value="-">
-                                    </div>
-                                {{else}}
-                                    <div id = "addFilm{{../id}}" class = "divAddFavMovie">
-                                        <input class="username" type="hidden" name="username" value="{{../../user.username}}">
-                                        <input class="listID" type="hidden" name="listID" value="{{../id}}">
-                                        <input id = "movieID" class="movieID" type="hidden" name="movieID" value="{{../../movie.id}}">
-                                        <input id = "add" class="addToList" type="submit" value="+">
-                                    </div>
-                                {{/if}}
-                            {{/checkIfExists}}
+                            <div id="mainDiv">
+                                {{#checkIfExists items ../movie.id}}
+                                    {{#if exists}}
+                                        <div id = "removeFilm-{{../id}}" class = "divRemoveFilm">
+                                            <button onclick="removeMovieFromList('{{../../movie.id}}', '{{../id}}', '{{../../user.username}}')" class="removeToList">-</button>
+                                        </div>
+                                    {{else}}
+                                        <div id = "addFilm-{{../id}}" class = "divAddFavMovie">
+                                            <button onclick="addMovieToList('{{../../movie.id}}', '{{../id}}', '{{../../user.username}}')" class="addToList">+</button>
+                                        </div>
+                                    {{/if}}
+                                {{/checkIfExists}}
+                            </div>
                         </td>
                 {{/each}}
                 </tr>
