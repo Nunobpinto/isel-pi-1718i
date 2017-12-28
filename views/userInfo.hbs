@@ -7,14 +7,8 @@
         <p id="themeColor" class="lead">{{user.email}}</p>
     </div>
 </div>
-<div class="container pt-5">
-    <div id="listsHeader" class="row">
-        <h2>My Lists:</h2>
-        <a id="buttonAddList" class="btn btn-outline-dark" href="/users/{{user.username}}/lists/new">Create List</a>
-    </div>
-    <div id="mainDiv" class="row">
-        {{#each lists}}
-            {{>cardMovieList}}
-        {{/each}}
+<div class="row">
+    <div id="crtLsts">
+        <a class="btn btn-outline-dark" href="/users/{{user.username}}/lists">My Lists</a>
     </div>
 </div>

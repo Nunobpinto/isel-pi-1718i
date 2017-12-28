@@ -39,7 +39,6 @@ function removeMovieFromList(movieID, listID, username) {
 	})
 }
 
-
 function httpRequest(method, path, data, cb) {
 	const xhr = new XMLHttpRequest()
 	xhr.open(method, path, true)
