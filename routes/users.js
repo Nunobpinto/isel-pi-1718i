@@ -34,10 +34,11 @@ router.get('/:username', function(req, res, next) {
  */
 router.get('/:userName/lists', function(req, res, next) {
 	let page = req.query['page']
-	if(!page) page = 1
+	if(!page) page = '1'
 	listService.getListsByUserPaginated(req.user.lists, page, (err, data) => {
 		if( err ) return next(err)
-		res.render('userLists', { lists: data, currentPage: page, totalPages: (data.length/4) })
+		let totalPages = Math.ceil(data.rows / 4)
+		res.render('userLists', { lists: data.lists, currentPage: parseInt(page), totalPages: totalPages })
 	})
 })
 

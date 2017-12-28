@@ -58,7 +58,7 @@ function init(dataSource) {
 	function getListsByUserPaginated(listIds, page, cb) {
 		debug('Fetching lists with these ids = ' + listIds)
 		let offset = (page - 1) * 4
-		let limit = offset + 4
+		let limit = 4
 		const queryString =
 			`_all_docs?include_docs=true&limit=${limit}&skip=${offset}`
 		req(utils.optionsBuilder(listsUrl + queryString, 'POST', {keys:listIds}),
@@ -69,7 +69,7 @@ function init(dataSource) {
 				data.rows.forEach((item) => {
 					lists.push(mapper.mapToUserList(item.doc))
 				})
-				cb(null, lists)
+				cb(null, {lists:lists, rows : data.total_rows})
 			}
 		)
 	}
