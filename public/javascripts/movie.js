@@ -8,7 +8,7 @@ function addMovieToList(movieID, listID, username) {
 	httpRequest('POST', uri, data, (err) => {
 		if (err) return alert(err)
 		let divToRemove = document.getElementById(`addFilm-${listID}`)
-		let mainDiv = document.getElementById('mainDiv')
+		let mainDiv = document.getElementById(`mainDiv-${listID}`)
 		mainDiv.removeChild(divToRemove)
 		let divToAdd = document.createElement('div')
 		divToAdd.setAttribute('id', `removeFilm-${listID}`)
@@ -27,7 +27,7 @@ function removeMovieFromList(movieID, listID, username) {
 	httpRequest('DELETE', uri, data, (err) => {
 		if (err) return alert(err)
 		let divToRemove = document.getElementById(`removeFilm-${listID}`)
-		let mainDiv = document.getElementById('mainDiv')
+		let mainDiv = document.getElementById(`mainDiv-${listID}`)
 		mainDiv.removeChild(divToRemove)
 		let divToAdd = document.createElement('div')
 		divToAdd.setAttribute('id', `addFilm-${listID}`)

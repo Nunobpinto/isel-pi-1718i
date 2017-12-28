@@ -12,7 +12,7 @@ const usersUrl = global.couchdb_url + '/users/'
 /**
  * Obtain data from provided dataSource and manages user movie list interaction with application
  * @param {function} dataSource - repository (local or a Web API)
- * @returns {getListById, getListsByUser, createList, deleteList, addMovieToList, removeMovieFromList}
+ * @returns {{getListById: getListById, getListsByUserPaginated: getListsByUserPaginated, getListsByUser: getListsByUser, createList: createList, deleteList: deleteList, updateList: updateList, addMovieToList: addMovieToList, removeMovieFromList: removeMovieFromList}}
  */
 function init(dataSource) {
 	let req
@@ -23,6 +23,7 @@ function init(dataSource) {
 
 	return {
 		getListById,
+		getListsByUserPaginated,
 		getListsByUser,
 		createList,
 		deleteList,
@@ -48,13 +49,36 @@ function init(dataSource) {
 	}
 
 	/**
-	 * Get user lists according to the list ids received
+	 * Get paginated user lists according to the list ids received
 	 * @param {Array<string>} listIds
+	 * @param {int} listIds
+	 * @param {int} page
 	 * @param {function} cb(err, Array<UserList>)
 	 */
+	function getListsByUserPaginated(listIds, page, cb) {
+		debug('Fetching lists with these ids = ' + listIds)
+		let offset = (page - 1) * 4
+		let limit = offset + 4
+		const queryString =
+			`_all_docs?include_docs=true&limit=${limit}&skip=${offset}`
+		req(utils.optionsBuilder(listsUrl + queryString, 'POST', {keys:listIds}),
+			(err, res, data) => {
+				if( err ) return cb(err)
+				if( res.statusCode > 400 ) return cb({ message: 'Something broke!', status: res.statusCode })
+				let lists = []
+				data.rows.forEach((item) => {
+					lists.push(mapper.mapToUserList(item.doc))
+				})
+				cb(null, lists)
+			}
+		)
+	}
+
 	function getListsByUser(listIds, cb) {
 		debug('Fetching lists with these ids = ' + listIds)
-		req(utils.optionsBuilder(listsUrl + '_all_docs?include_docs=true', 'POST', { keys: listIds }),
+		const queryString =
+			'_all_docs?include_docs=true'
+		req(utils.optionsBuilder(listsUrl + queryString, 'POST', {keys:listIds}),
 			(err, res, data) => {
 				if( err ) return cb(err)
 				if( res.statusCode > 400 ) return cb({ message: 'Something broke!', status: res.statusCode })

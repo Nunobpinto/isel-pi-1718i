@@ -13,6 +13,40 @@
         {{/each}}
     </div>
 </div>
+{{#paginate 0 currentPage totalPages 3 }}
+    <div id="marginPagination" class="pagination">
+        {{#if isFirstPage}}
+            <li class="page-item disabled">
+                <a class="page-link" href="/users/{{../../user.username}}/lists?page=1">First</a>
+            </li>
+        {{else}}
+            <li class="page-item">
+                <a class="page-link" href="/users/{{../../user.username}}/lists?page=1">First</a>
+            </li>
+        {{/if}}
+        {{#each pages}}
+            {{#if isCurrent}}
+                <li class="page-item active">
+                    <a class="page-link" href="/users/{{../../user.username}}/lists">{{page}}</a>
+                </li>
+            {{else}}
+                <li class="page-item">
+                    <a class="page-link" href="/users/{{../../user.username}}/lists">{{page}}</a>
+                </li>
+            {{/if}}
+        {{/each}}
+
+        {{#if isLastPage}}
+            <li class="page-item disabled">
+                <a class="page-link" href="/users/{{../../user.username}}/lists?page={{lastPage}}">Last</a>
+            </li>
+        {{else}}
+            <li class="page-item">
+                <a class="page-link" href="/users/{{../../user.username}}/lists?page={{lastPage}}">Last</a>
+            </li>
+        {{/if}}
+    </div>
+{{/paginate}}
 <div class="row">
     <div id="crtLsts">
         <a class="btn btn-outline-dark" href="/users/{{user.username}}/lists/new">Create List</a>

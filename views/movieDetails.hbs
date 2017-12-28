@@ -14,7 +14,7 @@
                     <tr>
                         <td><a href="/users/{{../user.username}}/lists/{{id}}">{{listName}}</a></td>
                         <td>
-                            <div id="mainDiv">
+                            <div id="mainDiv-{{id}}">
                                 {{#checkIfExists items ../movie.id}}
                                     {{#if exists}}
                                         <div id="removeFilm-{{../id}}" class="divRemoveFilm">

@@ -26,19 +26,18 @@ router.use('/:username' ,function (req, res, next) {
  * Shows user profile page
  */
 router.get('/:username', function(req, res, next) {
-	listService.getListsByUser(req.user.lists, (err, data) => {
-		if( err ) return next(err)
-		res.render('userInfo', { lists: data })
-	})
+	res.render('userInfo')
 })
 
 /**
  * Shows lists of a user
  */
 router.get('/:userName/lists', function(req, res, next) {
-	listService.getListsByUser(req.user.lists, (err, data) => {
+	let page = req.query['page']
+	if(!page) page = 1
+	listService.getListsByUserPaginated(req.user.lists, page, (err, data) => {
 		if( err ) return next(err)
-		res.render('userLists', { lists: data })
+		res.render('userLists', { lists: data, currentPage: page, totalPages: (data.length/4) })
 	})
 })
 
