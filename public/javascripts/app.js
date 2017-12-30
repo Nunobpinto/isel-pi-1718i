@@ -2,10 +2,24 @@
 
 // by default "cast" tab is opened
 let currentTab = 'Cast'
+const COLOR1 = 'FFFFFF'
+const COLOR2 = 'EBEBEB'
+
+window.onscroll = function(ev) {
+	if( (window.innerHeight + window.scrollY) >= document.body.offsetHeight ) {
+		//carregar mais comentarios aqui
+	}
+}
 
 window.onload = function() {
-	const children = document.querySelectorAll('.tablinks')
-	if(children === null )
+	addEventListenerToTabs()
+	addClickListenerToForm()
+	fetchComments()
+}
+
+function addEventListenerToTabs() {
+	const children = document.querySelectorAll('.tab-list__tab-btn')
+	if( children === null )
 		return
 	for( let i = 0; i < children.length; ++i ) {
 		children[i].addEventListener('click', e => {
@@ -13,25 +27,179 @@ window.onload = function() {
 			selectTab(e, e.currentTarget.textContent)
 		})
 	}
+}
 
-	function selectTab(e, newTab) {
-		// if it's the same tab, do nothing
-		if( newTab === currentTab )
+function selectTab(e, newTab) {
+	// if it's the same tab, do nothing
+	if( newTab === currentTab )
+		return
+
+	// hide previous tab's content
+	document.getElementById(currentTab).className = 'tab-content--hide'
+
+	// Get all elements with class="tablinks" and remove the class "active"
+	const tabs = document.querySelectorAll('.tab-list__tab-btn')
+	for( let i = 0; i < tabs.length; ++i )
+		tabs[i].classList.remove('active')
+
+	// Show the current tab, and add an "active" class to the button that opened the tab
+	document.getElementById(newTab).className = 'tab-content--highlight'
+	e.currentTarget.classList.add('active')
+
+	// update current tab
+	currentTab = newTab
+}
+
+function addClickListenerToForm() {
+	if( document.getElementById('commentform') === null )
+		return
+	document
+		.getElementById('commentform')
+		.addEventListener('submit', function(e) {
+			e.preventDefault()
+
+			const path = window.location.pathname.replace('movies', 'comments')
+			const movieName = document.getElementById('pfont-size').firstElementChild.textContent
+			const data = `text=${this[0].value}&movieName=${movieName}`
+			httpRequest('POST', path, data, (err, data) => {
+				if( err ) return 0 //TODO: handle errors
+				const ul = document.querySelector('.nested-comments')
+
+				const li = genLiComment(
+					COLOR1,
+					{
+						author: data.author,
+						text: data.text,
+						id: data.id
+					}
+				)
+				ul.insertBefore(li, ul.firstChild)
+			})
+
+			this[0].value = ''
+		})
+}
+
+function fetchComments() {
+	const path = window.location.pathname.replace('movies', 'comments')
+	httpRequest('GET', path, null, (err, jsonComments) => {
+		if( err ) return 0//TODO: handle error
+		genCommentsHtml(
+			jsonComments.comments,
+			document.querySelector('.nested-comments'),
+			COLOR1
+		)
+	})
+}
+
+function genCommentsHtml(comments, ul, color) {
+	for( let i = 0; i < comments.length; ++i ) {
+		const li = genLiComment(color, comments[i])
+		ul.appendChild(li)
+
+		if( comments[i].replies.length !== 0 )
+			genCommentsHtml(comments[i].replies, li.children[1], color === COLOR1 ? COLOR2 : COLOR1)
+	}
+}
+
+function genLiComment(color, comment) {
+	const li = document.createElement('li')
+	li.className = 'nested-comments__comment-chain'
+	li.style.cssText = `background-color: #${color};`
+	li.id = 'comment-' + comment.id
+
+	const commentDiv = document.createElement('div')
+	commentDiv.className = 'nested-comments__comment-chain__comment'
+	const h5Author = document.createElement('h5')
+	h5Author.textContent = comment.author
+	commentDiv.appendChild(h5Author)
+	const pText = document.createElement('p')
+	pText.textContent = comment.text
+	commentDiv.appendChild(pText)
+	if( document.getElementById('commentform') !== null ) {
+		const aReply = createReplyForm(comment.id)
+		commentDiv.appendChild(aReply)
+	}
+	li.appendChild(commentDiv)
+
+	const repliesUl = document.createElement('ul')
+	repliesUl.className = 'nested-comments'
+	li.appendChild(repliesUl)
+
+	return li
+}
+
+function createReplyForm(id) {
+	const aReply = document.createElement('a')
+	aReply.textContent = 'Reply'
+	aReply.setAttribute('href', '#comment-' + id)
+
+	aReply.addEventListener('click', function(e) {
+		e.preventDefault()
+		const formId = 'form-' + id
+
+		if( document.getElementById(formId) )
 			return
 
-		// hide previous tab's content
-		document.getElementById(currentTab).className = 'hidetabcontent'
 
-		// Get all elements with class="tablinks" and remove the class "active"
-		const tabs = document.querySelectorAll('.tablinks')
-		for(let i = 0; i < tabs.length; ++i)
-			tabs[i].className = tabs[i].className.replace(' active', '')
+		const form = document.getElementById('commentform').cloneNode(true)
+		form.id = formId
+		form.addEventListener('submit', sendReplyClickListener)
+		form[0].setAttribute('form', form.id)
+		form[1].setAttribute('form', form.id)
+		form[2].classList.remove('d-none')
+		form[2].addEventListener('click', cancelReplyClickListener)
+		this.parentElement.insertAdjacentElement('afterend', form)
+	})
+	return aReply
+}
 
-		// Show the current tab, and add an "active" class to the button that opened the tab
-		document.getElementById(newTab).className = 'highlighttabcontent'
-		e.currentTarget.className += ' active'
+function sendReplyClickListener(e) {
+	e.preventDefault()
 
-		// update current tab
-		currentTab = newTab
+	const ul = this.nextElementSibling
+	const currColor = this.parentElement.style.cssText
+	const path = window.location.pathname.replace('movies', 'comments')
+	const movieName = document.getElementById('pfont-size').firstElementChild.textContent
+	const data = `text=${e.currentTarget[0].value}&idToReply=${this.id.substring(5)}&movieName=${movieName}`
+	httpRequest('POST', path, data, (err, data) => {
+		if( err ) return 0
+
+		const li = genLiComment(
+			currColor === 'background-color: rgb(255, 255, 255);' ? COLOR2 : COLOR1,
+			{
+				author: data.author,
+				text: data.text,
+				id: data.id
+			}
+		)
+		ul.insertBefore(li, ul.firstChild)
+	})
+	this.remove()
+}
+
+function cancelReplyClickListener(e) {
+	e.preventDefault()
+
+	this.parentElement.parentElement.remove()
+}
+
+function httpRequest(method, path, data, cb) {
+	const xhr = new XMLHttpRequest()
+	xhr.open(method, path, true)
+
+	if( method === 'POST' || method === 'PUT' || method === 'DELETE')
+		xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded')
+
+	xhr.responseType = 'json'
+
+	xhr.onreadystatechange = function() {//Call a function when the state changes.
+		if( xhr.readyState === XMLHttpRequest.DONE ) {
+			if( xhr.status === 200 || xhr.status === 201 )
+				cb(null, xhr.response)
+			else
+				cb(new Error(xhr.status + ': ' + xhr.responseText))
+		}
 	}
+	xhr.send(data)
 }

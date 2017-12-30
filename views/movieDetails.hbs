@@ -71,13 +71,13 @@
     </div>
 </div>
 
-<div class="tab">
-    <button class="tablinks active">Cast</button>
-    <button class="tablinks">Directors</button>
-    <button class="tablinks">Comments</button>
+<div class="tab-list">
+    <button class="tab-list__tab-btn active">Cast</button>
+    <button class="tab-list__tab-btn">Directors</button>
+    <button class="tab-list__tab-btn">Comments</button>
 </div>
 
-<div id="Cast" class="highlighttabcontent">
+<div id="Cast" class="tab-content--highlight">
     <div class="container mt-5">
         <div class="row">
             {{#each movie.cast}}
@@ -106,7 +106,7 @@
     </div>
 </div>
 
-<div id="Directors" class="hidetabcontent">
+<div id="Directors" class="tab-content--hide">
     <div class="container mt-5">
         <div class="row">
             {{#each movie.directors}}
@@ -120,9 +120,6 @@
                         {{/if }}
                         <div class="card-body">
                             <h4 class="card-title">{{name}}</h4>
-                            <ul class="list-group list-group-flush">
-                                <li class="list-group-item">Director</li>
-                            </ul>
                         </div>
                     </div>
                 </div>
@@ -131,24 +128,37 @@
     </div>
 </div>
 
-<div id="Comments" class="hidetabcontent">
-    <div class="commentarea">
+<div id="Comments" class="tab-content--hide">
+    <div class="comment-area">
         {{#if user}}
-            <form method="post" id="commentform" action="#">
-                <div class="commenttext">
-                    <textarea class="form-control" rows="4" cols="65" name="comment" placeholder="Write something..." form="commentform"></textarea>
+            <form class="comment-form" method="post" id="commentform">
+                <div class="comment-form__comment-text">
+                        <textarea class="form-control" rows="4" cols="65" name="comment"
+                                  placeholder="Write something..."
+                                  form="commentform"></textarea>
                 </div>
-                <div class="commentsubmit">
+                <span class="comment-form__comment-submit">
                     <button class="btn btn-outline-warning" type="submit" form="commentform">submit</button>
-                </div>
+                    <button class="btn btn-outline-warning d-none">cancel</button>
+                </span>
             </form>
         {{else}}
-            <div class="commentuseralert">
-                <h1 class="lead"><a href="/auth/register">Register</a> or <a href="/auth/signin">sign in</a> now to comment on this movie!</h1>
+            <div class="comment-area__user-alert">
+                <h1 class="lead"><a href="/auth/register">Register</a> or <a href="/auth/signin">sign in</a> now to
+                    comment on this movie!</h1>
             </div>
         {{/if}}
-        {{# each comments }}
-
-        {{/each}}
+        <div class="comment-area__comments-container">
+            <ul class="nested-comments">
+                <!--<li class="comment-chain">-->
+                    <!--<div class="comment-chain__comment">-->
+                        <!--<h5></h5>-->
+                        <!--<p></p>-->
+                        <!--<a href=""></a>-->
+                    <!--</div>-->
+                    <!--<ul class="comments-container__nested-comments"></ul>-->
+                <!--</li>-->
+            </ul>
+        </div>
     </div>
 </div>

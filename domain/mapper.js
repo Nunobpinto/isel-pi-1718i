@@ -44,6 +44,7 @@ function mapToUser(json) {
 		json.fullName,
 		json.email,
 		json.lists,
+		json.commentedOn,
 		json._rev
 	)
 }
@@ -150,10 +151,12 @@ function mapToActor(json) {
 
 function mapToComment(json) {
 	return new Comment(
-		json.text,
+		json.id,
+		json.movieId,
+		json.movieName,
 		json.author,
-		json.replies,
-		json.id	//TODO: criar novo comment é preciso criar id
+		json.text,
+		json.replies
 	)
 }
 

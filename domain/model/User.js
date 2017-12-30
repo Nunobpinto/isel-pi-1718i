@@ -10,12 +10,13 @@
  * @param {string} rev - revision of user in CouchDb
  * @constructor
  */
-function User(username, password, fullName, email, lists, rev) {
+function User(username, password, fullName, email, lists, commentedOn, rev) {
 	this.username = username
 	this.password = password
 	this.fullName = fullName
 	this.email = email
 	this.lists = lists
+	this.commentedOn = commentedOn
 	this._rev = rev
 }
 

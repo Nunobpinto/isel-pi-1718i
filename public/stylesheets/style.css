@@ -211,23 +211,31 @@
     color: orange;
 }
 
-.commentarea {
-    margin-right: auto;
-    margin-left: auto;
-    width: 700px;
+.comment-area {
+    margin-left: 4rem;
+    margin-right: 4rem;
     margin-top: 3rem;
 }
 
-.commenttext {
-    margin-bottom: 5px;
-}
-
-.commentuseralert {
+.comment-area__user-alert {
     text-align: center;
 }
 
+.comment-form {
+    width: 500px;
+    margin-left: 10px;
+}
+
+.comment-form__comment-text {
+    margin-bottom: 5px;
+}
+
+.comment-form__comment-submit {
+
+}
+
 /* Style the tab */
-.tab {
+.tab-list {
     margin-right: auto;
     margin-left: auto;
     text-align: center;
@@ -238,8 +246,13 @@
     background-color: #f1f1f1;
 }
 
+.tab-list__tab-btn {
+    margin-left: auto;
+    margin-right: auto;
+}
+
 /* Style the buttons that are used to open the tab content */
-.tab button {
+.tab-list button {
     background-color: inherit;
     border: none;
     outline: none;
@@ -249,26 +262,48 @@
 }
 
 /* Change background color of buttons on hover */
-.tab button:hover {
+.tab-list button:hover {
     background-color: #ddd;
 }
 
 /* Create an active/current tablink class */
-.tab button.active {
+.tab-list button.active {
     background-color: #ccc;
 }
 
-.tablinks {
-    margin-left: auto;
-    margin-right: auto;
-}
-
-/* Style the tab content */
-.hidetabcontent {
+.tab-content--hide {
     display: none;
 }
 
-.highlighttabcontent {
+.tab-content--highlight {
     display: block;
 }
 
+.comment-area__comments-container {
+    margin: 10px auto
+}
+
+.nested-comments {
+
+}
+
+.nested-comments__comment-chain {
+    border: 1px solid #d6d6d6;
+    border-radius: 4px;
+    padding-bottom: 5px;
+    padding-left: 5px;
+    padding-right: 8px;
+    margin-bottom: 8px;
+    margin-left: 10px;
+    margin-right: 8px;
+    margin-top: 4px;
+}
+
+.nested-comments__comment-chain__comment {
+    padding: 1em;
+}
+
+ul, li {
+    padding-left: 0;
+    list-style: none;
+}

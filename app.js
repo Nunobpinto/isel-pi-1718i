@@ -13,6 +13,7 @@ const movies = require('./routes/movies')
 const actors = require('./routes/actors')
 const users = require('./routes/users')
 const auth = require('./routes/auth')
+const comments = require('./routes/comments')
 const configureHbs = require('./domain/service/viewService')
 
 const app = express()
@@ -42,15 +43,14 @@ app.use('/auth', auth)
 app.use('/movies', movies)
 app.use('/actors', actors)
 app.use('/users', users)
+app.use('/comments', comments)
 
 // catch 404 and forward to error handler
-
 app.use(function(req, res, next) {
 	let err = new Error('Not Found')
 	err.status = 404
 	next(err)
 })
-
 
 // error handler
 app.use(function(err, req, res, next) {

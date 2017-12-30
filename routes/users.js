@@ -2,6 +2,7 @@
 
 const express = require('express')
 const listService = require('../domain/service/userListService')()
+const commentService = require('../domain/service/commentService')()
 const authValidation = require('./middlewares/validation')
 const router = express.Router()
 
@@ -115,10 +116,20 @@ router.put('/:username/lists/:listId', function (req, res, next) {
 		req.body.description,
 		req.params.username,
 		(err) => {
-            if (err) return next(err)
+			if (err) return next(err)
 			res.sendStatus(200)
-        }
+		}
 	)
+})
+
+/**
+ * Get comments written by a user
+ */
+router.get('/:username/comments', function(req, res, next) {
+	commentService.getCommentsByUser(req.user.username, req.user.commentedOn, (err, comments) => {
+		if( err ) return next(err)
+		res.render('userComments', { comments: comments })
+	})
 })
 
 module.exports = router

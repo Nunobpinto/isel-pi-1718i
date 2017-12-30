@@ -28,28 +28,28 @@ function init(dataSource) {
 
 	/**
 	 * Get user by username and password in order to login
-     * @param {string} username
-     * @param {string} password
-     * @param {function} cb(err, User)
-     */
+	 * @param {string} username
+	 * @param {string} password
+	 * @param {function} cb(err, User)
+	 */
 	function getUser(username, password, cb) {
 		debug('Fetching user with id = ' + username)
-		findById(username,(err,user,info)=>{
+		findById(username, (err, user, info) => {
 			if( err ) return cb(err)
-			if( info ) return cb(null,null,info)
+			if( info ) return cb(null, null, info)
 			if( password !== user.password ) return cb(null, null, 'Invalid Credentials')
-			cb(null,user)
+			cb(null, user)
 		})
 	}
 
 	/**
 	 * Create user with given params
-     * @param {string} username
-     * @param {string} password
-     * @param {string} fullName
-     * @param {string} email
-     * @param {function} cb(err, User)
-     */
+	 * @param {string} username
+	 * @param {string} password
+	 * @param {string} fullName
+	 * @param {string} email
+	 * @param {function} cb(err, User)
+	 */
 	function createUser(username, password, fullName, email, cb) {
 		debug('Creating user with username = ' + username)
 		const json = {
@@ -57,20 +57,22 @@ function init(dataSource) {
 			password,
 			fullName,
 			email,
-			lists: []
+			lists: [],
+			commentedOn: []
 		}
 		req(utils.optionsBuilder(url + username, 'PUT', json), (err, res, body) => {
-			if ( err ) return cb( err )
+			if( err ) return cb(err)
 			if( res.statusCode === 409 ) return cb(null, null, `Username "${username}" was already taken!`)
-			cb(null, mapper.mapToUser({ username, password, fullName, email, lists: [], _rev: body.rev }))
+			json._rev = body.rev
+			cb(null, mapper.mapToUser(json))
 		})
 	}
 
 	/**
 	 * Delete user received in param
-     * @param {User} user
-     * @param {function} cb(err) if successful, no parameters are passed to the callback
-     */
+	 * @param {User} user
+	 * @param {function} cb(err) if successful, no parameters are passed to the callback
+	 */
 	function deleteUser(user, cb) {
 		debug('Deleting user with id = ' + user.username)
 		req(utils.optionsBuilder(url + user.username + `?rev=${user._rev}`, 'DELETE'), (err) => {
@@ -81,13 +83,13 @@ function init(dataSource) {
 
 	/**
 	 * Find the user with the given username
-     * @param {string} username
-     * @param {function} cb(err, User)
-     */
+	 * @param {string} username
+	 * @param {function} cb(err, User)
+	 */
 	function findById(username, cb) {
 		req(utils.optionsBuilder(url + username), (err, res, body) => {
 			if( err ) return cb(err)
-			if ( res.statusCode !== 200 ) return cb(null, null, 'Invalid Credentials')
+			if( res.statusCode !== 200 ) return cb(null, null, 'Invalid Credentials')
 			cb(null, mapper.mapToUser(body))
 		})
 	}
