@@ -2,18 +2,29 @@
 
 // by default "cast" tab is opened
 let currentTab = 'Cast'
+let commentTree = null
+let currCommentChain = 0
 const COLOR1 = 'FFFFFF'
 const COLOR2 = 'EBEBEB'
 
-window.onscroll = function(ev) {
+window.onscroll = function() {
 	if( (window.innerHeight + window.scrollY) >= document.body.offsetHeight ) {
-		//carregar mais comentarios aqui
+		if( document.getElementById('Comments').className === 'tab-content--highlight' ) {
+			if( currCommentChain < commentTree.length )
+				genCommentsHtml(
+					commentTree[++currCommentChain],
+					document.querySelector('.nested-comments'),
+					COLOR1
+				)
+		}
+
 	}
 }
 
 window.onload = function() {
 	addEventListenerToTabs()
-	addClickListenerToForm()
+	if( document.getElementById('commentform') !== null )
+		addClickListenerToForm()
 	fetchComments()
 }
 
@@ -51,8 +62,6 @@ function selectTab(e, newTab) {
 }
 
 function addClickListenerToForm() {
-	if( document.getElementById('commentform') === null )
-		return
 	document
 		.getElementById('commentform')
 		.addEventListener('submit', function(e) {
@@ -84,21 +93,31 @@ function fetchComments() {
 	const path = window.location.pathname.replace('movies', 'comments')
 	httpRequest('GET', path, null, (err, jsonComments) => {
 		if( err ) return 0//TODO: handle error
+		commentTree = jsonComments.comments
+		//print first comment chain
 		genCommentsHtml(
-			jsonComments.comments,
+			commentTree[currCommentChain],
 			document.querySelector('.nested-comments'),
 			COLOR1
 		)
 	})
 }
 
-function genCommentsHtml(comments, ul, color) {
-	for( let i = 0; i < comments.length; ++i ) {
-		const li = genLiComment(color, comments[i])
+function genCommentsHtml(comment, ul, color) {
+	const li = genLiComment(color, comment)
+	ul.appendChild(li)
+
+	if( comment.replies.length !== 0 )
+		genRepliesHtml(comment.replies, li.children[1], COLOR2)
+}
+
+function genRepliesHtml(replies, ul, color) {
+	for( let i = 0; i < replies.length; ++i ) {
+		const li = genLiComment(color, replies[i])
 		ul.appendChild(li)
 
-		if( comments[i].replies.length !== 0 )
-			genCommentsHtml(comments[i].replies, li.children[1], color === COLOR1 ? COLOR2 : COLOR1)
+		if( replies[i].replies.length !== 0 )
+			genRepliesHtml(replies[i].replies, li.children[1], color === COLOR1 ? COLOR2 : COLOR1)
 	}
 }
 

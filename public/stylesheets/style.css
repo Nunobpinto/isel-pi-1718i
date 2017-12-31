@@ -211,29 +211,6 @@
     color: orange;
 }
 
-.comment-area {
-    margin-left: 4rem;
-    margin-right: 4rem;
-    margin-top: 3rem;
-}
-
-.comment-area__user-alert {
-    text-align: center;
-}
-
-.comment-form {
-    width: 500px;
-    margin-left: 10px;
-}
-
-.comment-form__comment-text {
-    margin-bottom: 5px;
-}
-
-.comment-form__comment-submit {
-
-}
-
 /* Style the tab */
 .tab-list {
     margin-right: auto;
@@ -281,6 +258,29 @@
 
 .comment-area__comments-container {
     margin: 10px auto
+}
+
+.comment-area {
+    margin-left: 4rem;
+    margin-right: 4rem;
+    margin-top: 3rem;
+}
+
+.comment-area__user-alert {
+    text-align: center;
+}
+
+.comment-form {
+    width: 500px;
+    margin-left: 10px;
+}
+
+.comment-form__comment-text {
+    margin-bottom: 5px;
+}
+
+.comment-form__comment-submit {
+
 }
 
 .nested-comments {
