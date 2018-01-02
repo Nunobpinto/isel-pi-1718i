@@ -30,17 +30,16 @@ function init(dataSource) {
 		debug(`Fetching comment with id = "${commentId}" from movie with id = "${movieId}"`)
 		req(utils.optionsBuilder(commentsUrl + movieId), (err, res, data) => {
 			if( err ) return cb(err)
-			//TODO: handle errors
-			const comment = mapper.mapToComment(findCommentById(data.comments, commentId))
+			const comment = findCommentById(data.comments, commentId)
 			cb(null, comment)
 		})
 	}
 
-	function getCommentsByMovie(docId, cb) {
-		debug(`Fetching comments from movie with id = "${docId}"`)
-		req(utils.optionsBuilder(commentsUrl + docId), (err, res, data) => {
+	function getCommentsByMovie(movieId, cb) {
+		debug(`Fetching comments from movie with id = "${movieId}"`)
+		req(utils.optionsBuilder(commentsUrl + movieId), (err, res, data) => {
 			if( err ) return cb(err)
-			cb(null, { comments: data.comments })
+			cb(null, data.comments)
 		})
 	}
 
@@ -128,11 +127,11 @@ function init(dataSource) {
 	}
 
 	function findCommentById(commentChain, id) {
-		commentChain.forEach((comment) => {
-			if( comment.id === id )
-				return comment
-			findCommentById(comment.replies, id)
-		})
+		for( let i = 0; i < commentChain.length; ++i ) {
+			if( commentChain[i].id === id )
+				return commentChain[i]
+			findCommentById(commentChain[i].replies, id)
+		}
 	}
 
 	function findCommentsByUser(commentChain, username, array) {

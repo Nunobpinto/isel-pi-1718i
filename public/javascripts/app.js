@@ -11,7 +11,7 @@ window.onscroll = function() {
 	if( (window.innerHeight + window.scrollY) >= document.body.offsetHeight ) {
 		if( document.getElementById('Comments').className === 'tab-content--highlight' ) {
 			if( currCommentChain < commentTree.length )
-				genCommentsHtml(
+				genCommewntsHtml(
 					commentTree[++currCommentChain],
 					document.querySelector('.nested-comments'),
 					COLOR1
@@ -91,9 +91,9 @@ function addClickListenerToForm() {
 
 function fetchComments() {
 	const path = window.location.pathname.replace('movies', 'comments')
-	httpRequest('GET', path, null, (err, jsonComments) => {
+	httpRequest('GET', path, null, (err, comments) => {
 		if( err ) return 0//TODO: handle error
-		commentTree = jsonComments.comments
+		commentTree = comments
 		//print first comment chain
 		genCommentsHtml(
 			commentTree[currCommentChain],
