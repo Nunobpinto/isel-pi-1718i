@@ -149,6 +149,11 @@ function mapToActor(json) {
 	)
 }
 
+/**
+ * Maps json to Comment entity
+ * @param {Object} json
+ * @returns {Comment} Comment
+ */
 function mapToComment(json) {
 	return new Comment(
 		json.id,

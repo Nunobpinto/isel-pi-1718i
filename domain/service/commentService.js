@@ -73,6 +73,16 @@ function init(dataSource) {
 		})
 	}
 
+	/**
+	 * Creates a comment on a movie (if comment document doesn't exist, it's created)
+	 * If @param idToReply is passed, then the comment created is a reply to the comment with that id
+	 * @param {number} docId
+	 * @param {string} movieName
+	 * @param {User} user
+	 * @param {string} text
+	 * @param {string} idToReply
+	 * @param {function} cb(err, Comment)
+	 */
 	function createComment(docId, movieName, user, text, idToReply, cb) {
 		debug(`Creating a comment on movie with id = "${docId}"`)
 		//Get comment document

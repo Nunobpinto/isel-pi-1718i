@@ -4,6 +4,9 @@
  * Utility functions used in various services
  */
 
+/**
+ * id generator used for comment ids
+ */
 const shortId = require('shortid')
 
 function generateId() {
