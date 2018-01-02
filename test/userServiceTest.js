@@ -58,7 +58,7 @@ function testCreateUser(test) {
 }
 
 function testDeleteUser(test) {
-	const user = new User('zemanel', '123', 'Ze Manel', 'zemanel@email.com', [], '123123', '123124')
+	const user = new User('zemanel', '123', 'Ze Manel', 'zemanel@email.com', [], [], '123124')
 	userService.deleteUser(user, (err) => {
 		if( err )
 			test.ifError(err)

@@ -11,7 +11,7 @@ window.onscroll = function() {
 	if( (window.innerHeight + window.scrollY) >= document.body.offsetHeight ) {
 		if( document.getElementById('Comments').className === 'tab-content--highlight' ) {
 			if( currCommentChain < commentTree.length )
-				genCommewntsHtml(
+				genCommentsHtml(
 					commentTree[++currCommentChain],
 					document.querySelector('.nested-comments'),
 					COLOR1

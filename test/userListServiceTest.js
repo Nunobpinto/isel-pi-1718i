@@ -35,7 +35,7 @@ function reqToFile(options, cb) {
 }
 
 function testCreateList(test) {
-	const user = new User('bruno', 'test', 'Bruno Filipe', 'bruno@email.com', [], 111)
+	const user = new User('bruno', 'test', 'Bruno Filipe', 'bruno@email.com', [], [], 111)
 	listService.createList('Italian Movies', 'The best out there', user, (err, list) => {
 		if( err )
 			test.ifError(err)
@@ -88,8 +88,8 @@ function testAddMovieToList(test) {
 }
 
 function testDeleteList(test) {
-	const list = new List('Italian Movies', 'The best out there', [], 123123, 123)
-	const user = new User('bruno', 'test', 'Bruno Filipe', 'bruno@email.com', [list.id], 111)
+	const list = new List('Italian Movies', 'The best out there', 'bruno', [], 123123, 123)
+	const user = new User('bruno', 'test', 'Bruno Filipe', 'bruno@email.com', [list.id], [], 111)
 	listService.deleteList(123, user, (err) => {
 		if( err )
 			test.ifError(err)
