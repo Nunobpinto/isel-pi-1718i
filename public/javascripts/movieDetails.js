@@ -71,7 +71,7 @@ function addClickListenerToForm() {
 			const movieName = document.getElementById('pfont-size').firstElementChild.textContent
 			const data = `text=${this[0].value}&movieName=${movieName}`
 			httpRequest('POST', path, data, (err, data) => {
-				if( err ) return 0 //TODO: handle errors
+				if( err ) return alert('Comment failed!!')
 				const ul = document.querySelector('.nested-comments')
 
 				const li = genLiComment(
@@ -92,7 +92,7 @@ function addClickListenerToForm() {
 function fetchComments() {
 	const path = window.location.pathname.replace('movies', 'comments')
 	httpRequest('GET', path, null, (err, comments) => {
-		if( err ) return 0//TODO: handle error
+		if( err ) return alert('Impossible to load comments!!')
 		commentTree = comments
 		//print first comment chain
 		genCommentsHtml(
