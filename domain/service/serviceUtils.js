@@ -10,6 +10,10 @@ function generateId() {
 	return shortId.generate()
 }
 
+function validateId(id) {
+	return shortId.isValid(id)
+}
+
 /**
  * Generic options object to provide to an http request, containing its method, uri and request body
  * The parameters must be provided in the following order: URI, METHOD, BODY.
@@ -58,5 +62,6 @@ function parallel(tasks, callback) {
 module.exports = {
 	optionsBuilder,
 	parallel,
-	generateId
+	generateId,
+	validateId
 }

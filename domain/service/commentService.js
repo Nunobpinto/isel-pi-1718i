@@ -8,7 +8,11 @@ const debug = require('debug')('LI52D-G11:commentService')
 const commentsUrl = global.couchdb_url + '/comments/'
 const usersUrl = global.couchdb_url + '/users/'
 
-//TODO: add documentation
+/**
+ * Obtain data from provided dataSource and manages movie commenting interaction with application
+ * @param dataSource
+ * @returns {{getComment: getComment, getCommentsByMovie: getCommentsByMovie, getCommentsByUser: getCommentsByUser, createComment: createComment}}
+ */
 function init(dataSource) {
 	let req
 	if( dataSource )
@@ -17,15 +21,18 @@ function init(dataSource) {
 		req = require('request')
 
 	return {
-		// updateComment,
-		// deleteComment,
-		// getCommentChain,
 		getComment,
 		getCommentsByMovie,
 		getCommentsByUser,
 		createComment
 	}
 
+	/**
+	 * Find comment by its id in the specified movie's comments
+	 * @param {number} movieId
+	 * @param {string} commentId
+	 * @param {function} cb(err, Comment)
+	 */
 	function getComment(movieId, commentId, cb) {
 		debug(`Fetching comment with id = "${commentId}" from movie with id = "${movieId}"`)
 		req(utils.optionsBuilder(commentsUrl + movieId), (err, res, data) => {
@@ -35,6 +42,11 @@ function init(dataSource) {
 		})
 	}
 
+	/**
+	 * Get all comments on the specified movie
+	 * @param {number} movieId
+	 * @param {function} cb(err, Array<Comment>)
+	 */
 	function getCommentsByMovie(movieId, cb) {
 		debug(`Fetching comments from movie with id = "${movieId}"`)
 		req(utils.optionsBuilder(commentsUrl + movieId), (err, res, data) => {
@@ -43,9 +55,15 @@ function init(dataSource) {
 		})
 	}
 
-	function getCommentsByUser(username, docIds, cb) {
+	/**
+	 * Finds all comments written by specified user
+	 * @param {string} username
+	 * @param {Array<number>} movieIds
+	 * @param {function} cb(err, Array<Comment>)
+	 */
+	function getCommentsByUser(username, movieIds, cb) {
 		debug(`Fetching comments from user with id = "${username}"`)
-		req(utils.optionsBuilder(commentsUrl + '_all_docs?include_docs=true', 'POST', { keys: docIds }), (err, res, data) => {
+		req(utils.optionsBuilder(commentsUrl + '_all_docs?include_docs=true', 'POST', { keys: movieIds }), (err, res, data) => {
 			if( err ) return cb(err)
 			let comments = []
 			data.rows.forEach((item) => {
@@ -109,14 +127,6 @@ function init(dataSource) {
 			})
 		})
 	}
-
-	// function deleteComment(docId, commentId, cb) {
-	//
-	// }
-
-	// function updateComment(docId, commendId, text, cb) { //Add update timestamps maybe
-	//
-	// }
 
 	function findComment(commentChain, idToReply, reply) {
 		commentChain.forEach((comment) => {
