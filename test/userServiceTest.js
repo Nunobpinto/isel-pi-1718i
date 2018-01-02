@@ -7,7 +7,7 @@ const User = require('../domain/model/User')
 
 const endpoints = {
 	DELETE: {
-		'http://127.0.0.1:5984/users/zemanel?rev=123123': fs.readFileSync('./test/files/userService/deleteUser.json').toString()
+		'http://127.0.0.1:5984/users/zemanel?rev=123124': fs.readFileSync('./test/files/userService/deleteUser.json').toString()
 	},
 	PUT: {
 		'http://127.0.0.1:5984/users/zemanel': fs.readFileSync('./test/files/userService/createUser.json').toString()
@@ -58,7 +58,7 @@ function testCreateUser(test) {
 }
 
 function testDeleteUser(test) {
-	const user = new User('zemanel', '123', 'Ze Manel', 'zemanel@email.com', [], '123123')
+	const user = new User('zemanel', '123', 'Ze Manel', 'zemanel@email.com', [], '123123', '123124')
 	userService.deleteUser(user, (err) => {
 		if( err )
 			test.ifError(err)

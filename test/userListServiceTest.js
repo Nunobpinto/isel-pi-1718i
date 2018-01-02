@@ -21,8 +21,10 @@ const endpoints = {
 	},
 	GET: {
 		'http://127.0.0.1:5984/lists/123': fs.readFileSync('./test/files/userListService/getListWithNoMoviesResp.json').toString(),
-		'http://127.0.0.1:5984/lists/124': fs.readFileSync('./test/files/userListService/getListWithMoviesResp.json').toString()
-	}
+		'http://127.0.0.1:5984/lists/124': fs.readFileSync('./test/files/userListService/getListWithMoviesResp.json').toString(),
+	},
+    'https://api.themoviedb.org/3/movie/860?api_key=98deea9e9512d3124b9fe528f476c51d':
+        fs.readFileSync('./test/files/tmdbService/wargamesDetails.json').toString()
 }
 
 function reqToFile(options, cb) {
@@ -38,10 +40,10 @@ function testCreateList(test) {
 		if( err )
 			test.ifError(err)
 		else {
-			test.equal(list.description, 'The best out there')
+			test.equal(list.listDesc, 'The best out there')
 			test.equal(list.id, 123)
 			test.equal(list.items.length, 0)
-			test.equal(list.name, 'Italian Movies')
+			test.equal(list.listName, 'Italian Movies')
 			test.equal(list._rev, 123123)
 		}
 		test.done()
@@ -54,8 +56,8 @@ function testGetListById(test) {
 			test.ifError(err)
 		else {
 			test.equal(list.id, '123')
-			test.equal(list.name, 'Italian Movies')
-			test.equal(list.description, 'The best out there')
+			test.equal(list.listName, 'Italian Movies')
+			test.equal(list.listDesc, 'The best out there')
 			test.equal(list.items.length, 0)
 			test.equal(list._rev, '123123')
 		}
@@ -78,7 +80,7 @@ function testGetListsByUser(test) {
 }
 
 function testAddMovieToList(test) {
-	listService.addMovieToList(123, '1', 'example.jpg', '10.0', (err) => {
+	listService.addMovieToList(123, 860, (err) => {
 		if( err )
 			test.ifError(err)
 		test.done()

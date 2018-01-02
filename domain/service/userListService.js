@@ -183,11 +183,9 @@ function init(dataSource) {
 	 * Add specific movie to list with id received in param
 	 * @param {string} listId
 	 * @param {string} movieId
-	 * @param {string} moviePoster
-	 * @param {string} movieRating
 	 * @param {function} cb(err) if successful, no parameters are passed to the callback
 	 */
-	function addMovieToList(listId, movieId, cb) {
+	function addMovieToList(listId, movieId,  cb) {
 		debug(`Adding movie with id = ${movieId} to list with id = ${listId}`)
 		movieService.getMovieDetails(movieId,(err,movie)=>{
 			let moviePoster = movie.poster
