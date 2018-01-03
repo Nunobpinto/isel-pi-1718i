@@ -98,6 +98,9 @@ router.delete('/:username/lists/:listId',function (req, res, next) {
 	)
 })
 
+/**
+ * Deletes a list with the specified id
+ */
 router.delete('/:username/lists', function (req, res, next) {
 	const listId = req.body.listID
 	listService.deleteList(listId, req.user, err => {
