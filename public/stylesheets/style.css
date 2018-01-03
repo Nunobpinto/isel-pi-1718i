@@ -70,7 +70,11 @@
 }
 
 #marginPagination {
-    margin-left: 28rem;
+    display: inline-flex;
+}
+
+#alignContentContainer {
+    text-align: center;
 }
 
 #mBottomList {
