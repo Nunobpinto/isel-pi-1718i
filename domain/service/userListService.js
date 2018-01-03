@@ -69,7 +69,7 @@ function init(dataSource) {
 				data.rows.forEach((item) => {
 					lists.push(mapper.mapToUserList(item.doc))
 				})
-				cb(null, {lists:lists, rows : data.total_rows})
+				cb(null, {lists:lists, rows : data.rows.length})
 			}
 		)
 	}
