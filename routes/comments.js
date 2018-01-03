@@ -20,6 +20,7 @@ router.get('/:movieId', function(req, res, next) {
  * If successfully created, 201 status and the comment in the body are returned
  */
 router.post('/:movieId', function(req, res, next) {
+	if(!req.user) return next({message: 'User does not exist' , status: 401})
 	commentService.createComment(
 		req.params.movieId,
 		req.body.movieName,
