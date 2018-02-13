@@ -2,5 +2,5 @@
 
 module.exports = {
 	tmdb_url: 'https://api.themoviedb.org/3',
-	couchdb_url: 'http://coimadb.smileupps.com/'
+	couchdb_url: 'https://coimag11.smileupps.com/'
 }
